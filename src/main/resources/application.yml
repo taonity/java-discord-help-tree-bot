@@ -1,0 +1,47 @@
+---
+discord:
+  token: ${JAVA_DISCORD_HELP_BOT_DISCORD_TOKEN}
+  mainGuildId: 448934652992946176
+
+server:
+  port: 9015
+
+app-reference:
+  protocol: http
+  port:
+  address: ${APP_ADDRESS:localhost}
+  url: ${app-reference.protocol}://${app-reference.address}:${server.port}
+
+postgres-url: jdbc:postgresql://${POSTGRES_ADDRESS:localhost}:${POSTGRES_PORT:49001}/${POSTGRES_DB:discord_help_bot}
+
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: ${postgres-url}
+    username: ${POSTGRES_APP_USER:d}
+    password: ${POSTGRES_APP_PASSWORD:d}
+
+gitea:
+  public:
+    protocol: ${GITEA_PUBLIC_PROTOCOL:http}
+    address: ${GITEA_PUBLIC_ADDRESS:localhost}
+    port: ${GITEA_PUBLIC_PORT:49002}
+    url: ${gitea.public.protocol}://${gitea.public.address}:${gitea.public.port}
+  private:
+    protocol: ${GITEA_PRIVATE_PROTOCOL:http}
+    address: ${GITEA_PRIVATE_ADDRESS:localhost}
+    port: ${GITEA_PRIVATE_PORT:49002}
+    url: ${gitea.private.protocol}://${gitea.private.address}:${gitea.private.port}
+  branch-name: main
+  failure-limit: 3
+  admin:
+    username: ${GITEA_ADMIN_USER_NAME:d}
+    password: ${GITEA_ADMIN_USER_PASSWORD:d12345}
+    email: ${GITEA_ADMIN_EMAIL:d@d.d}
+  git:
+    repoPath: ${REPO_STORE_PATH:@project.basedir@/repos-storage}
+
+#logging:
+#  level:
+#    discord.http.LoggingInterceptor: DEBUG

@@ -1,0 +1,18 @@
+---
+text:
+childText:bruh
+  - text:
+      en: "qwer1"
+      ru: "йцук1"
+    childText:
+      - text:
+          en: "qwer2"
+          ru: "йцук2"
+        func: ask_input
+        targetId: 383277523561086979
+      - text:
+          en: "qwer3"
+          ru: "йцук3"
+        func: return_text
+
+

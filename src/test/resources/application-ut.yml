@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:49001/discord_help_bot
+    username: d
+    password: d

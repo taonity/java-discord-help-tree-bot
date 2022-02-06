@@ -1,0 +1,42 @@
+name: Cancel workflows on PR close
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  cancel:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.merged != true }}
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            const workflowIds = [
+              '.github/workflows/test.yml'
+            ];
+
+            for (const workflowId of workflowIds) {
+              const workflowRuns = await github.rest.actions.listWorkflowRuns({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: workflowId,
+                per_page: 100,
+                event: 'pull_request_target',
+                branch: context.payload.pull_request.head.ref,
+              });
+              console.log(workflowRuns);
+            
+              const activeRuns = workflowRuns.data.workflow_runs.filter((workflowRun) => {
+                return workflowRun.status === 'queued' || workflowRun.status === 'in_progress' || workflowRun.status === 'waiting';
+              });
+            
+              for (const activeRun of activeRuns) {
+                await github.rest.actions.cancelWorkflowRun({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  run_id: activeRun.id,
+                });
+              }
+            }
+

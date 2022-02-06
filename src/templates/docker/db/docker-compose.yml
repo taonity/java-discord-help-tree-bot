@@ -1,0 +1,23 @@
+version: '2.4'
+
+services:
+  db:
+    image: postgres:14
+    volumes:
+      - java-discord-help-bot-volume-db:/var/lib/postgresql/data
+      - java-discord-help-bot-volume-db-backup:/backup
+      - ./shared:/shared
+    env_file:
+      - ../.env
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'" ]
+      interval: 5s
+      timeout: 5s
+      retries: 100
+    labels:
+      - docker-volume-backup.exec-label=java-discord-help-bot
+      - docker-volume-backup.archive-pre=/bin/bash -c '/shared/make-backup.sh'
+      - command-runner.group=java-discord-help-bot
+      - command-runner.shell=/bin/bash -c
+      - command-runner.command=/shared/restore-backup.sh;
+
