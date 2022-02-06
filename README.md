@@ -16,7 +16,8 @@ The bot that answers questions, configured like tree
 
 ## Build
 Projecte wrote on Java 11.
-Just open it with Intellij IDEA, download maven dependecies and build. For `jar` executable building run `mvn clean istall` in command prompt.
+Just open it with Intellij IDEA, download maven dependecies and build. 
+For `jar` executable building run `mvn clean istall` in command prompt.
 
 ## Run
 For Intellij IDEA modify run configurations, adding discord bot token and YAML configuration file path as arguments. For `jar` executable file run:
