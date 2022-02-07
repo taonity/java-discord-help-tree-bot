@@ -5,7 +5,6 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.rest.http.client.ClientException;
-import org.checkerframework.checker.units.qual.A;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +25,6 @@ public class TreeRoot {
             root.identifyNodes();
         } catch (IOException error) {
             System.out.println(error.getMessage());
-            System.out.println("error.getMessage()");
             throw new IllegalArgumentException("help_tree file not found");
         }
 
