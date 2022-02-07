@@ -4,7 +4,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 **/logs
-**/src/main/resources/configs.yaml
+src/main/resources/configs.yaml
+copybook.txt
 
 ### STS ###
 .apt_generated
