@@ -59,14 +59,112 @@ childText:
       ru: "У меня вопрос по одному из модов"
     childText:
       - text:
-          en: "answer6"
-          ru: "ответ6"
-        func: return_text
+          en: "Rise of The Reds"
+          ru: "Rise of The Reds"
+        childText:
+          - text:
+              en: "Please describe the issue in as much detail as possible, preferably with screenshots"
+              ru: "Пожалуйста, как можно подробнее, по возможностью со скриншотами опиши суть вопроса"
+            func: ask_input
+            targetId: 798964404447739994
+      - text:
+          en: "The End of Days (TEOD)"
+          ru: "The End of Days (TEOD)"
+        childText:
+          - text:
+              en: "Please describe the issue in as much detail as possible, preferably with screenshots"
+              ru: "Пожалуйста, как можно подробнее, по возможностью со скриншотами опиши суть вопроса"
+            func: ask_input
+            targetId: 262545744890691584
+      - text:
+          en: "Contra"
+          ru: "Contra"
+        childText:
+          - text:
+              en: "Please describe the issue in as much detail as possible, preferably with screenshots"
+              ru: "На английском языке, пожалуйста, как можно подробнее, по возможностью со скриншотами опиши суть вопроса"
+            func: ask_input
+            targetId: 196736340224638976
+      - text:
+          en: "Operation Firestorm"
+          ru: "Operation Firestorm"
+        childText:
+          - text:
+              en: "Please describe the issue in as much detail as possible, preferably with screenshots"
+              ru: "На английском языке, пожалуйста, как можно подробнее, по возможностью со скриншотами опиши суть вопроса"
+            func: ask_input
+            targetId: 222240457717973004
+      - text:
+          en: "Shockwave"
+          ru: "Shockwave"
+        childText:
+          - text:
+              en: "Please describe the issue in as much detail as possible, preferably with screenshots"
+              ru: "Пожалуйста, как можно подробнее, по возможностью со скриншотами опиши суть вопроса"
+            func: ask_input
+            targetId: 168777263242936321
+      - text:
+          en: "World War 2"
+          ru: "World War 2"
+        childText:
+          - text:
+              en: "Please describe the issue in as much detail as possible, preferably with screenshots"
+              ru: "Пожалуйста, как можно подробнее, по возможностью со скриншотами опиши суть вопроса"
+            func: ask_input
+            targetId: 248807823184625665
+      - text:
+          en: "Zero Hour Reborn"
+          ru: "Zero Hour Reborn"
+        childText:
+          - text:
+              en: "Please describe the issue in as much detail as possible, preferably with screenshots"
+              ru: "На английском языке, пожалуйста, как можно подробнее, по возможностью со скриншотами опиши суть вопроса"
+            func: ask_input
+            targetId: 221480812489474048
+      - text:
+          en: "NProject"
+          ru: "NProject"
+        childText:
+          - text:
+              en: "Please describe the issue in as much detail as possible, preferably with screenshots"
+              ru: "На английском языке, пожалуйста, как можно подробнее, по возможностью со скриншотами опиши суть вопроса"
+            func: ask_input
+            targetId: 221584201697329152
+      - text:
+          en: "CnC Untitled"
+          ru: "CnC Untitled"
+        childText:
+          - text:
+              en: "Please describe the issue in as much detail as possible, preferably with screenshots"
+              ru: "На английском языке, пожалуйста, как можно подробнее, по возможностью со скриншотами опиши суть вопроса"
+            func: ask_input
+            targetId: 221480812489474048
+      - text:
+          en: "Shockwave Chaos"
+          ru: "Shockwave Chaos"
+        childText:
+          - text:
+              en: "Please describe the issue in as much detail as possible, preferably with screenshots"
+              ru: "На английском языке, пожалуйста, как можно подробнее, по возможностью со скриншотами опиши суть вопроса"
+            func: ask_input
+            targetId: 269889853347463179
   - text:
       en: "I have a question about Generals game"
       ru: "У меня вопрос по игре генералы"
     childText:
       - text:
-          en: "answer7"
-          ru: "ответ7"
-        func: return_text
+          en: "Where can I download С&C Generals?"
+          ru: "Где можно скачать С&C Generals?"
+        childText:
+          - text:
+              en: "You can get licensed copy of Generals Zero Hour by purchasing C&C Ultimate Collection in Origin: https://www.origin.com/rus/en-us/store/command-and-conquer/command-and-conquer-the-ultimate-collection"
+              ru: "Ты можешь получить лицензированную копию Generals Zero Hour, приобретя C&C Ultimate Collection в Origin: https://www.origin.com/rus/en-us/store/command-and-conquer/command-and-conquer-the-ultimate-collection"
+            func: return_text
+      - text:
+          en: "My generals doesnt work"
+          ru: "У меня не работают генералы"
+        childText:
+          - text:
+              en: "This is GenLauncher Discord server, one of the requirements for the GenLauncher work is the presence of an Generals, it is assumed that you have them and work. Technical support for generals is not provided on this server"
+              ru: "Это дискорд сервер по GenLauncherу, одним из требований для работы GenLauncher является наличие чистых и рабочих генералов, подразумевается что они у вас уже есть. Техническая поддержка по генералам на этом сервере не оказывается."
+            func: return_text

@@ -190,7 +190,6 @@ public class UserManager {
 
                             messageChannel.createMessage(MessageCreateSpec.builder()
                                     .messageReference(event.getMessage().getId())
-                                    .allowedMentions(AllowedMentions.builder().repliedUser(false).build())
                                     .content(targetUser.getMention())
                                     .build()
                             ).block();
