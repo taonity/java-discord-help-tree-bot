@@ -27,7 +27,7 @@ java -jar executable.jar <token> <path/to/setting_configurations>
 ```
 Make sure you have Java 11 JRE installed.
 
-# Question tree configuration file
+## Question tree configuration file
 The question tree configuration file can be found in repo by path `/src/main/resources/help_tree.yaml`.
 One node represents question or answer. All leaves of the tree are answers. All other nodes are questions.
 A question has the folowing format:
@@ -56,7 +56,7 @@ An answer has two functions:
 - `return_text` - just return the answer text
 - `ask_question` - wait for user message, then reply on it attaching mention with `idOfdiscordUser`.
 
-# Setting configuration file
+## Setting configuration file
 This file has following structure:
 ```
 guildId: <guildId>                                # The guild id where bot wil be used
