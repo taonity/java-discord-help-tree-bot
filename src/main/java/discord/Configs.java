@@ -1,16 +1,20 @@
 package discord;
 
+import java.util.List;
+
 public class Configs {
     private String guildId;
     private String channelId;
     private String token;
     private String treePath;
+    private List<Long> userWhiteList;
 
-    public Configs(String guildId, String channelId, String treePath, String token) {
+    public Configs(String guildId, String channelId, String treePath, String token, List<Long> userWhiteList) {
         this.guildId = guildId;
         this.channelId = channelId;
         this.treePath = treePath;
         this.token = token;
+        this.userWhiteList = userWhiteList;
     }
 
     public Configs() {
@@ -46,5 +50,13 @@ public class Configs {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public List<Long> getUserWhiteList() {
+        return userWhiteList;
+    }
+
+    public void setUserWhiteList(List<Long> userWhiteList) {
+        this.userWhiteList = userWhiteList;
     }
 }

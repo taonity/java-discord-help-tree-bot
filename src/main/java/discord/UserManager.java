@@ -21,15 +21,22 @@ public class UserManager {
     private GatewayDiscordClient gateway;
     private MessageChannel messageChannel;
     private List<SelectMenuManager> smManagers;
-    private final long appId;
-    private final long guildId;
+    private final Long appId;
+    private final Long guildId;
     private TreeRoot treeRoot;
+    private final List<Long> userWhiteList;
 
-    public UserManager(GatewayDiscordClient gateway, MessageChannel messageChannel, long appId, long guildId, String helpTreePath) {
+    public UserManager(GatewayDiscordClient gateway,
+                       MessageChannel messageChannel,
+                       Long appId,
+                       Long guildId,
+                       String helpTreePath,
+                       List<Long> userWhiteList) {
         this.gateway = gateway;
         this.messageChannel = messageChannel;
         this.appId = appId;
         this.guildId = guildId;
+        this.userWhiteList = userWhiteList;
         smManagers = new ArrayList<>();
         treeRoot = new TreeRoot(helpTreePath);
         setSelectMenuListener();
@@ -65,7 +72,15 @@ public class UserManager {
                 .subscribe();
 
         gateway.on(ApplicationCommandInteractionEvent.class, event -> {
+            if(!event.getInteraction().getChannel().block().getId().equals(messageChannel.getId())) {
+                return event.reply("This command works in "+messageChannel.getMention()+" only.")
+                        .withEphemeral(true);
+            }
             if(event.getCommandName().equals(updateCmdRequest.name())) {
+                if(!userWhiteList.contains(event.getInteraction().getMember().get().getId().asLong())) {
+                    return event.reply("You can not use this command.")
+                            .withEphemeral(true);
+                }
                 var errorMessage = treeRoot.verifyFile(gateway);
                 if(errorMessage == null) {
                     return event.reply("Success");
@@ -74,9 +89,6 @@ public class UserManager {
                 }
             }
             if(event.getCommandName().equals(questionCmdRequest.name())) {
-                if(!event.getInteraction().getChannel().block().getId().equals(messageChannel.getId())) {
-                    return event.reply("This command works in "+messageChannel.getMention()+" only.");
-                }
                 Snowflake authorId = event.getInteraction().getMember().get().getId();
                 getSmManagers().removeIf(SelectMenuManager::isDead);
                 getSmManagers().removeIf(manager -> authorId.equals(manager.getUserId()));

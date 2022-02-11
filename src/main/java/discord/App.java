@@ -35,7 +35,8 @@ public class App {
                     messageChannel,
                     appId,
                     Long.parseLong(configs.getGuildId()),
-                    configs.getTreePath());
+                    configs.getTreePath(),
+                    configs.getUserWhiteList());
 
         });
 
