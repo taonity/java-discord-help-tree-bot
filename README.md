@@ -3,6 +3,7 @@ The bot that answers questions, configured like tree
 
 ## Features
 - Works with multiple userrs in the same time
+- Multilanguage for question and answers
 - Easy confirable questions and answers in YAML format
 - Two type of answers for different scenarios 
 - Online configuration file updating
