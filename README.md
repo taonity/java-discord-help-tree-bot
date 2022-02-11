@@ -6,7 +6,7 @@ The bot that answers questions, configured like tree
 - Multilanguage for question and answers
 - Easy confirable questions and answers in YAML format
 - Two type of answers for different scenarios 
-- Online configuration file updating
+- Online question tree configuration file updating
 - Basic verifying of configuration file before update for bot
 - Easy to build, host and run
 - Run only for one guild 
