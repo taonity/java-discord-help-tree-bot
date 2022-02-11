@@ -57,7 +57,7 @@ An answer has two functions:
 - `ask_question` - wait for user message, then reply on it attaching mention with `idOfdiscordUser`.
 
 # Setting configuration file
-This file file has following structure:
+This file has following structure:
 ```
 guildId: <guildId>                                # A guild where bot wil be used
 channelId: <channelId>                            # A channel where bot will be used
