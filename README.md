@@ -59,8 +59,8 @@ An answer has two functions:
 # Setting configuration file
 This file has following structure:
 ```
-guildId: <guildId>                                # A guild where bot wil be used
-channelId: <channelId>                            # A channel where bot will be used
+guildId: <guildId>                                # The guild id where bot wil be used
+channelId: <channelId>                            # The channel id where bot will be used
 token: <bot_token>                                # Token of the bot
 treePath: <path/to/tree_cinfiguration_file.yaml>  # Path to tree config file 
 userWhiteList:                                    # White list of user ids for /update command usage
