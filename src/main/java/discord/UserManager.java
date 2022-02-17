@@ -9,9 +9,11 @@ import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.SelectMenu;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.channel.MessageChannel;
+import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.MessageCreateSpec;
 import discord4j.discordjson.json.ApplicationCommandRequest;
 import discord4j.rest.util.AllowedMentions;
+import discord4j.rest.util.Color;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public class UserManager {
     private final Long guildId;
     private TreeRoot treeRoot;
     private final List<Long> userWhiteList;
+    private final Notificator notificator;
 
     public UserManager(GatewayDiscordClient gateway,
                        MessageChannel messageChannel,
@@ -39,6 +42,7 @@ public class UserManager {
         this.userWhiteList = userWhiteList;
         smManagers = new ArrayList<>();
         treeRoot = new TreeRoot(helpTreePath);
+        notificator = new Notificator();
         setSelectMenuListener();
         setQuestionCommandListener();
         setMessageListener();
@@ -186,9 +190,13 @@ public class UserManager {
 
     private void setMessageListener() {
         gateway.on(MessageCreateEvent.class).subscribe(event -> {
+            if(event.getMessage().getAuthor().get().isBot()) {
+                return;
+            }
             Guild guild = event.getGuild().block();
             if(guild != null) {
                 if(event.getMessage().getChannel().block().getId().equals(messageChannel.getId())) {
+
                     Snowflake authorId = event.getMessage().getAuthor().get().getId();
                     SelectMenuManager smManager = getSmManagers().stream()
                             .filter(manager -> authorId.equals(manager.getUserId()))
@@ -206,9 +214,19 @@ public class UserManager {
                                     .build()
                             ).block();
                             getSmManagers().remove(smManager);
+                            return;
                         }
                     }
 
+                    if(notificator.isTime() && event.getMessage().getContent().length() > 6) {
+                        EmbedCreateSpec embed = EmbedCreateSpec.builder()
+                                .color(Color.CYAN)
+                                .title("Tip. Подсказка.")
+                                .description(notificator.getNotificationText().toString())
+                                .build();
+
+                        messageChannel.createMessage(embed).block();
+                    }
                 }
 
             }

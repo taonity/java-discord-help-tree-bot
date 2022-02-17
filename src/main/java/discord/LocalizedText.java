@@ -38,4 +38,9 @@ public class LocalizedText {
                 throw new IllegalArgumentException("Undefined localized language");
         }
     }
+
+    @Override
+    public String toString() {
+        return en + '\n' + ru;
+    }
 }
