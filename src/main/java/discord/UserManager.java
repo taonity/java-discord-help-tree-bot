@@ -223,6 +223,7 @@ public class UserManager {
                                 .color(Color.CYAN)
                                 .title("Tip. Подсказка.")
                                 .description(notificator.getNotificationText().toString())
+                                .footer("This tip is triggered by random message every 1 hour", "")
                                 .build();
 
                         messageChannel.createMessage(embed).block();
