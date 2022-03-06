@@ -19,13 +19,23 @@ public class App {
         final var configs = configsManager.getConfigs();
         final DiscordClient client = DiscordClient.create(configs.getToken());
         final GatewayDiscordClient gateway = client.login().block();
-        final var appId = gateway.getApplicationInfo().block().getId().asLong();
+        if(gateway == null) {
+            throw new NullPointerException("gateway is null");
+        }
+        final var applicationInfo = gateway.getApplicationInfo().block();
+        if(applicationInfo == null) {
+            throw new NullPointerException("applicationInfo is null");
+        }
+        final var appId = applicationInfo.getId().asLong();
 
         gateway.on(ReadyEvent.class).subscribe(event -> {
             System.out.println("But have started!");
 
 
             final Guild guild = gateway.getGuildById(Snowflake.of(configs.getGuildId())).block();
+            if(guild == null) {
+                throw new NullPointerException("guild is null");
+            }
             final GuildChannel guildChannel = guild.getChannelById(Snowflake.of(configs.getChannelId())).block();
 
             MessageChannel messageChannel = (MessageChannel) guildChannel;

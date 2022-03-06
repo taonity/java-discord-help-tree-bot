@@ -14,6 +14,8 @@ import discord4j.core.spec.MessageCreateSpec;
 import discord4j.discordjson.json.ApplicationCommandRequest;
 import discord4j.rest.util.AllowedMentions;
 import discord4j.rest.util.Color;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
@@ -28,6 +30,9 @@ public class UserManager {
     private TreeRoot treeRoot;
     private final List<Long> userWhiteList;
     private final Notificator notificator;
+
+    private static final Logger log = LoggerFactory.getLogger(UserManager.class);
+
 
     public UserManager(GatewayDiscordClient gateway,
                        MessageChannel messageChannel,
@@ -76,12 +81,22 @@ public class UserManager {
                 .subscribe();
 
         gateway.on(ApplicationCommandInteractionEvent.class, event -> {
-            if(!event.getInteraction().getChannel().block().getId().equals(messageChannel.getId())) {
+            final var currentChannel = event.getInteraction().getChannel().block();
+            if(currentChannel == null) {
+                log.info("Error! currentChannel in ApplicationCommandInteractionEvent is null.");
+                return Mono.empty();
+            }
+            if(!currentChannel.getId().equals(messageChannel.getId())) {
                 return event.reply("This command works in "+messageChannel.getMention()+" only.")
                         .withEphemeral(true);
             }
+            final var interactionAuthor = event.getInteraction().getMember();
+            if(interactionAuthor.isEmpty()) {
+                log.info("Error! interactionAuthor in ApplicationCommandInteractionEvent is empty.");
+                return Mono.empty();
+            }
             if(event.getCommandName().equals(updateCmdRequest.name())) {
-                if(!userWhiteList.contains(event.getInteraction().getMember().get().getId().asLong())) {
+                if(!userWhiteList.contains(interactionAuthor.get().getId().asLong())) {
                     return event.reply("You can not use this command.")
                             .withEphemeral(true);
                 }
@@ -93,7 +108,7 @@ public class UserManager {
                 }
             }
             if(event.getCommandName().equals(questionCmdRequest.name())) {
-                Snowflake authorId = event.getInteraction().getMember().get().getId();
+                Snowflake authorId = interactionAuthor.get().getId();
                 getSmManagers().removeIf(SelectMenuManager::isDead);
                 getSmManagers().removeIf(manager -> authorId.equals(manager.getUserId()));
                 var selectMenuManager = new SelectMenuManager(authorId, treeRoot);
@@ -109,9 +124,12 @@ public class UserManager {
 
     private void setSelectMenuListener() {
         gateway.on(SelectMenuInteractionEvent.class, smEvent -> {
-            var interation = smEvent.getInteraction();
-            var optional = interation.getMember();
-            var activeMember = smEvent.getInteraction().getMember().get();
+            final var interactionAuthor = smEvent.getInteraction().getMember();
+            if(interactionAuthor.isEmpty()) {
+                log.info("Error! interactionAuthor in SelectMenuInteractionEvent is empty.");
+                return Mono.empty();
+            }
+            var activeMember = interactionAuthor.get();
             Snowflake authorId = activeMember.getId();
             SelectMenuManager smManager = getSmManagers().stream()
                     .filter(manager -> authorId.equals(manager.getUserId()))
@@ -172,6 +190,7 @@ public class UserManager {
                             return Mono.empty();
                     }
                 } else {
+
                     messageChannel.createMessage(
                             LocalizedFields.get("clar", smManager.getLanguage())
                     ).withComponents(ActionRow.of(selectMenu)).subscribe();
@@ -190,14 +209,23 @@ public class UserManager {
 
     private void setMessageListener() {
         gateway.on(MessageCreateEvent.class).subscribe(event -> {
-            if(event.getMessage().getAuthor().get().isBot()) {
+            final var messageAuthor = event.getMessage().getAuthor();
+            if(messageAuthor.isEmpty()) {
+                log.info("Error! messageAuthor in MessageCreationEvent is empty.");
+                return;
+            }
+            if(messageAuthor.get().isBot()) {
                 return;
             }
             Guild guild = event.getGuild().block();
             if(guild != null) {
-                if(event.getMessage().getChannel().block().getId().equals(messageChannel.getId())) {
-
-                    Snowflake authorId = event.getMessage().getAuthor().get().getId();
+                final var currentMessage = event.getMessage().getChannel().block();
+                if(currentMessage == null) {
+                    log.info("Error! currentMessage in MessageCreateEvent is null.");
+                    return;
+                }
+                if(currentMessage.getId().equals(messageChannel.getId())) {
+                    Snowflake authorId = messageAuthor.get().getId();
                     SelectMenuManager smManager = getSmManagers().stream()
                             .filter(manager -> authorId.equals(manager.getUserId()))
                             .findAny()
@@ -207,7 +235,10 @@ public class UserManager {
                             String targetId = smManager.getCurrentTree().getCurrentNode().getChildText()
                                     .get(0).getTargetId();
                             var targetUser = gateway.getUserById(Snowflake.of(targetId)).block();
-
+                            if(targetUser == null) {
+                                log.info("Error! targetUser in MessageCreateEvent is null.");
+                                return;
+                            }
                             messageChannel.createMessage(MessageCreateSpec.builder()
                                     .messageReference(event.getMessage().getId())
                                     .content(targetUser.getMention())
