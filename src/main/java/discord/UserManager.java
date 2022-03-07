@@ -20,6 +20,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserManager {
     private GatewayDiscordClient gateway;
@@ -131,6 +132,9 @@ public class UserManager {
             }
             var activeMember = interactionAuthor.get();
             Snowflake authorId = activeMember.getId();
+            System.out.println(getSmManagers().stream()
+                    .map(SelectMenuManager::getUserId)
+                    .collect(Collectors.toList()));
             SelectMenuManager smManager = getSmManagers().stream()
                     .filter(manager -> authorId.equals(manager.getUserId()))
                     .findAny()
@@ -190,10 +194,11 @@ public class UserManager {
                             return Mono.empty();
                     }
                 } else {
-
+                    log.info("Test: clarification message. language: " + smManager.getLanguage().toString());
                     messageChannel.createMessage(
                             LocalizedFields.get("clar", smManager.getLanguage())
                     ).withComponents(ActionRow.of(selectMenu)).subscribe();
+                    log.info("Test: clarification message. created");
                     smManager.updateLastUpdateTime();
                 }
 
@@ -209,6 +214,7 @@ public class UserManager {
 
     private void setMessageListener() {
         gateway.on(MessageCreateEvent.class).subscribe(event -> {
+            log.info("1");
             final var messageAuthor = event.getMessage().getAuthor();
             if(messageAuthor.isEmpty()) {
                 log.info("Error! messageAuthor in MessageCreationEvent is empty.");
@@ -218,14 +224,19 @@ public class UserManager {
                 return;
             }
             Guild guild = event.getGuild().block();
+            log.info("2");
             if(guild != null) {
+                log.info("3");
                 final var currentMessage = event.getMessage().getChannel().block();
                 if(currentMessage == null) {
                     log.info("Error! currentMessage in MessageCreateEvent is null.");
                     return;
                 }
+                log.info("4");
                 if(currentMessage.getId().equals(messageChannel.getId())) {
+
                     Snowflake authorId = messageAuthor.get().getId();
+
                     SelectMenuManager smManager = getSmManagers().stream()
                             .filter(manager -> authorId.equals(manager.getUserId()))
                             .findAny()
@@ -248,16 +259,18 @@ public class UserManager {
                             return;
                         }
                     }
-
+                    log.info("5");
                     if(notificator.isTime() && event.getMessage().getContent().length() > 6) {
+                        log.info("6");
                         EmbedCreateSpec embed = EmbedCreateSpec.builder()
                                 .color(Color.CYAN)
                                 .title("Tip. Подсказка.")
                                 .description(notificator.getNotificationText().toString())
                                 .footer("This tip is triggered by random message every 1 hour", "")
                                 .build();
-
+                        log.info("7");
                         messageChannel.createMessage(embed).block();
+                        log.info("8");
                     }
                 }
 

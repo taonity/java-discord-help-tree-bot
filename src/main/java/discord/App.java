@@ -8,8 +8,11 @@ import discord4j.core.event.domain.lifecycle.ReadyEvent;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.channel.GuildChannel;
 import discord4j.core.object.entity.channel.MessageChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class App {
+    private static final Logger log = LoggerFactory.getLogger(App.class);
     public static void main(final String[] args) {
         if(args.length != 1) {
             throw new IllegalArgumentException("Missing argument");
@@ -29,7 +32,8 @@ public class App {
         final var appId = applicationInfo.getId().asLong();
 
         gateway.on(ReadyEvent.class).subscribe(event -> {
-            System.out.println("But have started!");
+            log.info("But have started!!");
+            log.info("Тесть кирилицы!!!!!");
 
 
             final Guild guild = gateway.getGuildById(Snowflake.of(configs.getGuildId())).block();
