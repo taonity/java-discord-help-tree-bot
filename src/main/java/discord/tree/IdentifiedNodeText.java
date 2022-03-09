@@ -1,4 +1,4 @@
-package discord;
+package discord.tree;
 
 public class IdentifiedNodeText {
     private String id;

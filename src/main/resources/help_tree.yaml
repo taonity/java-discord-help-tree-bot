@@ -148,6 +148,15 @@ childText:
               ru: "На английском языке, пожалуйста, как можно подробнее, по возможностью со скриншотами опиши суть вопроса"
             func: ask_input
             targetId: 269889853347463179
+      - text:
+          en: "afadsf"
+          ru: "afadsfasdf"
+        childText:
+          - text:
+              en: "Please describe the issue in as much detail as possible, preferably with screenshots"
+              ru: "На английском языке, пожалуйста, как можно подробнее, по возможностью со скриншотами опиши суть вопроса"
+            func: ask_input
+            targetId: 269889853347463179asdf
   - text:
       en: "I have a question about Generals game"
       ru: "У меня вопрос по игре генералы"

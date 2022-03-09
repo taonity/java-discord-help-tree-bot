@@ -1,6 +1,7 @@
-package discord;
+package discord.tree;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import discord.localisation.LocalizedText;
 
 import java.util.ArrayList;
 import java.util.List;

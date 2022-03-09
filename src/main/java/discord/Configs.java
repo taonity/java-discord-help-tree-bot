@@ -17,6 +17,10 @@ public class Configs {
         this.userWhiteList = userWhiteList;
     }
 
+    public static Configs buildConfigs(String pathName) {
+        return YamlLoader.loadFromFile(pathName, Configs.class);
+    }
+
     public Configs() {
     }
 

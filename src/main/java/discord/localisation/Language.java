@@ -1,4 +1,4 @@
-package discord;
+package discord.localisation;
 
 public enum Language {
     EN,

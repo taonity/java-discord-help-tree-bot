@@ -1,4 +1,4 @@
-package discord;
+package discord.localisation;
 
 public class LocalizedText {
     private String en;

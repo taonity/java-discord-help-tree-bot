@@ -1,4 +1,6 @@
-package discord;
+package discord.tree;
+
+import discord.localisation.LocalizedText;
 
 public class IdentifiedLocalizedNodeText {
     private String id;

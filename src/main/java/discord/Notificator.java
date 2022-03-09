@@ -1,5 +1,7 @@
 package discord;
 
+import discord.localisation.LocalizedText;
+
 import java.time.Instant;
 
 public class Notificator {
@@ -14,7 +16,7 @@ public class Notificator {
         updateTime();
     }
 
-    boolean isTime() {
+    public boolean isTime() {
         return lastNotificationTime + oneHour < Instant.now().getEpochSecond();
     }
 

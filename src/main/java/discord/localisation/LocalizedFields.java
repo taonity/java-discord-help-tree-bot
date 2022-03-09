@@ -1,4 +1,4 @@
-package discord;
+package discord.localisation;
 
 import java.util.Map;
 import java.util.TreeMap;

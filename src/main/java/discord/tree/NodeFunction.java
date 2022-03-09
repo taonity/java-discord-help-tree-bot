@@ -1,4 +1,4 @@
-package discord;
+package discord.tree;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
