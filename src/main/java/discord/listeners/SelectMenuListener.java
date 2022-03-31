@@ -53,9 +53,7 @@ public class SelectMenuListener {
         }
         var activeMember = interactionAuthor.get();
         Snowflake authorId = activeMember.getId();
-        System.out.println(smManagers.stream()
-                .map(SelectMenuManager::getUserId)
-                .collect(Collectors.toList()));
+
         SelectMenuManager smManager = smManagers.stream()
                 .filter(manager -> authorId.equals(manager.getUserId()))
                 .findAny()

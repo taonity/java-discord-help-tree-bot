@@ -33,8 +33,8 @@ public class RespondOnQuestion implements MessageHandler {
     @Override
     public boolean condition(MessageCreateEvent event) {
         // TODO: a lot of repeated code
-        final var currentMessage = event.getMessage().getChannel().block();
-        if(currentMessage == null) {
+        final var currentChannel = event.getMessage().getChannel().block();
+        if(currentChannel == null) {
             log.info("Error! currentMessage in MessageCreateEvent is null.");
             return false;
         }
@@ -53,7 +53,7 @@ public class RespondOnQuestion implements MessageHandler {
             return false;
         }
 
-        return currentMessage.getId().equals(messageChannel.getId()) &&
+        return currentChannel.getId().equals(messageChannel.getId()) &&
                 !messageAuthor.get().isBot() &&
                 smManager.getUserStatus() == UserStatus.WRITES_MESSAGE;
     }

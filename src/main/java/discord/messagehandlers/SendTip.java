@@ -31,7 +31,14 @@ public class SendTip implements MessageHandler{
             return false;
         }
 
-        return notificator.isTime() && event.getMessage().getContent().length() > 6 &&
+        final var currentChannel = event.getMessage().getChannel().block();
+        if(currentChannel == null) {
+            log.info("Error! currentMessage in MessageCreateEvent is null.");
+            return false;
+        }
+
+        return currentChannel.getId().equals(messageChannel.getId()) &&
+                notificator.isTime() && event.getMessage().getContent().length() > 6 &&
                 !messageAuthor.get().isBot();
     }
 
