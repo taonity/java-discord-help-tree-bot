@@ -21,41 +21,10 @@ import java.util.List;
 @SpringBootApplication
 public class SpringApp {
 
-    @Autowired
-    private Configs configs;
-
     public static void main(String[] args) {
         new SpringApplicationBuilder(SpringApp.class)
                 .build()
                 .run(args);
     }
 
-    @Bean
-    public GatewayDiscordClient gatewayDiscordClient() {
-        return DiscordClientBuilder.create(configs.getToken()).build()
-                .gateway()
-                .setInitialPresence(ignore -> ClientPresence.online(ClientActivity.listening("to /question")))
-                .login()
-                .block();
-    }
-
-    @Bean
-    public List<SelectMenuManager> smManagers() {
-        return new ArrayList<>();
-    }
-
-    @Bean
-    Guild guild(GatewayDiscordClient client) {
-        return client.getGuildById(Snowflake.of(configs.getGuildId())).block();
-    }
-
-    @Bean
-    public MessageChannel messageChannel(Guild guild) {
-        return (MessageChannel) guild.getChannelById(Snowflake.of(configs.getChannelId())).block();
-    }
-
-    @Bean
-    public RestClient discordRestClient(GatewayDiscordClient client) {
-        return client.getRestClient();
-    }
 }

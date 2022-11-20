@@ -1,27 +1,25 @@
 package discord.messagehandlers;
 
 import discord.Notificator;
-import discord.commands.UpdateCommand;
+import discord.commands.ChannelRole;
+import discord.services.MessageChannelService;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.channel.MessageChannel;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.rest.util.Color;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 
 @Component
+@RequiredArgsConstructor
 public class SendTip implements MessageHandler{
-    private static final Logger log = LoggerFactory.getLogger(UpdateCommand.class);
+    private static final Logger log = LoggerFactory.getLogger(SendTip.class);
     private final Notificator notificator = new Notificator();
 
-
-    MessageChannel messageChannel;
-
-    public SendTip(MessageChannel messageChannel) {
-        this.messageChannel = messageChannel;
-    }
+    private final MessageChannelService channelService;
 
     @Override
     public boolean condition(MessageCreateEvent event) {
@@ -37,7 +35,7 @@ public class SendTip implements MessageHandler{
             return false;
         }
 
-        return currentChannel.getId().equals(messageChannel.getId()) &&
+        return currentChannel.getId().equals(channelService.getChannel(ChannelRole.HELP).getId()) &&
                 notificator.isTime() && event.getMessage().getContent().length() > 6 &&
                 !messageAuthor.get().isBot();
     }
@@ -53,7 +51,7 @@ public class SendTip implements MessageHandler{
                 .footer("This tip is triggered by random message every 1 hour", "")
                 .build();
         log.info("7");
-        messageChannel.createMessage(embed).block();
+        channelService.getChannel(ChannelRole.HELP).createMessage(embed).block();
         log.info("8");
     }
 }

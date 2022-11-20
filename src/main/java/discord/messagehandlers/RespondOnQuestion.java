@@ -1,13 +1,14 @@
 package discord.messagehandlers;
 
-import discord.SelectMenuManager;
+import discord.utils.SelectMenuManager;
 import discord.UserStatus;
-import discord.commands.UpdateCommand;
+import discord.commands.ChannelRole;
+import discord.services.MessageChannelService;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
-import discord4j.core.object.entity.channel.MessageChannel;
 import discord4j.core.spec.MessageCreateSpec;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -15,20 +16,13 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class RespondOnQuestion implements MessageHandler {
-    private static final Logger log = LoggerFactory.getLogger(UpdateCommand.class);
+    private static final Logger log = LoggerFactory.getLogger(RespondOnQuestion.class);
     
-    MessageChannel messageChannel;
-    List<SelectMenuManager> smManagers;
-    GatewayDiscordClient client;
-
-    public RespondOnQuestion(MessageChannel messageChannel, 
-                             List<SelectMenuManager> smManagers, 
-                             GatewayDiscordClient client) {
-        this.messageChannel = messageChannel;
-        this.smManagers = smManagers;
-        this.client = client;
-    }
+    private final MessageChannelService channelService;
+    private final List<SelectMenuManager> smManagers;
+    private final GatewayDiscordClient client;
 
     @Override
     public boolean condition(MessageCreateEvent event) {
@@ -53,7 +47,7 @@ public class RespondOnQuestion implements MessageHandler {
             return false;
         }
 
-        return currentChannel.getId().equals(messageChannel.getId()) &&
+        return currentChannel.getId().equals(channelService.getChannel(ChannelRole.HELP).getId()) &&
                 !messageAuthor.get().isBot() &&
                 smManager.getUserStatus() == UserStatus.WRITES_MESSAGE;
     }
@@ -75,14 +69,14 @@ public class RespondOnQuestion implements MessageHandler {
         if (smManager == null) {
             return;
         }
-        String targetId = smManager.getCurrentTree().getCurrentNode().getChildText()
+        String targetId = smManager.getTreeWalker().getCurrentNode().getChildText()
                 .get(0).getTargetId();
         var targetUser = client.getUserById(Snowflake.of(targetId)).block();
         if (targetUser == null) {
             log.info("Error! targetUser in MessageCreateEvent is null.");
             return;
         }
-        messageChannel.createMessage(MessageCreateSpec.builder()
+        channelService.getChannel(ChannelRole.HELP).createMessage(MessageCreateSpec.builder()
                 .messageReference(event.getMessage().getId())
                 .content(targetUser.getMention())
                 .build()

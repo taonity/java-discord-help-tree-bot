@@ -1,4 +1,4 @@
-package discord;
+package discord.config;
 
 import discord4j.common.JacksonResources;
 import discord4j.discordjson.json.ApplicationCommandRequest;
@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
@@ -16,14 +17,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
-public class GlobalCommandRegistrar implements ApplicationRunner {
+@Configuration
+public class GlobalCommandConfig implements ApplicationRunner {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     private final RestClient client;
 
     //Use the rest client provided by our Bean
-    public GlobalCommandRegistrar(RestClient client) {
+    public GlobalCommandConfig(RestClient client) {
         this.client = client;
     }
 

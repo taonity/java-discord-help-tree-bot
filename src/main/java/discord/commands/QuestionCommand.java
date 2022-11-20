@@ -1,32 +1,36 @@
 package discord.commands;
 
-import discord.SelectMenuManager;
+import discord.utils.SelectMenuManager;
+import discord.model.GuildSettings;
 import discord.tree.TreeRoot;
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.component.ActionRow;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static discord.commands.CommandName.QUESTION;
+
+@Slf4j
 @Component
-public class QuestionCommand implements SlashCommand {
-    private static final Logger log = LoggerFactory.getLogger(UpdateCommand.class);
+@RequiredArgsConstructor
+public class QuestionCommand extends SlashCommand {
+    @Getter
+    private final CommandName command = QUESTION;
 
-    public List<SelectMenuManager> smManagers;
-    public TreeRoot treeRoot;
-
-    public QuestionCommand(List<SelectMenuManager> smManagers, TreeRoot treeRoot) {
-        this.smManagers = smManagers;
-        this.treeRoot = treeRoot;
-    }
+    public final List<SelectMenuManager> smManagers;
+    public final TreeRoot treeRoot;
+    public final GuildSettings guildSettings;
 
     @Override
-    public String getName() {
-        return "question";
+    public boolean filter(ChatInputInteractionEvent event) {
+        return filterByCommand(event) &&
+                filterByChannelId(event, guildSettings.getHelpChannelId());
     }
 
     @Override
@@ -39,7 +43,7 @@ public class QuestionCommand implements SlashCommand {
         Snowflake authorId = interactionAuthor.get().getId();
         smManagers.removeIf(SelectMenuManager::isDead);
         smManagers.removeIf(manager -> authorId.equals(manager.getUserId()));
-        var selectMenuManager = new SelectMenuManager(authorId, treeRoot);
+        var selectMenuManager = new SelectMenuManager(treeRoot, authorId);
         smManagers.add(selectMenuManager);
         return event.reply("Выбери язык. Choose language.").withComponents(
                 ActionRow.of(selectMenuManager.getLanguageSelectMenu())

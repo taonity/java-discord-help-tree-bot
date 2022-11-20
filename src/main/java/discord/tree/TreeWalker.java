@@ -1,22 +1,26 @@
 package discord.tree;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 import java.util.List;
 
-public class TreeManager {
+@RequiredArgsConstructor
+public class TreeWalker {
     private final TreeRoot treeRoot;
 
+    @Getter
     private Node currentNode;
 
-    public TreeManager(TreeRoot treeRoot) {
-        this.treeRoot = treeRoot;
+    @PostConstruct
+    private void postConstruct() {
         currentNode = treeRoot.getRoot();
     }
 
-    public TreeRoot getTreeRoot() {
-        return treeRoot;
-    }
-
-    public List<IdentifiedLocalizedNodeText> IdentifiedLocalizedNodeTextList() {
+    public List<IdentifiedLocalizedNodeText> getIdentifiedLocalizedNodeTextList() {
         return currentNode.getListByChildNode();
     }
 
@@ -41,9 +45,4 @@ public class TreeManager {
     public void reset() {
         currentNode = treeRoot.getRoot();
     }
-
-    public Node getCurrentNode() {
-        return currentNode;
-    }
-
 }
