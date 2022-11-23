@@ -1,4 +1,4 @@
-package discord;
+package discord.structure;
 
 import discord.tree.IdentifiedNodeText;
 import discord4j.core.object.component.SelectMenu;
@@ -25,16 +25,6 @@ public class SelectMenuFactory {
                 ))
                 .collect(Collectors.toList());
         return SelectMenu.of(generateComponentId(), selectMenuOptionList);
-    }
-
-    /*public static SelectMenu disableAndSetDefault(SelectMenu selectMenu, String defaultOption) {
-        var selectMenuOptionList = selectMenu.getOptions();
-        selectMenuOptionList.add(SelectMenu.Option.ofDefault(defaultOption, "null"));
-        return SelectMenu.of(selectMenu.getCustomId(), selectMenuOptionList).disabled();
-    }*/
-    public static SelectMenu disableAndSetDefault(SelectMenu selectMenu, String defaultOption) {
-        return SelectMenu.of(selectMenu.getCustomId(),
-                SelectMenu.Option.ofDefault(defaultOption, "null")).disabled();
     }
 
     private String generateComponentId() {

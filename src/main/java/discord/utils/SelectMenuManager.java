@@ -1,26 +1,20 @@
 package discord.utils;
 
-import discord.SelectMenuFactory;
-import discord.UserStatus;
+import discord.structure.SelectMenuFactory;
+import discord.structure.UserStatus;
 import discord.localisation.Language;
-import discord.tree.IdentifiedLocalizedNodeText;
-import discord.tree.IdentifiedNodeText;
-import discord.tree.TreeWalker;
-import discord.tree.TreeRoot;
+import discord.tree.*;
 import discord4j.common.util.Snowflake;
 import discord4j.core.object.component.SelectMenu;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import javax.annotation.PostConstruct;
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 public class SelectMenuManager {
     private final SelectMenuFactory selectMenuFactory = new SelectMenuFactory();
     private final static long TTL = 60*24;
@@ -29,20 +23,30 @@ public class SelectMenuManager {
     private UserStatus userStatus = UserStatus.USES_SELECT_MENU;
 
     private TreeWalker treeWalker;
-    private SelectMenu currentTreeSelectMenu;
     private long lastUpdate;
     private Language language;
-    private SelectMenu languageSelectMenu;
+    private String languageSelectMenuCustomId;
+    private String treeSelectMenuCustomId;
 
     private final TreeRoot treeRoot;
     private final Snowflake userId;
 
-    @PostConstruct
+    public SelectMenuManager(TreeRoot treeRoot, Snowflake userId) {
+        this.treeRoot = treeRoot;
+        this.userId = userId;
+        postConstruct();
+    }
+
     private void postConstruct() {
         treeWalker = new TreeWalker(treeRoot);
 
         updateLastUpdateTime();
-        languageSelectMenu = selectMenuFactory.createLanguageSelectMenu();
+    }
+
+    public SelectMenu createLanguageSelectMenu() {
+        var selectMenu = selectMenuFactory.createLanguageSelectMenu();
+        languageSelectMenuCustomId = selectMenu.getCustomId();
+        return selectMenu;
     }
 
     public void updateLastUpdateTime() {
@@ -53,22 +57,44 @@ public class SelectMenuManager {
         return Instant.now().getEpochSecond() > (lastUpdate + TTL);
     }
 
-    public SelectMenu createNextSelectMenu(String nodeId) {
-        List<IdentifiedLocalizedNodeText> localizedOptionsList;
-        if(firstNodeProcessed) {
-            localizedOptionsList = treeWalker.getNextIdentifiedLocalizedNodeTextListById(nodeId);
-        } else {
-            localizedOptionsList = treeWalker.getIdentifiedLocalizedNodeTextList();
-            firstNodeProcessed = true;
-        }
+    public SelectMenu createFirstTreeSelectMenu() {
+        final var localizedOptionsList = treeWalker.getIdentifiedLocalizedNodeTextList();
 
-        List<IdentifiedNodeText> optionsList = localizedOptionsList.stream()
+        return createTreeSelectMenuByLocalizedOptions(localizedOptionsList);
+    }
+
+    public SelectMenu createNextTreeSelectMenu(String nodeId) {
+        final var localizedOptionsList =
+                treeWalker.getNextIdentifiedLocalizedNodeTextListById(nodeId);
+
+        return createTreeSelectMenuByLocalizedOptions(localizedOptionsList);
+    }
+
+    private SelectMenu createTreeSelectMenuByLocalizedOptions(List<IdentifiedLocalizedNodeText> localizedOptionsList) {
+        final List<IdentifiedNodeText> optionsList = localizedOptionsList.stream()
                 .map(localizedOption -> new IdentifiedNodeText(
                         localizedOption.getId(),
                         localizedOption.getLocalizedText().getTranslatedText(language)
                 ))
                 .collect(Collectors.toList());
-        currentTreeSelectMenu = selectMenuFactory.createTreeSelectMenu(optionsList);
-        return currentTreeSelectMenu;
+        var selectMenu = selectMenuFactory.createTreeSelectMenu(optionsList);
+        treeSelectMenuCustomId =  selectMenu.getCustomId();
+        return selectMenu;
+    }
+
+    public boolean atLastQuestionInBranch() {
+        return treeWalker.getCurrentNode().getChildText().get(0).getChildText() == null;
+    }
+
+    public String getTargetId() {
+        return getAnswerNode().getTargetId();
+    }
+
+    public Node getAnswerNode() {
+        return treeWalker.getCurrentNode().getChildText().get(0);
+    }
+
+    public String getTranslatedText() {
+        return getAnswerNode().getLocalizedText().getTranslatedText(language);
     }
 }

@@ -8,14 +8,17 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.List;
 
-@RequiredArgsConstructor
 public class TreeWalker {
     private final TreeRoot treeRoot;
 
     @Getter
     private Node currentNode;
 
-    @PostConstruct
+    public TreeWalker(TreeRoot treeRoot) {
+        this.treeRoot = treeRoot;
+        postConstruct();
+    }
+
     private void postConstruct() {
         currentNode = treeRoot.getRoot();
     }

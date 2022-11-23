@@ -1,8 +1,6 @@
 package discord.listeners;
 
-import discord.messagehandlers.MessageHandler;
-import discord4j.core.GatewayDiscordClient;
-import discord4j.core.event.domain.interaction.SelectMenuInteractionEvent;
+import discord.handler.message.MessageHandler;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,13 +15,11 @@ public class MessageCreateListener implements DiscordEventListener<MessageCreate
 
     private final Collection<MessageHandler> messageHandler;
 
-    public Mono<Void> handle(MessageCreateEvent event) {
-        return Flux.fromIterable(messageHandler)
-                .filter(handler -> handler.condition(event))
+    public void handle(MessageCreateEvent event) {
+        Flux.fromIterable(messageHandler)
+                .filter(handler -> handler.filter(event))
                 .next()
-                .flatMap(handler -> {
-                    handler.handle(event);
-                    return Mono.empty();
-                });
+                .flatMap(handler -> handler.reactiveHandle(event))
+                .subscribe();
     }
 }

@@ -1,46 +1,23 @@
 package discord.localisation;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public class LocalizedText {
-    private String en;
-    private String ru;
-
-    public LocalizedText(String en, String ru) {
-        this.en = en;
-        this.ru = ru;
-    }
-
-    public LocalizedText() {
-    }
-
-    public String getEn() {
-        return en;
-    }
-
-    public void setEn(String en) {
-        this.en = en;
-    }
-
-    public String getRu() {
-        return ru;
-    }
-
-    public void setRu(String ru) {
-        this.ru = ru;
-    }
+    private final String en;
+    private final String ru;
 
     public String getTranslatedText(Language language) {
         switch (language) {
             case EN:
-                return getEn();
+                return en;
             case RU:
-                return getRu();
+                return ru;
             default:
                 throw new IllegalArgumentException("Undefined localized language");
         }
     }
 
-    @Override
-    public String toString() {
-        return en + '\n' + ru;
-    }
 }

@@ -1,4 +1,4 @@
-package discord;
+package discord.structure;
 
 public enum UserStatus {
     USES_SELECT_MENU,
