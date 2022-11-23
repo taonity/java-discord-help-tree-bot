@@ -1,0 +1,12 @@
+{
+  "name": "channelrole",
+  "description": "Give the role to ve channel",
+  "options": [
+    {
+      "name": "role",
+      "description": "Can be `help` or `log`",
+      "type": 3,
+      "required": true
+    }
+  ]
+}

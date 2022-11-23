@@ -1,0 +1,23 @@
+package discord.localisation;
+
+public enum LogMessage {
+    ALERT_20001,
+    ALERT_20002,
+    ALERT_20003,
+    ALERT_20004,
+    ALERT_20005,
+    ALERT_20006,
+    ALERT_20007,
+    ALERT_20008,
+    ALERT_20009,
+    ALERT_20010,
+    ALERT_20011,
+    ALERT_20012,
+    ALERT_20013,
+    ALERT_20014,
+    ALERT_20015,
+    ALERT_20016,
+    ALERT_20017,
+    ALERT_20018,
+    ALERT_20019;
+}

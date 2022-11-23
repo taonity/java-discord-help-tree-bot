@@ -1,0 +1,28 @@
+---
+tree:
+  repo:
+    user: GeneralTao2
+    name: java-discord-help-tree-bot-config
+    local-path: trash
+    config-name: dialog.yaml
+
+discord:
+  guildId: 448934652992946176
+  channelId: 935576925773127710
+  userWhiteList:
+    - 220196571868823562
+    - 383277523561086979
+  githubUsers:
+    GeneralTao2: 383277523561086979
+
+
+server:
+  port: 9015
+
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+  datasource:
+    username: d
+    password: d
+    url: jdbc:postgresql://localhost:5432/discord_help_bot
