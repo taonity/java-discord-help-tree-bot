@@ -26,3 +26,8 @@ spring:
     username: d
     password: d
     url: jdbc:postgresql://localhost:5432/discord_help_bot
+
+gitea:
+  protocol: http
+  address: localhost
+  port: 3000
