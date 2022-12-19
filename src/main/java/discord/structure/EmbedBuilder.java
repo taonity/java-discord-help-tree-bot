@@ -1,7 +1,5 @@
 package discord.structure;
 
-import discord.localisation.LogMessage;
-import discord.localisation.SimpleMessage;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.rest.util.Color;
 
@@ -23,14 +21,32 @@ public class EmbedBuilder {
                 .build();
     }
 
-    public static EmbedCreateSpec buildLogEmbed(LogMessage logMessage, ErrorEmbedType errorEmbedType) {
+    public static EmbedCreateSpec buildLogEmbed(String description, EmbedType embedType) {
         return EmbedCreateSpec.builder()
-                .color(errorEmbedType.getColor())
-                .title(errorEmbedType.getSimpleMessage().getMessage())
-                .description(logMessage.name())
+                .color(embedType.getColor())
+                .title(embedType.getSimpleMessage().getMessage())
+                .description(description)
                 .image(LOG_ATTACHMENT_FILE_PATH)
                 .timestamp(Instant.now())
                 .footer(LOG_FOOTER_MESSAGE.getMessage(), "")
                 .build();
     }
+
+    public static EmbedCreateSpec buildMessageEmbed(String description, EmbedType embedType) {
+        return EmbedCreateSpec.builder()
+                .color(embedType.getColor())
+                .title(embedType.getSimpleMessage().getMessage())
+                .description(description)
+                .timestamp(Instant.now())
+                .footer(LOG_FOOTER_MESSAGE.getMessage(), "")
+                .build();
+    }
+
+    public static EmbedCreateSpec buildSimpleMessage(String description, EmbedType embedType) {
+        return EmbedCreateSpec.builder()
+                .color(embedType.getColor())
+                .description(description)
+                .build();
+    }
+
 }

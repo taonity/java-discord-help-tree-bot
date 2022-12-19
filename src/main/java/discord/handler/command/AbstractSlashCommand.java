@@ -7,11 +7,18 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static discord.structure.CommandName.ANY;
+
 public abstract class AbstractSlashCommand implements DiscordEventHandler<ChatInputInteractionEvent> {
     abstract public CommandName getCommand();
 
     public boolean filterByCommand(ChatInputInteractionEvent event) {
-        return getCommand().getCommandName().equals(event.getCommandName());
+        final var command = getCommand();
+        if(command == ANY) {
+            return true;
+        } else {
+            return command.getCommandName().equals(event.getCommandName());
+        }
     }
 
 }

@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum CommandName {
     QUESTION("question"),
-    CHANNELROLE("channelrole");
+    CHANNELROLE("channelrole"),
+    DIALOG("dialog"),
+    ANY("");
 
     @Getter
     private final String commandName;

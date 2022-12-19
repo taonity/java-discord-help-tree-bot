@@ -28,17 +28,16 @@ public class SelectMenuManager {
     private String languageSelectMenuCustomId;
     private String treeSelectMenuCustomId;
 
-    private final TreeRoot treeRoot;
     private final Snowflake userId;
 
-    public SelectMenuManager(TreeRoot treeRoot, Snowflake userId) {
-        this.treeRoot = treeRoot;
+    public SelectMenuManager(Snowflake userId, Node root) {
         this.userId = userId;
+
+        treeWalker = new TreeWalker(root);
         postConstruct();
     }
 
     private void postConstruct() {
-        treeWalker = new TreeWalker(treeRoot);
 
         updateLastUpdateTime();
     }

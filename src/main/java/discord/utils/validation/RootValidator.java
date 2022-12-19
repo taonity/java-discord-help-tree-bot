@@ -18,9 +18,13 @@ public class RootValidator {
     private final StringErrorMessageCollector messageCollector = new StringErrorMessageCollector();
     private final GatewayDiscordClient gateway;
 
+    public static StringErrorMessageCollector validate(Node root, GatewayDiscordClient gateway) {
+        return new RootValidator(root, gateway).validateRoot();
+    }
+
     public StringErrorMessageCollector validateRoot() {
         validateLabels();
-        validateLabels();
+        validateTargetIds();
         return messageCollector;
     }
 

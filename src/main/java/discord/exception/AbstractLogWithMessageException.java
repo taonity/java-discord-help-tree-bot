@@ -1,0 +1,11 @@
+package discord.exception;
+
+import discord.localisation.LogMessage;
+
+public abstract class AbstractLogWithMessageException extends RuntimeException {
+    private final static String MESSAGE_FORMAT = "%s\n%s";
+
+    public AbstractLogWithMessageException(LogMessage logMessage, String message) {
+        super(String.format(MESSAGE_FORMAT, logMessage.name(), message));
+    }
+}

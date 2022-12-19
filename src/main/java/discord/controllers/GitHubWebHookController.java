@@ -1,30 +1,23 @@
 package discord.controllers;
 
-import discord.dao.GithubWebhookEvent;
-import discord.exception.TreeRootValidationException;
-import discord.services.DialogNotificationService;
-import discord.tree.TreeRoot;
+import discord.dao.WebhookEvent;
+import discord.tree.TreeRootService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import static discord.services.GiteaApiService.HOOK_PATH;
 
 @RestController
 @RequiredArgsConstructor
 public class GitHubWebHookController {
 
-    private final TreeRoot treeRoot;
-    private final DialogNotificationService dialogNotificationService;
+    private final TreeRootService treeRootService;
 
-    @PostMapping(value = "/dialog-push")
+    @PostMapping(value = HOOK_PATH)
     @ResponseStatus(code = HttpStatus.OK)
-    public void webHook(@RequestBody GithubWebhookEvent event) {
-        final String githubSenderUserLogin = event.getSender().getLogin();
-        try {
-            treeRoot.updateRoot();
-            dialogNotificationService.sendNotification(githubSenderUserLogin, "Success");
-        } catch (TreeRootValidationException e) {
-            dialogNotificationService.sendNotification(githubSenderUserLogin, e.getMessage());
-        }
+    public void webHook(@RequestBody WebhookEvent event) {
+        treeRootService.updateRoot(event);
         System.out.println("It works!");
         System.out.println(event);
     }

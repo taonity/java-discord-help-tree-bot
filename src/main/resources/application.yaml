@@ -17,6 +17,8 @@ discord:
 
 
 server:
+  protocol: http
+  address: localhost
   port: 9015
 
 spring:
@@ -31,3 +33,10 @@ gitea:
   protocol: http
   address: localhost
   port: 3000
+  branch-name: main
+  failure-limit: 3
+  git:
+    username: d
+    password: d
+    email: d@d.d
+    repoPath: /Users/gener/OneDrive/Documents/gitea/

@@ -7,7 +7,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public enum ChannelRole {
-    LOG("log"),
+    LOG("logChannelId"),
     HELP("help");
 
     @Getter

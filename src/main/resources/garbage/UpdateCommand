@@ -1,7 +1,7 @@
 package garbage;
 
 import discord.model.GuildSettings;
-import discord.tree.TreeRoot;
+import discord.tree.TreeRootService;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class UpdateCommand extends SlashCommand {
     private static final Command command = QUESTION;
     public final GuildSettings guildSettings;
 
-    private final TreeRoot treeRoot;
+    private final TreeRoot treeRootService;
 
     @Override
     public boolean filter(ChatInputInteractionEvent event) {
@@ -40,7 +40,7 @@ public class UpdateCommand extends SlashCommand {
             return event.reply("You can not use this command.")
                     .withEphemeral(true);
         }
-        /*var errorMessage = treeRoot.updateRoot();
+        /*var errorMessage = treeRootService.updateRoot();
         if(errorMessage == null) {
             return event.reply("Success");
         } else {

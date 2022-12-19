@@ -9,7 +9,7 @@ import java.util.List;
 public class TestHelpTree {
     @Test
     public void getNextTextNodeListByText_metodReturnsRightValue() throws IOException {
-        TreeManager helpTree = new TreeManager(new TreeRoot("src/main/resources/help_tree.yaml"));
+        TreeManager helpTree = new TreeManager(new TreeRoot("src/main/resources/dialog-starter.yaml"));
         var actVal1 = helpTree.getNextTextNodeListByText("question1").toArray(new String[0]);
         var expVal1 = List.of("question2", "question7").toArray(new String[0]);
         assertArrayEquals(expVal1, actVal1);
@@ -28,7 +28,7 @@ public class TestHelpTree {
 
     @Test
     public void getNextTextNodeListByText_returnNullOnWrongText() throws IOException {
-        TreeManager helpTree = new TreeManager(new TreeRoot("src/main/resources/help_tree.yaml"));
+        TreeManager helpTree = new TreeManager(new TreeRoot("src/main/resources/dialog-starter.yaml"));
         var actList = helpTree.getNextTextNodeListByText("wrong_text");
         assertNull(actList);
     }
