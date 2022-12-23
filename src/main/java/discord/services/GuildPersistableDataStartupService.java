@@ -8,13 +8,10 @@ import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.Guild;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Configuration
@@ -39,11 +36,11 @@ public class GuildPersistableDataStartupService {
                 .collect(Collectors.toList());;
 
         guildSettingsList.stream()
-                .filter(guildSettings -> !discordGuildIdList.contains(guildSettings.getId()))
+                .filter(guildSettings -> !discordGuildIdList.contains(guildSettings.getGuildId()))
                 .forEach(guildPersistableDataService::remove);
 
         final var guildSettingsIdList = guildSettingsList.stream()
-                .map(GuildSettings::getId)
+                .map(GuildSettings::getGuildId)
                 .collect(Collectors.toList());
 
         discordGuildIdList.stream()

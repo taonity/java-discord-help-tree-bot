@@ -1,6 +1,7 @@
 package discord.handler.command;
 
 import discord.exception.EmptyOptionalException;
+import discord.exception.FailedToSearchRepoException;
 import discord.handler.EventPredicates;
 import discord.localisation.LogMessage;
 import discord.services.SelectMenuService;
@@ -53,5 +54,6 @@ public class QuestionCommand extends AbstractSlashCommand {
         event.reply(CHOOSE_LANGUAGE_MESSAGE.getMerged()).withComponents(
                 ActionRow.of(selectMenuManager.createLanguageSelectMenu())
         ).subscribe();
+
     }
 }

@@ -1,15 +1,11 @@
 package discord.services;
 
-import discord.exception.EmptyOptionalException;
-import discord.localisation.LogMessage;
 import discord.model.GuildSettings;
 import discord.repository.GuildSettingsRepository;
 import discord.structure.UserStatus;
 import discord.tree.TreeRootService;
 import discord.utils.SelectMenuManager;
 import discord4j.common.util.Snowflake;
-import discord4j.core.GatewayDiscordClient;
-import discord4j.core.object.entity.Guild;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +23,7 @@ public class SelectMenuService {
     @PostConstruct
     private void postConstruct() {
         StreamSupport.stream(guildSettingsRepository.findAll().spliterator(), true)
-                .map(GuildSettings::getId)
+                .map(GuildSettings::getGuildId)
                 .forEach(guildId -> selectMenuManagersMap.put(guildId, new ArrayList<>()));
     }
 

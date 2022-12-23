@@ -27,7 +27,7 @@ public class GuildDataService {
     @Transactional
     public void remove(String guildId) {
         final var guildSettings = guildSettingsRepository
-                .findGuildSettingById(guildId)
+                .findGuildSettingByGuildId(guildId)
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20054));
 
         guildPersistableDataService.remove(guildSettings);
@@ -46,7 +46,9 @@ public class GuildDataService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        treeRootService.makeAndSetRoot(guildId);
+        guildSettingsRepository.findGuildSettingByGuildId(guildId)
+                .ifPresentOrElse(treeRootService::makeAndSetRoot,
+                        () -> {throw new EmptyOptionalException(LogMessage.ALERT_20070);});
     }
 
     public void removeIfLeftInDiscord() {
@@ -59,7 +61,7 @@ public class GuildDataService {
                 .collect(Collectors.toList());
 
         StreamSupport.stream(guildSettingsRepository.findAll().spliterator(), true)
-                .map(GuildSettings::getId)
+                .map(GuildSettings::getGuildId)
                 .filter(guildId -> !discordGuildIdList.contains(guildId))
                 .forEach(this::remove);
     }

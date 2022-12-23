@@ -37,7 +37,7 @@ public class EventPredicates {
         return guildMono.blockOptional()
                 .map(Guild::getId)
                 .map(Snowflake::asString)
-                .map(guildSettingsRepository::findGuildSettingById)
+                .map(guildSettingsRepository::findGuildSettingByGuildId)
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20042))
                 .map(guildSettings -> guildSettings.getChannelId(channelRole))
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20044))
@@ -83,7 +83,7 @@ public class EventPredicates {
         return guildMono.blockOptional()
                 .map(Guild::getId)
                 .map(Snowflake::asString)
-                .map(guildSettingsRepository::findGuildSettingById)
+                .map(guildSettingsRepository::findGuildSettingByGuildId)
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20056))
                 .map(guildSettings -> guildSettings.getChannelId(channelRole))
                 .isPresent();

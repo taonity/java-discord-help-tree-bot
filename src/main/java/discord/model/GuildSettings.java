@@ -3,9 +3,7 @@ package discord.model;
 import discord.structure.ChannelRole;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -13,10 +11,12 @@ import javax.persistence.Id;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@SequenceGenerator(name = "default_generator", sequenceName = "guild_settings_seq", allocationSize = 1)
 public class GuildSettings {
     @Id
-    @Column(name = "guildId")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "default_generator")
+    private int id;
+    private String guildId;
     private String logChannelId;
     private String helpChannelId;
     private int giteaUserId;

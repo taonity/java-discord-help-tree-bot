@@ -9,7 +9,7 @@ import static discord.localisation.LocalizedMessage.TIP_MESSAGE;
 import static discord.localisation.SimpleMessage.*;
 
 public class EmbedBuilder {
-    public static final String LOG_ATTACHMENT_FILE_NAME = "file-name.png";
+    public static final String LOG_ATTACHMENT_FILE_NAME = "file-name.txt";
     public static final String LOG_ATTACHMENT_FILE_PATH = String.format("attachment://%s", LOG_ATTACHMENT_FILE_NAME);
 
     public static EmbedCreateSpec buildTipEmbed(String description) {

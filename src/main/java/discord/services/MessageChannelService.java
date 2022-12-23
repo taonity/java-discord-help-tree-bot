@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static java.util.Objects.isNull;
 
@@ -37,7 +36,7 @@ public class MessageChannelService {
             throw new NullObjectException(LogMessage.ALERT_20061);
         }
         return guildSettingsRepository
-                .findGuildSettingById(guild.getId().asString())
+                .findGuildSettingByGuildId(guild.getId().asString())
                 .map(channelSupplier)
                 .map(channelId -> getChannelByChannelId(guild, channelId))
                 .orElseThrow(() -> new EmptyOptionalException(logMessage));

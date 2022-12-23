@@ -5,15 +5,13 @@ import discord.exception.*;
 import discord.localisation.LogMessage;
 import discord.model.GuildSettings;
 import discord.repository.GuildSettingsRepository;
-import discord.structure.EmbedBuilder;
-import discord.structure.EmbedType;
 import discord.structure.NodeAndError;
 import discord.tree.Node;
+import discord.utils.AlphaNumericGenerator;
 import discord.utils.PassayPasswordGenerator;
 import discord.utils.ResourceFileLoader;
 import discord.utils.YamlStringToNodeConvertor;
 import discord.utils.validation.RootValidator;
-import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,9 +37,10 @@ public class GiteaUserService {
     private final GatewayDiscordClient gatewayDiscordClient;
     private final GitApiService gitApiService;
 
-    public void createUser(String guildId) {
-        final var userName = String.format(USER_NAME_FORMAT, guildId);
-        final var repoName = String.format(REPO_NAME_FORMAT, guildId);
+    public void createUser(int guildSettingsId) {
+        final var giteaUserAlphaNumeric = AlphaNumericGenerator.generateFourCharFromNumber(guildSettingsId);
+        final var userName = String.format(USER_NAME_FORMAT, giteaUserAlphaNumeric);
+        final var repoName = String.format(REPO_NAME_FORMAT, giteaUserAlphaNumeric);
         final var fileContent = ResourceFileLoader.loadFile(FILE_NAME);
 
         final var userId = createGiteaUser(userName);
@@ -49,11 +48,11 @@ public class GiteaUserService {
         createFile(userName, repoName, fileContent);
         giteaApiService.createHook(userName, repoName);
 
-        guildSettingsRepository.updateGiteaUserId(guildId, userId);
+        guildSettingsRepository.updateGiteaUserId(guildSettingsId, userId);
     }
 
     public EditUserOption resetPassword(String guildId) {
-        final var editUserOption = guildSettingsRepository.findGuildSettingById(guildId)
+        final var editUserOption = guildSettingsRepository.findGuildSettingByGuildId(guildId)
                 .map(GuildSettings::getGiteaUserId)
                 .map(giteaApiService::getUserByUid)
                 .map(giteaUser -> new EditUserOption(giteaUser.getUsername(), PassayPasswordGenerator.generate()))
@@ -65,7 +64,7 @@ public class GiteaUserService {
     }
 
     public void deleteUser(String guildId) {
-        final var giteaUserId = guildSettingsRepository.findGuildSettingById(guildId)
+        final var giteaUserId = guildSettingsRepository.findGuildSettingByGuildId(guildId)
                 .map(GuildSettings::getGiteaUserId)
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20030));
 
@@ -80,7 +79,7 @@ public class GiteaUserService {
         final var reposByUid = giteaApiService.getReposByUid(giteaUserId);
 
         if(!reposByUid.isOk()) {
-            throw new FailedToSearchRepoException(LogMessage.ALERT_20036);
+            throw new FailedToSearchRepoException(LogMessage.ALERT_20036, guildId);
         }
 
         reposByUid.getData()
@@ -92,9 +91,10 @@ public class GiteaUserService {
         giteaApiService.deleteUser(userName);
     }
 
-    public NodeAndError getDialogRoot(String guildId) {
-        final var userName = String.format(USER_NAME_FORMAT, guildId);
-        final var repoName = String.format(REPO_NAME_FORMAT, guildId);
+    public NodeAndError getDialogRoot(int guildSettingsId) {
+        final var giteaUserAlphaNumeric = AlphaNumericGenerator.generateFourCharFromNumber(guildSettingsId);
+        final var userName = String.format(USER_NAME_FORMAT, giteaUserAlphaNumeric);
+        final var repoName = String.format(REPO_NAME_FORMAT, giteaUserAlphaNumeric);
 
         final var commitList = giteaApiService.getCommits(userName, repoName, COMMIT_QUANTITY_TO_RETRIEVE);
 

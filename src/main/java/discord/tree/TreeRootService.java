@@ -10,7 +10,6 @@ import discord.services.MessageChannelService;
 import discord.structure.ChannelRole;
 import discord.structure.EmbedBuilder;
 import discord.structure.EmbedType;
-import discord.structure.NodeAndError;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import lombok.Getter;
@@ -22,8 +21,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static java.util.Objects.isNull;
@@ -44,20 +41,18 @@ public class TreeRootService {
     @PostConstruct
     private void postConstruct() {
         StreamSupport.stream(guildSettingsRepository.findAll().spliterator(), true)
-                .map(GuildSettings::getId)
                 .forEach(this::makeAndSetRoot);
     }
 
     public void updateRoot(WebhookEvent event) {
-        final var guildId = guildSettingsRepository
+        final var guildSettings = guildSettingsRepository
                 .findGuildSettingByGiteaUserId(event.getPusher().getId())
-                .map(GuildSettings::getId)
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20050));
 
-        final var firstCommitIsCorruptError = makeAndSetRoot(guildId);
+        final var firstCommitIsCorruptError = makeAndSetRoot(guildSettings);
 
         if(!isNull(firstCommitIsCorruptError)) {
-            gatewayDiscordClient.getGuildById(Snowflake.of(guildId))
+            gatewayDiscordClient.getGuildById(Snowflake.of(guildSettings.getGuildId()))
                     .blockOptional()
                     .map(guild -> messageChannelService.getChannel(guild, ChannelRole.LOG))
                     .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20017))
@@ -66,12 +61,12 @@ public class TreeRootService {
         }
     }
 
-    public String makeAndSetRoot(String guildId) {
-        final var dialogRootAndError = giteaUserService.getDialogRoot(guildId);
+    public String makeAndSetRoot(GuildSettings guildSettings) {
+        final var dialogRootAndError = giteaUserService.getDialogRoot(guildSettings.getId());
         final var root = dialogRootAndError.getNode();
 
         root.identifyNodes();
-        rootMap.put(guildId, root);
+        rootMap.put(guildSettings.getGuildId(), root);
         return dialogRootAndError.getErrorMessage();
     }
 

@@ -2,8 +2,8 @@ package discord.exception;
 
 import discord.localisation.LogMessage;
 
-public class FailedToLoadResourceFileException extends RuntimeException {
+public class FailedToLoadResourceFileException extends MainGuildAwareException {
     public FailedToLoadResourceFileException(LogMessage logMessage) {
-        super(logMessage.name());
+        super(logMessage);
     }
 }

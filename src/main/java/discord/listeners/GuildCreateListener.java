@@ -22,7 +22,7 @@ public class GuildCreateListener implements DiscordEventListener<GuildCreateEven
     public void handle(GuildCreateEvent event) {
         final var guildId = event.getGuild().getId().asString();
         final var guildIsNotPresent = guildSettingsRepository
-                .findGuildSettingById(guildId)
+                .findGuildSettingByGuildId(guildId)
                 .isEmpty();
 
         if(guildIsNotPresent) {

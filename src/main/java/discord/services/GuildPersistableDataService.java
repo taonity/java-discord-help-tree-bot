@@ -4,6 +4,7 @@ import discord.exception.EmptyOptionalException;
 import discord.localisation.LogMessage;
 import discord.model.GuildSettings;
 import discord.repository.GuildSettingsRepository;
+import discord.utils.AlphaNumericGenerator;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import lombok.RequiredArgsConstructor;
@@ -21,17 +22,17 @@ public class GuildPersistableDataService {
 
     @Transactional
     public void remove(GuildSettings guildSettings) {
-        giteaUserService.deleteUser(guildSettings.getId());
+        giteaUserService.deleteUser(guildSettings.getGuildId());
         guildSettingsRepository.delete(guildSettings);
     }
 
     @Transactional
     public void create(String guildId) {
         final var guildSettings = GuildSettings.builder()
-                .id(guildId)
+                .guildId(guildId)
                 .build();
-        guildSettingsRepository.save(guildSettings);
-        giteaUserService.createUser(guildId);
+        final var guildSettingsId = guildSettingsRepository.save(guildSettings).getId();
+        giteaUserService.createUser(guildSettingsId);
         gatewayDiscordClient.getGuildById(Snowflake.of(guildId)).blockOptional()
                 .ifPresentOrElse(
                         guildRoleService::createModeratorRole,
