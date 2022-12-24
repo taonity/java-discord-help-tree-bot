@@ -75,7 +75,6 @@ public class DialogCommand extends AbstractSlashCommand {
                 ),
                 EmbedType.SIMPLE_MESSAGE_EMBED_TYPE
         )).withEphemeral(true).subscribe();
-        throw new IllegalArgumentException();
 
     }
 }

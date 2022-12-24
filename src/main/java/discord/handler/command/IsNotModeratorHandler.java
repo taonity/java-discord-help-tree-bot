@@ -1,6 +1,7 @@
 package discord.handler.command;
 
 import discord.exception.EmptyOptionalException;
+import discord.exception.ModeratorRoleNotFoundException;
 import discord.handler.EventPredicates;
 import discord.localisation.LogMessage;
 import discord.localisation.SimpleMessage;
@@ -50,6 +51,9 @@ public class IsNotModeratorHandler extends AbstractSlashCommand {
 
     @Override
     public void handle(ChatInputInteractionEvent event) {
+        final var guildId = event.getInteraction().getGuildId()
+                .map(Snowflake::asString)
+                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20071));
 
         final var messageString = event.getInteraction().getGuild().blockOptional()
                 .map(Guild::getRoles)
@@ -62,8 +66,7 @@ public class IsNotModeratorHandler extends AbstractSlashCommand {
                 .findFirst()
                 .map(Role::getMention)
                 .map(mention -> String.format(SimpleMessage.MUST_BE_MODERATOR_MESSAGE_FORMAT.getMessage(), mention))
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20059));
-
+                .orElseThrow(() -> new ModeratorRoleNotFoundException(LogMessage.ALERT_20059, guildId));
 
         event.reply().withEmbeds(EmbedBuilder.buildSimpleMessage(
                 messageString,

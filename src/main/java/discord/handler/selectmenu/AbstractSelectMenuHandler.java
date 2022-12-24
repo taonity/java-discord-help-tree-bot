@@ -8,14 +8,17 @@ import discord4j.core.event.domain.interaction.SelectMenuInteractionEvent;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.SelectMenu;
 
+import java.util.Optional;
+
 public abstract class AbstractSelectMenuHandler implements DiscordEventHandler<SelectMenuInteractionEvent> {
 
-    private ActionRow disableEventSelectMenuWithDefaultValue(SelectMenuInteractionEvent event, String value) {
-        var message = event.getInteraction().getMessage()
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20005));
+    private Optional<ActionRow> disableEventSelectMenuWithDefaultValue(SelectMenuInteractionEvent event, String value) {
+        final var messageOpt = event.getInteraction().getMessage();
+        if(messageOpt.isEmpty()) {
+            return Optional.empty();
+        }
 
-
-        SelectMenu selectMenu = (SelectMenu) message.getComponents().get(0)
+        SelectMenu selectMenu = (SelectMenu) messageOpt.get().getComponents().get(0)
                 .getChildren().get(0);
         var defaultOption = selectMenu.getOptions()
                 .stream()
@@ -23,19 +26,19 @@ public abstract class AbstractSelectMenuHandler implements DiscordEventHandler<S
                 .findFirst()
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20006));
 
-
-        return ActionRow.of(
+        final var actionRow = ActionRow.of(
                 SelectMenu.of(
                         selectMenu.getCustomId(),
                         SelectMenu.Option.ofDefault(defaultOption.getLabel(), "null")
                 ).disabled()
         );
+
+        return Optional.of(actionRow);
     }
 
     public void disableAndEditCurrentSelectMenu(SelectMenuInteractionEvent event, String value) {
-        final var disabledSelectMenu = disableEventSelectMenuWithDefaultValue(event, value);
-
-        event.edit().withComponents(disabledSelectMenu).subscribe();
+        disableEventSelectMenuWithDefaultValue(event, value)
+                .ifPresent(disabledSelectMenu -> event.edit().withComponents(disabledSelectMenu).subscribe());
     }
 
     String getOptionValueFromEvent(SelectMenuInteractionEvent event) {

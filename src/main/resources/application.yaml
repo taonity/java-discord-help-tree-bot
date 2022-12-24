@@ -7,6 +7,7 @@ tree:
     config-name: dialog.yaml
 
 discord:
+  mainGuildId: 448934652992946176
   guildId: 448934652992946176
   channelId: 935576925773127710
   userWhiteList:

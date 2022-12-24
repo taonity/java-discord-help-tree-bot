@@ -1,6 +1,8 @@
 package discord.handler.message;
 
+import discord.exception.EmptyOptionalException;
 import discord.handler.EventPredicates;
+import discord.localisation.LogMessage;
 import discord.structure.EmbedBuilder;
 import discord.utils.Notificator;
 import discord.structure.ChannelRole;
@@ -41,7 +43,9 @@ public class SendTipOnPeriodicalMessageHandler implements MessageHandler {
     @Override
     public void handle(MessageCreateEvent event) {
         final var embed = EmbedBuilder.buildTipEmbed(notificator.getNotificationText());
-        final var helpChannel = channelService.getChannel(event.getGuild().block(), ChannelRole.HELP);
+        final var guild = event.getGuild().blockOptional()
+                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20072));
+        final var helpChannel = channelService.getChannel(guild, ChannelRole.HELP);
 
         helpChannel.createMessage(embed).subscribe();
     }

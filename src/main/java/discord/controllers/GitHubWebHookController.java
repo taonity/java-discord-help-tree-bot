@@ -17,9 +17,9 @@ public class GitHubWebHookController {
     @PostMapping(value = HOOK_PATH)
     @ResponseStatus(code = HttpStatus.OK)
     public void webHook(@RequestBody WebhookEvent event) {
+
         treeRootService.updateRoot(event);
-        System.out.println("It works!");
-        System.out.println(event);
+
     }
 
 }

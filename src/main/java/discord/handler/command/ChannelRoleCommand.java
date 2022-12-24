@@ -1,6 +1,7 @@
 package discord.handler.command;
 
 import discord.exception.EmptyOptionalException;
+import discord.exception.FailedToSearchRepoException;
 import discord.handler.EventPredicates;
 import discord.localisation.LogMessage;
 import discord.model.GuildSettings;
@@ -9,6 +10,7 @@ import discord.structure.ChannelRole;
 import discord.structure.CommandName;
 import discord.structure.EmbedBuilder;
 import discord.structure.EmbedType;
+import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;

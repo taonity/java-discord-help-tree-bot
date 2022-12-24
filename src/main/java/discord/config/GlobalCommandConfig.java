@@ -1,5 +1,7 @@
 package discord.config;
 
+import discord.exception.EmptyOptionalException;
+import discord.localisation.LogMessage;
 import discord4j.common.JacksonResources;
 import discord4j.discordjson.json.ApplicationCommandRequest;
 import discord4j.rest.RestClient;
@@ -37,7 +39,8 @@ public class GlobalCommandConfig implements ApplicationRunner {
         // Convenience variables for the sake of easier to read code below.
         PathMatchingResourcePatternResolver matcher = new PathMatchingResourcePatternResolver();
         final ApplicationService applicationService = client.getApplicationService();
-        final long applicationId = client.getApplicationId().block();
+        final long applicationId = client.getApplicationId().blockOptional()
+                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20063));
 
         //Get our commands json from resources as command data
         List<ApplicationCommandRequest> commands = new ArrayList<>();

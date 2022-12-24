@@ -62,6 +62,7 @@ public class RespondOnQuestionHandler implements MessageHandler {
                 .createMessage(
                 MessageCreateSpec.builder()
                         .messageReference(event.getMessage().getId())
+                        // TODO: maybe add client log
                         .content(targetUser.getMention())
                         .build()
         ).subscribe();

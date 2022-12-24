@@ -21,17 +21,6 @@ public class EmbedBuilder {
                 .build();
     }
 
-    public static EmbedCreateSpec buildLogEmbed(String description, EmbedType embedType) {
-        return EmbedCreateSpec.builder()
-                .color(embedType.getColor())
-                .title(embedType.getSimpleMessage().getMessage())
-                .description(description)
-                .image(LOG_ATTACHMENT_FILE_PATH)
-                .timestamp(Instant.now())
-                .footer(LOG_FOOTER_MESSAGE.getMessage(), "")
-                .build();
-    }
-
     public static EmbedCreateSpec buildMessageEmbed(String description, EmbedType embedType) {
         return EmbedCreateSpec.builder()
                 .color(embedType.getColor())
