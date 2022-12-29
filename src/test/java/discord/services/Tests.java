@@ -182,4 +182,12 @@ public class Tests {
         System.out.println(Snowflake.of("383277523561086979").asLong());
         long[] numbers = hashids.decode(id);
     }
+
+    @Test
+    public void exception() {
+        final var e1 = new IllegalArgumentException("bruh");
+        final var e2 = new IllegalArgumentException("test", e1);
+        final var e3 = new IllegalArgumentException("test", e2);
+        e3.printStackTrace();
+    }
 }

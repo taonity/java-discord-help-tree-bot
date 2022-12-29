@@ -20,6 +20,7 @@ public class GuildSettings {
     private String logChannelId;
     private String helpChannelId;
     private int giteaUserId;
+    private String giteaUserAlphanumeric;
 
     public String getChannelId(ChannelRole channelRole) {
         switch (channelRole) {

@@ -2,8 +2,8 @@ package discord.exception;
 
 import discord.localisation.LogMessage;
 
-public class GiteaApiException extends AbstractLogWithMessageException {
+public class GiteaApiException extends Exception {
     public GiteaApiException(LogMessage logMessage, String message) {
-        super(logMessage, message);
+        super(ExceptionUtils.fromLogWithMessage(logMessage, message));
     }
 }

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -37,7 +38,7 @@ public class GiteaUserService {
     private final GatewayDiscordClient gatewayDiscordClient;
     private final GitApiService gitApiService;
 
-    public void createUser(int guildSettingsId) {
+    public void createUser(int guildSettingsId) throws GiteaApiException {
         final var giteaUserAlphaNumeric = AlphaNumericGenerator.generateFourCharFromNumber(guildSettingsId);
         final var userName = String.format(USER_NAME_FORMAT, giteaUserAlphaNumeric);
         final var repoName = String.format(REPO_NAME_FORMAT, giteaUserAlphaNumeric);
@@ -48,33 +49,27 @@ public class GiteaUserService {
         createFile(userName, repoName, fileContent);
         giteaApiService.createHook(userName, repoName);
 
-        guildSettingsRepository.updateGiteaUserId(guildSettingsId, userId);
+        guildSettingsRepository.updateGiteaUser(guildSettingsId, userId, giteaUserAlphaNumeric);
     }
 
-    public EditUserOption resetPassword(String guildId) {
-        final var editUserOption = guildSettingsRepository.findGuildSettingByGuildId(guildId)
+    public EditUserOption resetPassword(String guildId) throws GiteaApiException {
+        final var giteaUseID = guildSettingsRepository.findGuildSettingByGuildId(guildId)
                 .map(GuildSettings::getGiteaUserId)
-                .map(giteaApiService::getUserByUid)
-                .map(giteaUser -> new EditUserOption(giteaUser.getUsername(), PassayPasswordGenerator.generate()))
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20069));
 
-        giteaApiService.editUser(editUserOption);
+        final var giteaUserName = giteaApiService.getUserByUid(giteaUseID).getUsername();
+        final var giteaUserOption = new EditUserOption(giteaUserName, PassayPasswordGenerator.generate());
 
-        return editUserOption;
+        giteaApiService.editUser(giteaUserOption);
+        return giteaUserOption;
     }
 
-    public void deleteUser(String guildId) {
+    public void deleteUser(String guildId) throws GiteaApiException {
         final var giteaUserId = guildSettingsRepository.findGuildSettingByGuildId(guildId)
                 .map(GuildSettings::getGiteaUserId)
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20030));
 
-        final var userName = giteaApiService
-                .getUsers()
-                .stream()
-                .filter(user -> user.getId() == giteaUserId)
-                .map(GiteaUser::getUsername)
-                .findFirst()
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20032));
+        final var userName = giteaApiService.getUserByUid(giteaUserId).getUsername();
 
         final var reposByUid = giteaApiService.getReposByUid(giteaUserId);
 
@@ -82,17 +77,22 @@ public class GiteaUserService {
             throw new FailedToSearchRepoException(LogMessage.ALERT_20036, guildId);
         }
 
-        reposByUid.getData()
+        final var repoNameList = reposByUid.getData()
                 .stream()
                 .filter(repo -> repo.getOwner().getId() == giteaUserId)
                 .map(Repo::getName)
-                .forEach(repoName -> giteaApiService.deleteRepo(userName, repoName));
+                .collect(Collectors.toList());
+
+        // TODO: Need a way to throw checked exception in forEach
+        for(final var repoName: repoNameList) {
+            giteaApiService.deleteRepo(userName, repoName);
+        }
 
         giteaApiService.deleteUser(userName);
     }
 
-    public NodeAndError getDialogRoot(int guildSettingsId) {
-        final var giteaUserAlphaNumeric = AlphaNumericGenerator.generateFourCharFromNumber(guildSettingsId);
+    public NodeAndError getDialogRoot(GuildSettings guildSettings) throws GiteaApiException {
+        final var giteaUserAlphaNumeric = AlphaNumericGenerator.generateFourCharFromNumber(guildSettings.getId());
         final var userName = String.format(USER_NAME_FORMAT, giteaUserAlphaNumeric);
         final var repoName = String.format(REPO_NAME_FORMAT, giteaUserAlphaNumeric);
 
@@ -119,7 +119,7 @@ public class GiteaUserService {
 
         final var nodeOpt = searchForValidNode(commitIterator, userName, repoName);
         if(nodeOpt.isEmpty()) {
-            gitApiService.squashCommits(userName, repoName, FAILURE_TREE_BUILDING_ATTEMPTS_LIMIT);
+            gitApiService.squashCommits(userName, repoName, FAILURE_TREE_BUILDING_ATTEMPTS_LIMIT, guildSettings.getGuildId());
 
             return searchForValidNode(commitIterator, userName, repoName)
                     .map(nodeAndErrorBuilder::node)
@@ -131,7 +131,7 @@ public class GiteaUserService {
 
     }
 
-    private Optional<Node> searchForValidNode(Iterator<RepoCommit> commitIterator, String userName, String repoName) {
+    private Optional<Node> searchForValidNode(Iterator<RepoCommit> commitIterator, String userName, String repoName) throws GiteaApiException {
         for (var i = 0; (i < COMMIT_QUANTITY_IN_BUNCH) && commitIterator.hasNext(); i++) {
             try {
                 return Optional.of(getRootFromByCommit(commitIterator.next(), userName, repoName));
@@ -142,7 +142,7 @@ public class GiteaUserService {
         return Optional.empty();
     }
 
-    private Node getRootFromByCommit(RepoCommit commit, String userName, String repoName) {
+    private Node getRootFromByCommit(RepoCommit commit, String userName, String repoName) throws GiteaApiException {
         final var yamlFile = giteaApiService.getFile(userName, repoName, FILE_NAME, commit.getSha());
         final var node = YamlStringToNodeConvertor.convert(yamlFile.getContentAsString());
         final var messageCollector = RootValidator.validate(node, gatewayDiscordClient);
@@ -154,19 +154,19 @@ public class GiteaUserService {
         }
     }
 
-    private Integer createGiteaUser(String userName) {
+    private Integer createGiteaUser(String userName) throws GiteaApiException {
         final var email = String.format(EMAIL_FORMAT, userName);
         final var password = PassayPasswordGenerator.generate();
         final var user = new CreateUserOption(userName, password, email);
         return giteaApiService.createUser(user).getId();
     }
 
-    private void createGiteaRepo(String userName, String repoName) {
+    private void createGiteaRepo(String userName, String repoName) throws GiteaApiException {
         final var repo = new CreateRepoOption(repoName);
         giteaApiService.createRepository(userName, repo);
     }
 
-    private void createFile(String userName, String repoName, String content) {
+    private void createFile(String userName, String repoName, String content) throws GiteaApiException {
         final var file = new CreateFileOption(content);
         giteaApiService.createFile(userName, repoName, FILE_NAME, file);
     }

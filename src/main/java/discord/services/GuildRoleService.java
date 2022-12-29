@@ -1,5 +1,6 @@
 package discord.services;
 
+import discord.exception.EmptyOptionalException;
 import discord.exception.NullObjectException;
 import discord.localisation.LogMessage;
 import discord4j.core.GatewayDiscordClient;
@@ -22,11 +23,8 @@ public class GuildRoleService {
         final var roleList = guild.getRoles()
                 .filter(role -> role.getName().equals(ROLE_NAME))
                 .collectList()
-                .block();
-
-        if(isNull(roleList)) {
-            throw new NullObjectException(LogMessage.ALERT_20052);
-        }
+                .blockOptional()
+                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20052));
 
         if(roleList.isEmpty()) {
             guild.createRole(RoleCreateSpec.builder()

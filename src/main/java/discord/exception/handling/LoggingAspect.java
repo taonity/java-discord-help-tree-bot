@@ -1,10 +1,9 @@
 package discord.exception.handling;
 
-import discord.exception.ClientGuildAwareException;
-import discord.exception.EmptyOptionalException;
-import discord.exception.LogMessageException;
-import discord.exception.MainGuildAwareException;
+import discord.exception.*;
 import discord.localisation.LogMessage;
+import discord.model.GuildSettings;
+import discord.repository.GuildSettingsRepository;
 import discord.services.MessageChannelService;
 import discord.structure.ChannelRole;
 import discord.structure.EmbedBuilder;
@@ -22,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 import static discord.structure.EmbedBuilder.LOG_ATTACHMENT_FILE_NAME;
 
@@ -35,17 +35,33 @@ public class LoggingAspect {
 
     private final GatewayDiscordClient gatewayDiscordClient;
     private final MessageChannelService messageChannelService;
+    private final GuildSettingsRepository guildSettingsRepository;
+
 
     @AfterThrowing(value = "(execution(* discord..*..*(..)))", throwing = "exception")
     public void logForClientGuild(ClientGuildAwareException exception) {
-        logException(exception, exception.getGuildId());
-        System.out.println("1");
+        final var guildId = exception.getGuildId();
+
+        getLogChannelId(exception, guildId)
+                .ifPresent(guildSettings -> logException(exception, guildId));
+
     }
 
     @AfterThrowing(value = "(execution(* discord..*..*(..)))", throwing = "exception")
     public void logForMainGuild(MainGuildAwareException exception) {
-        logException(exception, mainGuildId);
-        System.out.println("2");
+        getLogChannelId(exception, mainGuildId)
+                .ifPresentOrElse(
+                        guildSettings -> logException(exception, mainGuildId),
+                        () -> {throw new AspectEmptyOptionalException(LogMessage.ALERT_20076, exception);}
+                );
+
+    }
+
+    private Optional<String> getLogChannelId(LogMessageException exception, String guildId) {
+        final var logChannelId = guildSettingsRepository.findGuildSettingByGuildId(guildId)
+                .map(GuildSettings::getLogChannelId)
+                .orElseThrow(() -> new AspectEmptyOptionalException(LogMessage.ALERT_20074, exception));
+        return Optional.ofNullable(logChannelId);
     }
 
     private void logException(LogMessageException exception, String guildId) {
@@ -61,7 +77,7 @@ public class LoggingAspect {
 
         gatewayDiscordClient.getGuildById(Snowflake.of(guildId)).blockOptional()
                 .map(guild -> messageChannelService.getChannel(guild, ChannelRole.LOG))
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20045))
+                .orElseThrow(() -> new AspectEmptyOptionalException(LogMessage.ALERT_20045, exception))
                 .createMessage(messageSpecs)
                 .block();
     }

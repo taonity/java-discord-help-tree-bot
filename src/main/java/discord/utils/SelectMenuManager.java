@@ -43,7 +43,7 @@ public class SelectMenuManager {
     }
 
     public SelectMenu createLanguageSelectMenu() {
-        var selectMenu = selectMenuFactory.createLanguageSelectMenu();
+        final var selectMenu = selectMenuFactory.createLanguageSelectMenu();
         languageSelectMenuCustomId = selectMenu.getCustomId();
         return selectMenu;
     }

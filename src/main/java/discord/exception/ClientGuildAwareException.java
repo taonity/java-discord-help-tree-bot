@@ -11,4 +11,9 @@ public abstract class ClientGuildAwareException extends LogMessageException {
         super(logMessage);
         this.guildId = guildId;
     }
+
+    public ClientGuildAwareException(LogMessage logMessage, String guildId, Throwable cause) {
+        super(logMessage, cause);
+        this.guildId = guildId;
+    }
 }

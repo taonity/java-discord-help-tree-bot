@@ -1,7 +1,7 @@
 package discord.services;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
+import discord.exception.FailedToRemoveGitApiWorkingDirException;
 import discord.exception.FailedToSquashCommitsException;
 import discord.exception.NoCommitsException;
 import discord.localisation.LogMessage;
@@ -9,8 +9,6 @@ import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,10 +17,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static java.util.Optional.ofNullable;
 
@@ -51,7 +46,7 @@ public class GitApiService {
     @Value("${gitea.git.repo-path}")
     private String reposPath;
 
-    public void squashCommits(String userName, String repoName, int commitQuantity) {
+    public void squashCommits(String userName, String repoName, int commitQuantity, String guildId) {
         final var repoDir = String.format(REPO_FOLDER_FORMAT, reposPath, repoName);
         final var repoUri = String.format(gitUriFormat, userName, repoName);
         final var branchRef = String.format(REFS_HEADS_PATH_FORMAT, branchName);
@@ -95,7 +90,7 @@ public class GitApiService {
                     ).call();
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();
-            throw new FailedToSquashCommitsException(LogMessage.ALERT_20033);
+            throw new FailedToSquashCommitsException(LogMessage.ALERT_20033, guildId);
         } finally {
             removeExistingRepoDir(repoDir);
         }
@@ -108,7 +103,7 @@ public class GitApiService {
                 FileUtils.deleteDirectory(new File(repoDir));
             } catch (IOException e) {
                 e.printStackTrace();
-                throw new FailedToSquashCommitsException(LogMessage.ALERT_20031);
+                throw new FailedToRemoveGitApiWorkingDirException(LogMessage.ALERT_20031);
             }
         }
     }

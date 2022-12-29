@@ -22,6 +22,7 @@ public class GuildPersistableDataStartupService {
     private final GuildPersistableDataService guildPersistableDataService;
     private final GuildSettingsRepository guildSettingsRepository;
 
+    // TODO: is there a way to do it with proper way?
     @Bean
     public void updatePersistableData() {
         final var discordGuildIdList = gatewayDiscordClient.getGuilds().cache().collectList()

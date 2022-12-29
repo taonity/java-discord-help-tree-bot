@@ -14,10 +14,10 @@ public class GitHubWebHookController {
 
     private final TreeRootService treeRootService;
 
-    @PostMapping(value = HOOK_PATH)
+    @PostMapping(value = "/dialog-push")
     @ResponseStatus(code = HttpStatus.OK)
     public void webHook(@RequestBody WebhookEvent event) {
-
+        System.out.println("bruh");
         treeRootService.updateRoot(event);
 
     }

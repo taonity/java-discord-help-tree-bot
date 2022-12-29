@@ -71,7 +71,7 @@ public class IsNotModeratorHandler extends AbstractSlashCommand {
         event.reply().withEmbeds(EmbedBuilder.buildSimpleMessage(
                 messageString,
                 EmbedType.SIMPLE_MESSAGE_EMBED_TYPE
-        )).subscribe();
+        )).withEphemeral(true).subscribe();
 
     }
 }

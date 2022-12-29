@@ -17,8 +17,8 @@ public interface GuildSettingsRepository extends CrudRepository<GuildSettings, S
     void updateHelpChannelId(String guildId, String helpChannelId);
 
     @Modifying
-    @Query("update GuildSettings g set g.giteaUserId = ?2 where g.id = ?1")
-    void updateGiteaUserId(int id, int giteaUserId);
+    @Query("update GuildSettings g set g.giteaUserId = ?2, g.giteaUserAlphanumeric = ?3 where g.id = ?1")
+    void updateGiteaUser(int id, int giteaUserId, String giteaUserAlphanumeric);
 
     Optional<GuildSettings> findGuildSettingByGuildId(String guildId);
     Optional<GuildSettings> findGuildSettingByGiteaUserId(int giteaUserId);

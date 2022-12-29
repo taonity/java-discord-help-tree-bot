@@ -1,6 +1,9 @@
 package discord.services;
 
+import discord.exception.CorruptGiteaUserException;
 import discord.exception.EmptyOptionalException;
+import discord.exception.GiteaApiException;
+import discord.exception.MainInterruptedException;
 import discord.localisation.LogMessage;
 import discord.model.GuildSettings;
 import discord.repository.GuildSettingsRepository;
@@ -22,7 +25,11 @@ public class GuildPersistableDataService {
 
     @Transactional
     public void remove(GuildSettings guildSettings) {
-        giteaUserService.deleteUser(guildSettings.getGuildId());
+        try {
+            giteaUserService.deleteUser(guildSettings.getGuildId());
+        } catch (GiteaApiException e) {
+            throw new CorruptGiteaUserException(LogMessage.ALERT_20001, guildSettings.getGuildId(), e);
+        }
         guildSettingsRepository.delete(guildSettings);
     }
 
@@ -32,7 +39,17 @@ public class GuildPersistableDataService {
                 .guildId(guildId)
                 .build();
         final var guildSettingsId = guildSettingsRepository.save(guildSettings).getId();
-        giteaUserService.createUser(guildSettingsId);
+        try {
+            giteaUserService.createUser(guildSettingsId);
+        } catch (GiteaApiException e) {
+            throw new CorruptGiteaUserException(LogMessage.ALERT_20032, guildId, e);
+        }
+        try {
+            // TODO: For some reason a delay should be applied between gitea account creation and commits retrieving
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new MainInterruptedException(LogMessage.ALERT_20077, guildId, e);
+        }
         gatewayDiscordClient.getGuildById(Snowflake.of(guildId)).blockOptional()
                 .ifPresentOrElse(
                         guildRoleService::createModeratorRole,

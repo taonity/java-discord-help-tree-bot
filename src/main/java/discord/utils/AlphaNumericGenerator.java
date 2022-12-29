@@ -1,5 +1,8 @@
 package discord.utils;
 
+import discord.exception.AlphaNumericMaxNumberReachedException;
+import discord.localisation.LogMessage;
+
 public class AlphaNumericGenerator {
     private final static String CHARACTERS_STRING = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private final static int CHARACTERS_LENGTH = CHARACTERS_STRING.length();
@@ -30,7 +33,7 @@ public class AlphaNumericGenerator {
 
     public static String generateFourCharFromNumber(int number) {
         if(number > MAX_NUMBER || number < 0) {
-            throw new IllegalArgumentException();
+            throw new AlphaNumericMaxNumberReachedException(LogMessage.ALERT_20079);
         }
         return numberToAlphaNumeric(number + NUMBER_AREA);
     }

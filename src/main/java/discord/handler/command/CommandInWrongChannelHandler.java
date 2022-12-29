@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 public class CommandInWrongChannelHandler extends AbstractSlashCommand {
 
     @Getter
-    private final CommandName command = CommandName.ANY;
+    private final CommandName command = CommandName.QUESTION;
 
     private final EventPredicates eventPredicates;
     private final MessageChannelService messageChannelService;
@@ -50,7 +50,7 @@ public class CommandInWrongChannelHandler extends AbstractSlashCommand {
         event.reply().withEmbeds(EmbedBuilder.buildSimpleMessage(
                 messageString,
                 EmbedType.SIMPLE_MESSAGE_EMBED_TYPE
-        )).subscribe();
+        )).withEphemeral(true).subscribe();
 
     }
 }

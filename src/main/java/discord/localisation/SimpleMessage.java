@@ -15,10 +15,9 @@ public enum SimpleMessage {
     FAIL_CHANNEL_UPDATE_MESSAGE("Argument is empty"),
     SUCCESS_DIALOG_UPDATE_MESSAGE("Dialog was successfully updated"),
     FAIL_DIALOG_UPDATE_MESSAGE("Failed to update dialog"),
-    NO_HELP_CHANNEL_MESSAGE(String.format(
-            "There is no `help` channel. Please, write `/%s help` in desired channel to use `/%s` there.",
-            CommandName.CHANNELROLE.getCommandName(),
-            CommandName.QUESTION.getCommandName()
+    NO_CHANNEL_MESSAGE(String.format(
+            "There is no `help` or/and `log` channel. Please, write `/%s` in desired channel to make it `log` or `help` channel",
+            CommandName.CHANNELROLE.getCommandName()
     )),
     COMMAND_IN_WRONG_CHANNEL_MESSAGE_FORMAT("Please, write the command in %s channel"),
     MUST_BE_MODERATOR_MESSAGE_FORMAT("You must have %s role to run this command"),

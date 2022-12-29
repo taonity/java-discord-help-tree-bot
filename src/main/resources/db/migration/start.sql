@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS guild_settings (
 	log_channel_id      varchar NULL,
 	help_channel_id     varchar NULL,
 	gitea_user_id       int4 NULL,
+	gitea_user_alphanumeric varchar NULL,
 
 	CONSTRAINT guild_settings_pk PRIMARY KEY (id)
 );

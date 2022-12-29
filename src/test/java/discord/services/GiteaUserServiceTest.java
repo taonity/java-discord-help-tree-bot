@@ -1,6 +1,7 @@
 package discord.services;
 
 import discord.config.PropertyConfig;
+import discord.exception.GiteaApiException;
 import discord.model.GuildSettings;
 import discord.repository.GuildSettingsRepository;
 import discord4j.core.GatewayDiscordClient;
@@ -44,14 +45,14 @@ public class GiteaUserServiceTest {
     MessageChannelService messageChannelService;
 
     @Test
-    public void testCreateUser() {
+    public void testCreateUser() throws GiteaApiException {
         giteaUserService.createUser(100);
     }
 
     @Test
-    public void testDeleteUser() {
+    public void testDeleteUser() throws GiteaApiException {
         String guildId = "448934652992946176";
-        int giteaUserId = 34;
+        int giteaUserId = 38;
         var guildSetting = GuildSettings.builder()
                 .guildId(guildId)
                 .giteaUserId(giteaUserId)
@@ -65,7 +66,7 @@ public class GiteaUserServiceTest {
     public void aaa() {
         when(gatewayDiscordClient.getUserById(any())).thenReturn(Mono.empty());
         //when(messageChannelService.getChannel(ChannelRole.LOG).createMessage(any(MessageCreateSpec.class))).thenReturn(Mono.empty());
-        System.out.println(giteaUserService.getDialogRoot(3));
+        //System.out.println(giteaUserService.getDialogRoot(3));
 
     }
 

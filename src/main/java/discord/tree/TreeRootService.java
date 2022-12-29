@@ -1,7 +1,9 @@
 package discord.tree;
 
 import discord.dao.WebhookEvent;
+import discord.exception.CorruptGiteaUserException;
 import discord.exception.EmptyOptionalException;
+import discord.exception.GiteaApiException;
 import discord.localisation.LogMessage;
 import discord.model.GuildSettings;
 import discord.repository.GuildSettingsRepository;
@@ -10,8 +12,10 @@ import discord.services.MessageChannelService;
 import discord.structure.ChannelRole;
 import discord.structure.EmbedBuilder;
 import discord.structure.EmbedType;
+import discord.structure.NodeAndError;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
+import discord4j.core.spec.EmbedCreateSpec;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +25,11 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.StreamSupport;
 
+import static discord.structure.EmbedType.SUCCESS_DIALOG_EMBED_TYPE;
+import static discord.structure.EmbedType.WRONG_DIALOG_EMBED_TYPE;
 import static java.util.Objects.isNull;
 
 @Slf4j
@@ -46,23 +53,30 @@ public class TreeRootService {
 
     public void updateRoot(WebhookEvent event) {
         final var guildSettings = guildSettingsRepository
-                .findGuildSettingByGiteaUserId(event.getPusher().getId())
+                .findGuildSettingByGiteaUserId(event.getRepository().getOwner().getId())
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20050));
 
         final var firstCommitIsCorruptError = makeAndSetRoot(guildSettings);
 
-        if(!isNull(firstCommitIsCorruptError)) {
-            gatewayDiscordClient.getGuildById(Snowflake.of(guildSettings.getGuildId()))
-                    .blockOptional()
-                    .map(guild -> messageChannelService.getChannel(guild, ChannelRole.LOG))
-                    .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20017))
-                    .createMessage(EmbedBuilder.buildMessageEmbed(firstCommitIsCorruptError, EmbedType.WRONG_DIALOG_EMBED_TYPE))
-                    .subscribe();
-        }
+        final var embedCreateSpec = Optional.ofNullable(firstCommitIsCorruptError)
+                .map(message -> EmbedBuilder.buildMessageEmbed(message, WRONG_DIALOG_EMBED_TYPE))
+                .orElseGet(() -> EmbedBuilder.buildMessageEmbed("", SUCCESS_DIALOG_EMBED_TYPE));
+
+        gatewayDiscordClient.getGuildById(Snowflake.of(guildSettings.getGuildId()))
+                .blockOptional()
+                .map(guild -> messageChannelService.getChannel(guild, ChannelRole.LOG))
+                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20017))
+                .createMessage(embedCreateSpec)
+                .subscribe();
     }
 
     public String makeAndSetRoot(GuildSettings guildSettings) {
-        final var dialogRootAndError = giteaUserService.getDialogRoot(guildSettings.getId());
+        final NodeAndError dialogRootAndError;
+        try {
+            dialogRootAndError = giteaUserService.getDialogRoot(guildSettings);
+        } catch (GiteaApiException e) {
+            throw new CorruptGiteaUserException(LogMessage.ALERT_20002, guildSettings.getGuildId(), e);
+        }
         final var root = dialogRootAndError.getNode();
 
         root.identifyNodes();

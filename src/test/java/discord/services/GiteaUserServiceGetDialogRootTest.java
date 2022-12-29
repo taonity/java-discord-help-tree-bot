@@ -67,12 +67,12 @@ public class GiteaUserServiceGetDialogRootTest {
                 CommitState.VALID
         ));
 
-        System.out.println(giteaUserService.getDialogRoot(3));
+        //System.out.println(giteaUserService.getDialogRoot(3));
 
     }
 
     @Test
     public void aaa1() throws InterruptedException {
-        System.out.println(giteaUserService.getDialogRoot(3));
+        //System.out.println(giteaUserService.getDialogRoot(3));
     }
 }

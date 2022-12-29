@@ -89,6 +89,12 @@ public class EventPredicates {
                 .isPresent();
     }
 
+    public boolean filterIfChannelsExistInSettings(InteractionCreateEvent event) {
+        final var helpChannelExists = filterIfChannelExistsInSettings(event, ChannelRole.HELP);
+        final var logChannelExists = filterIfChannelExistsInSettings(event, ChannelRole.LOG);
+        return helpChannelExists && logChannelExists;
+    }
+
     public boolean filterIfChannelExistsInSettings(InteractionCreateEvent event, ChannelRole channelRole) {
         return filterIfChannelExistsInSettings(event.getInteraction().getGuild(), channelRole);
     }

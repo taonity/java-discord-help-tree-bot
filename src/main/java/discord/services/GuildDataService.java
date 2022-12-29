@@ -41,11 +41,6 @@ public class GuildDataService {
         guildPersistableDataService.create(guildId);
 
         selectMenuService.createSmManagerList(guildId);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         guildSettingsRepository.findGuildSettingByGuildId(guildId)
                 .ifPresentOrElse(treeRootService::makeAndSetRoot,
                         () -> {throw new EmptyOptionalException(LogMessage.ALERT_20070);});

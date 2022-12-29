@@ -20,6 +20,7 @@ public class SelectMenuService {
     private final TreeRootService treeRootService;
     private final GuildSettingsRepository guildSettingsRepository;
 
+    // TODO: maybe it is worth to ban @PostConstruct?
     @PostConstruct
     private void postConstruct() {
         StreamSupport.stream(guildSettingsRepository.findAll().spliterator(), true)
@@ -63,7 +64,7 @@ public class SelectMenuService {
         selectMenuManagerList.removeIf(SelectMenuManager::isDead);
         selectMenuManagerList.removeIf(manager -> authorId.equals(manager.getUserId()));
 
-        var selectMenuManager = new SelectMenuManager(authorId, treeRootService.getRootByGuildId(guildId));
+        final var selectMenuManager = new SelectMenuManager(authorId, treeRootService.getRootByGuildId(guildId));
         selectMenuManagerList.add(selectMenuManager);
         return selectMenuManager;
     }

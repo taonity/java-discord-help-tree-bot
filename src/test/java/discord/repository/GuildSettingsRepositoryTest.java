@@ -30,7 +30,7 @@ class GuildSettingsRepositoryTest {
     @Test
     void t() {
         //guildSettingsRepository.save(GuildSettings.builder().id(0).guildId("f").helpChannelId("ff").logChannelId("ff").build());
-        guildSettingsRepository.save(new GuildSettings(12,"dfd","fff", "ffdf", 11));
+        //guildSettingsRepository.save(new GuildSettings(12,"dfd","fff", "ffdf", 11));
 
     }
 }

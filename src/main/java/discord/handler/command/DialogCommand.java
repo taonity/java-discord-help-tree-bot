@@ -1,6 +1,9 @@
 package discord.handler.command;
 
+import discord.dao.gitea.api.EditUserOption;
+import discord.exception.CorruptGiteaUserException;
 import discord.exception.EmptyOptionalException;
+import discord.exception.GiteaApiException;
 import discord.handler.EventPredicates;
 import discord.localisation.LogMessage;
 import discord.localisation.SimpleMessage;
@@ -54,6 +57,7 @@ public class DialogCommand extends AbstractSlashCommand {
         return Stream.of(event)
                 .filter(eventPredicates::filterBot)
                 .filter(this::filterByCommand)
+                .filter(eventPredicates::filterIfChannelsExistInSettings)
                 .filter(eventPredicates::filterByModeratorRole)
                 .count() == 1;
     }
@@ -64,7 +68,12 @@ public class DialogCommand extends AbstractSlashCommand {
                 .map(Snowflake::asString)
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20037));
 
-        final var userEditOption = giteaUserService.resetPassword(guildId);
+        final EditUserOption userEditOption;
+        try {
+            userEditOption = giteaUserService.resetPassword(guildId);
+        } catch (GiteaApiException e) {
+            throw new CorruptGiteaUserException(LogMessage.ALERT_20053, guildId, e);
+        }
 
         event.reply().withEmbeds(EmbedBuilder.buildSimpleMessage(
                 SimpleMessage.GITEA_USER_CREDS_MESSAGE_FORMAT.format(
@@ -75,6 +84,5 @@ public class DialogCommand extends AbstractSlashCommand {
                 ),
                 EmbedType.SIMPLE_MESSAGE_EMBED_TYPE
         )).withEphemeral(true).subscribe();
-
     }
 }

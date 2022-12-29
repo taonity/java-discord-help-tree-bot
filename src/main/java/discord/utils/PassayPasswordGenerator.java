@@ -19,7 +19,6 @@ public class PassayPasswordGenerator {
         CharacterRule digitRule = new CharacterRule(digitChars);
         digitRule.setNumberOfCharacters(2);
 
-        return gen.generatePassword(6, lowerCaseRule,
-                upperCaseRule, digitRule);
+        return gen.generatePassword(6, lowerCaseRule, upperCaseRule, digitRule);
     }
 }

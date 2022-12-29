@@ -36,6 +36,7 @@ public class QuestionCommand extends AbstractSlashCommand {
         return Stream.of(event)
                 .filter(eventPredicates::filterBot)
                 .filter(this::filterByCommand)
+                .filter(eventPredicates::filterIfChannelsExistInSettings)
                 .filter(e -> eventPredicates.filterByChannelRole(e, ChannelRole.HELP))
                 .count() == 1;
     }

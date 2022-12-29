@@ -19,6 +19,6 @@ public class GitApiServiceTest {
 
     @Test
     public void squashCommits() {
-        gitApiService.squashCommits("user_448934652992946176", "repo_448934652992946176", 3);
+        //gitApiService.squashCommits("user_448934652992946176", "repo_448934652992946176", 3);
     }
 }

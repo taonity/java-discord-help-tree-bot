@@ -69,7 +69,7 @@ public class ChannelRoleCommand extends AbstractSlashCommand {
         } else {
             embedCreateSpec = EmbedBuilder.buildSimpleMessage(FAIL_CHANNEL_UPDATE_MESSAGE.getMessage(), EmbedType.SIMPLE_MESSAGE_EMBED_TYPE);
         }
-        event.reply().withEmbeds(embedCreateSpec).subscribe();
+        event.reply().withEmbeds(embedCreateSpec).withEphemeral(true).subscribe();
     }
 
     private Optional<ChannelRole> getChannelRoleFromEvent(ChatInputInteractionEvent event) {

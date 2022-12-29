@@ -2,6 +2,7 @@ package discord.utils;
 
 import com.google.common.collect.Iterables;
 import discord.config.PropertyConfig;
+import discord.exception.FailedToRemoveGitApiWorkingDirException;
 import discord.exception.FailedToSquashCommitsException;
 import discord.exception.NoCommitsException;
 import discord.localisation.LogMessage;
@@ -69,8 +70,7 @@ public class GitTestManager {
             try {
                 FileUtils.deleteDirectory(new File(repoDir));
             } catch (IOException e) {
-                e.printStackTrace();
-                throw new FailedToSquashCommitsException(LogMessage.ALERT_20031);
+                throw new FailedToRemoveGitApiWorkingDirException(LogMessage.ALERT_20031);
             }
         }
     }
@@ -155,7 +155,7 @@ public class GitTestManager {
 
         } catch (GitAPIException | URISyntaxException e) {
             e.printStackTrace();
-            throw new FailedToSquashCommitsException(LogMessage.ALERT_20033);
+            throw new FailedToRemoveGitApiWorkingDirException(LogMessage.ALERT_20033);
         } finally {
             removeExistingRepoDir(repoDir);
         }
