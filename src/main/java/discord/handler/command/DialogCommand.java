@@ -1,6 +1,6 @@
 package discord.handler.command;
 
-import discord.dao.gitea.api.EditUserOption;
+import discord.dto.gitea.api.EditUserOption;
 import discord.exception.CorruptGiteaUserException;
 import discord.exception.EmptyOptionalException;
 import discord.exception.GiteaApiException;

@@ -1,6 +1,6 @@
 package discord.tree;
 
-import discord.dao.WebhookEvent;
+import discord.dto.WebhookEvent;
 import discord.exception.CorruptGiteaUserException;
 import discord.exception.EmptyOptionalException;
 import discord.exception.GiteaApiException;
@@ -11,11 +11,9 @@ import discord.services.GiteaUserService;
 import discord.services.MessageChannelService;
 import discord.structure.ChannelRole;
 import discord.structure.EmbedBuilder;
-import discord.structure.EmbedType;
 import discord.structure.NodeAndError;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
-import discord4j.core.spec.EmbedCreateSpec;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +28,6 @@ import java.util.stream.StreamSupport;
 
 import static discord.structure.EmbedType.SUCCESS_DIALOG_EMBED_TYPE;
 import static discord.structure.EmbedType.WRONG_DIALOG_EMBED_TYPE;
-import static java.util.Objects.isNull;
 
 @Slf4j
 @Component

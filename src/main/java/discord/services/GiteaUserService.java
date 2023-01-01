@@ -1,6 +1,6 @@
 package discord.services;
 
-import discord.dao.gitea.api.*;
+import discord.dto.gitea.api.*;
 import discord.exception.*;
 import discord.localisation.LogMessage;
 import discord.model.GuildSettings;

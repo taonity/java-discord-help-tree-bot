@@ -1,4 +1,4 @@
-package discord.dao.gitea.api;
+package discord.dto.gitea.api;
 
 public interface GiteaData {
 }

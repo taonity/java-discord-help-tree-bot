@@ -1,4 +1,4 @@
-package discord.dao;
+package discord.dto;
 
 import lombok.Data;
 

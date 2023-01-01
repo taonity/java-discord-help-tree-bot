@@ -1,5 +1,6 @@
 ---
 discord:
+  token: ${JAVA_DISCORD_HELP_BOT_DISCORD_TOKEN}
   mainGuildId: 448934652992946176
 
 server:
@@ -15,11 +16,12 @@ spring:
   datasource:
     username: d
     password: d
-    url: jdbc:postgresql://localhost:5432/discord_help_bot
+    url: jdbc:postgresql://host.docker.internal:5432/discord_help_bot
 
 gitea:
+  token: ${JAVA_DISCORD_HELP_BOT_GITEA_TOKEN}
   protocol: http
-  address: localhost
+  address: host.docker.internal
   port: 3000
   branch-name: main
   failure-limit: 3

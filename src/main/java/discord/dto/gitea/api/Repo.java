@@ -1,4 +1,4 @@
-package discord.dao.gitea.api;
+package discord.dto.gitea.api;
 
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;

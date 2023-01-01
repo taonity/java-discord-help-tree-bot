@@ -1,6 +1,6 @@
 package discord.services;
 
-import discord.dao.gitea.api.*;
+import discord.dto.gitea.api.*;
 import discord.exception.EmptyOptionalException;
 import discord.exception.GiteaApiException;
 import discord.exception.NullObjectException;

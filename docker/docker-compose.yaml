@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+
+  java-discord-help-bot-db:
+    extends:
+      file: db/docker-compose.yaml
+      service: java-discord-help-bot-db
+
+  java-discord-help-bot-gitea:
+    extends:
+      file: gitea/docker-compose.yaml
+      service: java-discord-help-bot-gitea

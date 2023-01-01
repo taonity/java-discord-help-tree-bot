@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-@Slf4j
 public class ResourceFileLoader {
     public static String loadFile(String path){
         try {

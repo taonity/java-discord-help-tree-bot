@@ -1,12 +1,10 @@
 package discord.controllers;
 
-import discord.dao.WebhookEvent;
+import discord.dto.WebhookEvent;
 import discord.tree.TreeRootService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import static discord.services.GiteaApiService.HOOK_PATH;
 
 @RestController
 @RequiredArgsConstructor

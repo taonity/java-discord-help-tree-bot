@@ -31,7 +31,6 @@ import java.io.ByteArrayInputStream;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ContextConfiguration(initializers = ConfigDataApplicationContextInitializer.class, classes = {PropertyConfig.class})
-@PropertySource(value = "classpath:/secret.yaml", factory = YamlPropertySourceFactory.class)
 @ExtendWith(SpringExtension.class)
 class AppConfigTest {
     @Value("${discord.token}")

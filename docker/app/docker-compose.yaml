@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  java-discord-help-bot-app:
+    container_name: java-discord-help-bot-app
+    image: java-discord-help-bot:latest
+    ports:
+      - "9015:9015"
+    env_file:
+      - .env

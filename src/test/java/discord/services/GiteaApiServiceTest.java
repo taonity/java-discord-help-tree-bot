@@ -1,9 +1,6 @@
 package discord.services;
 
 import discord.config.PropertyConfig;
-import discord.dao.gitea.api.CreateFileOption;
-import discord.dao.gitea.api.CreateRepoOption;
-import discord.dao.gitea.api.CreateUserOption;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

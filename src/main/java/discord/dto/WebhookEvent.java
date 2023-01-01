@@ -1,7 +1,7 @@
-package discord.dao;
+package discord.dto;
 
-import discord.dao.gitea.api.GiteaUser;
-import discord.dao.gitea.api.Repo;
+import discord.dto.gitea.api.GiteaUser;
+import discord.dto.gitea.api.Repo;
 import lombok.Data;
 
 @Data

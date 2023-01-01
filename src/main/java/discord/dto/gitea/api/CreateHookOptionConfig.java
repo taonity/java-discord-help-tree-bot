@@ -1,4 +1,4 @@
-package discord.dao.gitea.api;
+package discord.dto.gitea.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

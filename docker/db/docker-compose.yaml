@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  db:
+  java-discord-help-bot-db:
     container_name: discord-help-bot-db
     image: postgres
     ports:
@@ -9,9 +9,8 @@ services:
     volumes:
       - discord-help-bot-db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=d
-      - POSTGRES_PASSWORD=d
       - POSTGRES_DB=discord_help_bot
+      - .env
 
 volumes:
   discord-help-bot-db-data:
