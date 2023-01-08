@@ -2,14 +2,18 @@ version: '3.7'
 
 services:
   java-discord-help-bot-db:
-    container_name: discord-help-bot-db
+    container_name: java-discord-help-bot-db
     image: postgres
     ports:
       - "5432:5432"
     volumes:
-      - discord-help-bot-db-data:/var/lib/postgresql/data
-    environment:
+      - java-discord-help-bot-volume-db:/var/lib/postgresql/data
+    env_file:
       - ../.env
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 5s
+      retries: 3
 
 volumes:
-  discord-help-bot-db-data:
+  java-discord-help-bot-volume-db:

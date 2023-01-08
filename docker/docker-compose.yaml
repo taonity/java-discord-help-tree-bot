@@ -22,3 +22,6 @@ services:
       java-discord-help-bot-gitea:
         condition: service_healthy
 
+volumes:
+  java-discord-help-bot-volume-db:
+  java-discord-help-bot-volume-gitea:
