@@ -34,23 +34,9 @@ pipeline {
 
     stages {
 
-        stage('Build JAR file') {
+        stage('Build JAR & image') {
             steps {
-                sh 'mvn -B -DskipTests clean package'
-            }
-        }
-
-        stage("Build docker images") {
-            steps {
-                script {
-                    echo "Build docker images"
-                        def buildArgs = """\
-                            -f Dockerfile \
-                            ."""
-                        def image = docker.build(
-                            "${params.Image_Name}:${params.Image_Tag}",
-                            buildArgs)
-                }
+                sh 'mvn -B -P docker clean package -DskipTests'
             }
         }
 

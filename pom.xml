@@ -160,7 +160,7 @@
                                 <image>openjdk:11</image>
                             </from>
                             <to>
-                                <image>${project.artifactId}</image>
+                                <image>generaltao725/${project.artifactId}</image>
                                 <tags>
                                     <tag>${project.version}</tag>
                                 </tags>
