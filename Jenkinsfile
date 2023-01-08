@@ -12,24 +12,9 @@ pipeline {
     }
 
     parameters {
-        string(
-            name: "Branch_Name",
-            defaultValue: 'master',
-            description: '')
-
-        string(
-            name: "Image_Name",
-            defaultValue: 'java-discord-help-bot',
-            description: '')
-
-        string(
-            name: "Image_Tag",
-            defaultValue: 'latest',
-            description: 'Image tag')
-
-        booleanParam(
-           name: "PushImage",
-           defaultValue: true)
+        string(name: "image_name", defaultValue: 'java-discord-help-bot')
+        string(name: "image_tag", defaultValue: 'latest')
+        booleanParam(name: "push_image", defaultValue: true)
     }
 
     stages {
@@ -43,12 +28,12 @@ pipeline {
         stage("Push to Dockerhub") {
             when {
                 equals expected: "true",
-                actual: "${params.PushImage}"
+                actual: "${params.push_image}"
             }
             steps {
                 script {
                     echo "Pushing the image to docker hub"
-                    def repositoryName = "generaltao725/${params.Image_Name}:${params.Image_Tag}"
+                    def repositoryName = "generaltao725/${params.image_name}:${params.image_tag}"
 
                     docker.withRegistry("", "DockerHubCredentials") {
                         def image = docker.image("${repositoryName}");
@@ -60,7 +45,6 @@ pipeline {
                         }
                     }
 
-                    sh "docker rmi -f ${localImage} "
                     sh "docker rmi -f ${repositoryName} "
                 }
             }
