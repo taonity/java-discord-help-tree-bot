@@ -2,6 +2,10 @@ package discord.services;
 
 import discord.dto.gitea.api.*;
 import discord.exception.*;
+import discord.exception.client.FailedToSearchRepoException;
+import discord.exception.client.TreeRootNoValidCommitsException;
+import discord.exception.main.EmptyOptionalException;
+import discord.exception.main.MainInterruptedException;
 import discord.localisation.LogMessage;
 import discord.model.GuildSettings;
 import discord.repository.GuildSettingsRepository;
@@ -47,6 +51,14 @@ public class GiteaUserService {
         final var userId = createGiteaUser(userName);
         createGiteaRepo(userName, repoName);
         createFile(userName, repoName, fileContent);
+
+        try {
+            // TODO: For some reason giteaApiService.createFile is synchronous, so a delay needed before applying webhook
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new MainInterruptedException(LogMessage.ALERT_20083, e);
+        }
+
         giteaApiService.createHook(userName, repoName);
 
         guildSettingsRepository.updateGiteaUser(guildSettingsId, userId, giteaUserAlphaNumeric);
@@ -91,7 +103,7 @@ public class GiteaUserService {
         giteaApiService.deleteUser(userName);
     }
 
-    public NodeAndError getDialogRoot(GuildSettings guildSettings) throws GiteaApiException {
+    public NodeAndError getDialogRoot(GuildSettings guildSettings) throws GiteaApiException, NoCommitsException {
         final var giteaUserAlphaNumeric = AlphaNumericGenerator.generateFourCharFromNumber(guildSettings.getId());
         final var userName = String.format(USER_NAME_FORMAT, giteaUserAlphaNumeric);
         final var repoName = String.format(REPO_NAME_FORMAT, giteaUserAlphaNumeric);
@@ -110,11 +122,10 @@ public class GiteaUserService {
         } catch (YamlProcessingException | TreeRootValidationException e) {
             nodeAndErrorBuilder.errorMessage(e.getMessage());
             log.warn(LogMessage.ALERT_20047.name());
-            new CorruptTreeRootException(e.getMessage()).printStackTrace();
         }
 
         if(!commitIterator.hasNext()) {
-            throw new TreeRootNoValidCommitsException(LogMessage.ALERT_20048);
+            throw new TreeRootNoValidCommitsException(LogMessage.ALERT_20048, guildSettings.getGuildId());
         }
 
         final var nodeOpt = searchForValidNode(commitIterator, userName, repoName);
@@ -142,7 +153,7 @@ public class GiteaUserService {
         return Optional.empty();
     }
 
-    private Node getRootFromByCommit(RepoCommit commit, String userName, String repoName) throws GiteaApiException {
+    private Node getRootFromByCommit(RepoCommit commit, String userName, String repoName) throws GiteaApiException, TreeRootValidationException, YamlProcessingException {
         final var yamlFile = giteaApiService.getFile(userName, repoName, FILE_NAME, commit.getSha());
         final var node = YamlStringToNodeConvertor.convert(yamlFile.getContentAsString());
         final var messageCollector = RootValidator.validate(node, gatewayDiscordClient);

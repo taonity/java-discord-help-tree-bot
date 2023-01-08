@@ -1,16 +1,10 @@
 package discord.services;
 
 import discord.config.PropertyConfig;
-import discord.exception.EmptyOptionalException;
-import discord.localisation.LogMessage;
 import discord.repository.GuildSettingsRepository;
 import discord.utils.CommitState;
 import discord.utils.GitTestManager;
-import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
-import discord4j.core.event.domain.lifecycle.ReadyEvent;
-import discord4j.core.object.entity.Guild;
-import discord4j.core.spec.MessageCreateMono;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;

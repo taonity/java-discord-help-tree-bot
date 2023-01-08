@@ -1,6 +1,6 @@
 package discord.config;
 
-import discord.exception.EmptyOptionalException;
+import discord.exception.main.EmptyOptionalException;
 import discord.localisation.LogMessage;
 import discord4j.common.JacksonResources;
 import discord4j.discordjson.json.ApplicationCommandRequest;
@@ -13,7 +13,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;

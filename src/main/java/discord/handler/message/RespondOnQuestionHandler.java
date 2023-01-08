@@ -1,7 +1,6 @@
 package discord.handler.message;
 
-import discord.exception.EmptyOptionalException;
-import discord.exception.NullObjectException;
+import discord.exception.main.EmptyOptionalException;
 import discord.handler.EventPredicates;
 import discord.localisation.LogMessage;
 import discord.services.SelectMenuService;
@@ -16,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Stream;
-
-import static java.util.Objects.isNull;
 
 @Component
 @RequiredArgsConstructor
@@ -51,10 +48,8 @@ public class RespondOnQuestionHandler implements MessageHandler {
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20012));
 
         final var targetId = smManager.getTargetId();
-        final var targetUser = client.getUserById(Snowflake.of(targetId)).block();
-        if (isNull(targetUser)) {
-            throw new NullObjectException(LogMessage.ALERT_20013);
-        }
+        final var targetUser = client.getUserById(Snowflake.of(targetId)).blockOptional()
+                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20013));
 
         selectMenuService.removeSmManager(smManager, guildId);
 

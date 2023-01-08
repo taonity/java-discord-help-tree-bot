@@ -1,5 +1,6 @@
-package discord.exception;
+package discord.exception.client;
 
+import discord.exception.LogMessageException;
 import discord.localisation.LogMessage;
 import lombok.Getter;
 

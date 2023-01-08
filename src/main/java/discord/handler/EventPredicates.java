@@ -1,6 +1,6 @@
 package discord.handler;
 
-import discord.exception.EmptyOptionalException;
+import discord.exception.main.EmptyOptionalException;
 import discord.localisation.LogMessage;
 import discord.repository.GuildSettingsRepository;
 import discord.services.GuildRoleService;

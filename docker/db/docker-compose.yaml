@@ -9,8 +9,7 @@ services:
     volumes:
       - discord-help-bot-db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=discord_help_bot
-      - .env
+      - ../.env
 
 volumes:
   discord-help-bot-db-data:

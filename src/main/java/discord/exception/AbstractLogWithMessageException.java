@@ -2,7 +2,7 @@ package discord.exception;
 
 import discord.localisation.LogMessage;
 
-public abstract class AbstractLogWithMessageException extends RuntimeException {
+public abstract class AbstractLogWithMessageException extends Exception {
     private final static String MESSAGE_FORMAT = "%s\n%s";
 
     public AbstractLogWithMessageException(LogMessage logMessage, String message) {

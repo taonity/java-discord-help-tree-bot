@@ -1,7 +1,6 @@
 package discord.handler.command;
 
-import discord.exception.EmptyOptionalException;
-import discord.exception.FailedToSearchRepoException;
+import discord.exception.main.EmptyOptionalException;
 import discord.handler.EventPredicates;
 import discord.localisation.LogMessage;
 import discord.services.SelectMenuService;

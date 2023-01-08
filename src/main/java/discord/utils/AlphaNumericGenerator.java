@@ -1,6 +1,6 @@
 package discord.utils;
 
-import discord.exception.AlphaNumericMaxNumberReachedException;
+import discord.exception.main.AlphaNumericMaxNumberReachedException;
 import discord.localisation.LogMessage;
 
 public class AlphaNumericGenerator {

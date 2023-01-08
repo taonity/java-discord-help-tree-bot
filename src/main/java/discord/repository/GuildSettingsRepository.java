@@ -1,5 +1,6 @@
 package discord.repository;
 
+import discord.config.AppConfig;
 import discord.model.GuildSettings;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

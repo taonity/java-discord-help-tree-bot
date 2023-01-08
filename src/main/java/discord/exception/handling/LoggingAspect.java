@@ -1,6 +1,8 @@
 package discord.exception.handling;
 
 import discord.exception.*;
+import discord.exception.client.ClientGuildAwareException;
+import discord.exception.main.MainGuildAwareException;
 import discord.localisation.LogMessage;
 import discord.model.GuildSettings;
 import discord.repository.GuildSettingsRepository;

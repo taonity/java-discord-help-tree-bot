@@ -6,10 +6,7 @@ services:
     image: gitea/gitea:1.17.3-rootless
     restart: always
     volumes:
-      - ./data:/var/lib/gitea
       - ./config:/etc/gitea
-      - ./timezone:/etc/timezone:ro
-      - ./localtime:/etc/localtime:ro
     ports:
       - "3000:3000"
       - "2222:2222"

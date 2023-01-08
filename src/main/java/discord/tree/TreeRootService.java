@@ -1,9 +1,10 @@
 package discord.tree;
 
 import discord.dto.WebhookEvent;
-import discord.exception.CorruptGiteaUserException;
-import discord.exception.EmptyOptionalException;
+import discord.exception.client.CorruptGiteaUserException;
+import discord.exception.main.EmptyOptionalException;
 import discord.exception.GiteaApiException;
+import discord.exception.NoCommitsException;
 import discord.localisation.LogMessage;
 import discord.model.GuildSettings;
 import discord.repository.GuildSettingsRepository;
@@ -73,6 +74,8 @@ public class TreeRootService {
             dialogRootAndError = giteaUserService.getDialogRoot(guildSettings);
         } catch (GiteaApiException e) {
             throw new CorruptGiteaUserException(LogMessage.ALERT_20002, guildSettings.getGuildId(), e);
+        } catch (NoCommitsException e) {
+            throw new CorruptGiteaUserException(LogMessage.ALERT_20004, guildSettings.getGuildId(), e);
         }
         final var root = dialogRootAndError.getNode();
 

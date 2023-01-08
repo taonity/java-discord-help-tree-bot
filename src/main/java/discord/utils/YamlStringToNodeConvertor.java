@@ -22,7 +22,7 @@ public class YamlStringToNodeConvertor {
         findAndRegisterModules();
     }};
 
-    public static Node convert(String yamlString) {
+    public static Node convert(String yamlString) throws YamlProcessingException {
         try {
             return mapper.readValue(yamlString, Node.class);
         } catch (JsonProcessingException e) {

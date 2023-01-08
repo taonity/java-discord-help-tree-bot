@@ -99,6 +99,10 @@
             <artifactId>hashids</artifactId>
             <version>1.0.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -128,6 +132,15 @@
                     </execution>
                 </executions>
 
+            </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <configuration>
+                    <configFiles>
+                        <configFile>flyway.conf</configFile>
+                    </configFiles>
+                </configuration>
             </plugin>
         </plugins>
     </build>

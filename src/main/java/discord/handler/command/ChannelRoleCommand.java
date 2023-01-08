@@ -1,29 +1,22 @@
 package discord.handler.command;
 
-import discord.exception.EmptyOptionalException;
-import discord.exception.FailedToSearchRepoException;
+import discord.exception.main.EmptyOptionalException;
 import discord.handler.EventPredicates;
 import discord.localisation.LogMessage;
-import discord.model.GuildSettings;
 import discord.services.MessageChannelService;
 import discord.structure.ChannelRole;
 import discord.structure.CommandName;
 import discord.structure.EmbedBuilder;
 import discord.structure.EmbedType;
-import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
-import discord4j.core.object.entity.Guild;
 import discord4j.core.spec.EmbedCreateSpec;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -39,9 +32,6 @@ public class ChannelRoleCommand extends AbstractSlashCommand {
     @Getter
     private final CommandName command = CHANNELROLE;
 
-    @Setter
-    private List<String> userWhiteList;
-
     public final MessageChannelService channelService;
     private final EventPredicates eventPredicates;
 
@@ -50,7 +40,7 @@ public class ChannelRoleCommand extends AbstractSlashCommand {
         return Stream.of(event)
                 .filter(eventPredicates::filterBot)
                 .filter(this::filterByCommand)
-                .filter(e -> eventPredicates.filterByAuthorId(event, userWhiteList))
+                .filter(eventPredicates::filterByModeratorRole)
                 .count() == 1;
     }
 

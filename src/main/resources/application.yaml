@@ -14,9 +14,9 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
   datasource:
-    username: d
-    password: d
-    url: jdbc:postgresql://host.docker.internal:5432/discord_help_bot
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    url: ${POSTGRES_URL}
 
 gitea:
   token: ${JAVA_DISCORD_HELP_BOT_GITEA_TOKEN}
@@ -25,8 +25,9 @@ gitea:
   port: 3000
   branch-name: main
   failure-limit: 3
+  admin:
+    username: ${GITEA_ADMIN_USER_NAME}
+    password: ${GITEA_ADMIN_USER_PASSWORD}
+    email: ${GITEA_ADMIN_EMAIL}
   git:
-    username: d
-    password: d
-    email: d@d.d
     repoPath: /Users/gener/OneDrive/Documents/gitea/

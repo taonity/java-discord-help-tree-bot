@@ -11,4 +11,9 @@ CREATE TABLE IF NOT EXISTS guild_settings (
 	CONSTRAINT guild_settings_pk PRIMARY KEY (id)
 );
 
-ALTER SEQUENCE guild_settings_seq OWNED BY guild_settings.id;
+CREATE TABLE IF NOT EXISTS app_settings (
+    id int4             NOT NULL,
+	gitea_token     varchar     NOT NULL,
+
+	CONSTRAINT app_settings_pk PRIMARY KEY (id)
+);

@@ -1,7 +1,6 @@
 package discord.services;
 
-import discord.exception.EmptyOptionalException;
-import discord.exception.NullObjectException;
+import discord.exception.main.EmptyOptionalException;
 import discord.localisation.LogMessage;
 import discord.structure.ChannelRole;
 import discord.model.GuildSettings;
@@ -15,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.function.Function;
-
-import static java.util.Objects.isNull;
 
 @Component
 @RequiredArgsConstructor

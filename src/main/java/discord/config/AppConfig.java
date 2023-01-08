@@ -1,6 +1,6 @@
 package discord.config;
 
-import discord.exception.EmptyOptionalException;
+import discord.exception.main.EmptyOptionalException;
 import discord.localisation.LogMessage;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;

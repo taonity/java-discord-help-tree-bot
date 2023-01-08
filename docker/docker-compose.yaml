@@ -11,3 +11,14 @@ services:
     extends:
       file: gitea/docker-compose.yaml
       service: java-discord-help-bot-gitea
+
+  java-discord-help-bot-app:
+    extends:
+      file: app/docker-compose.yaml
+      service: java-discord-help-bot-app
+    depends_on:
+      java-discord-help-bot-db:
+        condition: service_healthy
+      java-discord-help-bot-gitea:
+        condition: service_healthy
+

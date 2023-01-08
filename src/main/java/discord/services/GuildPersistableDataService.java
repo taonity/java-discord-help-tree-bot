@@ -1,13 +1,11 @@
 package discord.services;
 
-import discord.exception.CorruptGiteaUserException;
-import discord.exception.EmptyOptionalException;
+import discord.exception.client.CorruptGiteaUserException;
+import discord.exception.main.EmptyOptionalException;
 import discord.exception.GiteaApiException;
-import discord.exception.MainInterruptedException;
 import discord.localisation.LogMessage;
 import discord.model.GuildSettings;
 import discord.repository.GuildSettingsRepository;
-import discord.utils.AlphaNumericGenerator;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import lombok.RequiredArgsConstructor;
@@ -43,12 +41,6 @@ public class GuildPersistableDataService {
             giteaUserService.createUser(guildSettingsId);
         } catch (GiteaApiException e) {
             throw new CorruptGiteaUserException(LogMessage.ALERT_20032, guildId, e);
-        }
-        try {
-            // TODO: For some reason a delay should be applied between gitea account creation and commits retrieving
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            throw new MainInterruptedException(LogMessage.ALERT_20077, guildId, e);
         }
         gatewayDiscordClient.getGuildById(Snowflake.of(guildId)).blockOptional()
                 .ifPresentOrElse(

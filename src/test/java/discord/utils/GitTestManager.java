@@ -1,41 +1,27 @@
 package discord.utils;
 
-import com.google.common.collect.Iterables;
 import discord.config.PropertyConfig;
-import discord.exception.FailedToRemoveGitApiWorkingDirException;
-import discord.exception.FailedToSquashCommitsException;
-import discord.exception.NoCommitsException;
+import discord.exception.main.FailedToRemoveGitApiWorkingDirException;
 import discord.localisation.LogMessage;
 import discord.services.GitApiService;
-import discord.services.GiteaApiService;
-import discord.services.GiteaUserService;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.InitCommand;
-import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRefNameException;
-import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.*;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-
-import static java.util.Optional.ofNullable;
 
 @ContextConfiguration(initializers = ConfigDataApplicationContextInitializer.class, classes = {
         PropertyConfig.class, GitApiService.class})

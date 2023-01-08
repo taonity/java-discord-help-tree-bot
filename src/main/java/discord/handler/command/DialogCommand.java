@@ -1,8 +1,8 @@
 package discord.handler.command;
 
 import discord.dto.gitea.api.EditUserOption;
-import discord.exception.CorruptGiteaUserException;
-import discord.exception.EmptyOptionalException;
+import discord.exception.client.CorruptGiteaUserException;
+import discord.exception.main.EmptyOptionalException;
 import discord.exception.GiteaApiException;
 import discord.handler.EventPredicates;
 import discord.localisation.LogMessage;

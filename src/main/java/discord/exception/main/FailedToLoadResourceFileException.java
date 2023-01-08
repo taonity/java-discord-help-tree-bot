@@ -1,4 +1,4 @@
-package discord.exception;
+package discord.exception.main;
 
 import discord.localisation.LogMessage;
 

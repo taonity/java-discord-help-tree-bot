@@ -1,6 +1,6 @@
 package discord.handler.message;
 
-import discord.exception.EmptyOptionalException;
+import discord.exception.main.EmptyOptionalException;
 import discord.handler.EventPredicates;
 import discord.localisation.LogMessage;
 import discord.structure.EmbedBuilder;

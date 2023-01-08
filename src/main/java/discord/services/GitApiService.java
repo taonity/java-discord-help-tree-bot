@@ -1,8 +1,8 @@
 package discord.services;
 
 import com.google.common.collect.Iterables;
-import discord.exception.FailedToRemoveGitApiWorkingDirException;
-import discord.exception.FailedToSquashCommitsException;
+import discord.exception.main.FailedToRemoveGitApiWorkingDirException;
+import discord.exception.client.FailedToSquashCommitsException;
 import discord.exception.NoCommitsException;
 import discord.localisation.LogMessage;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
@@ -34,19 +34,19 @@ public class GitApiService {
     @Value("${gitea.protocol}://${gitea.address}:${gitea.port}/%s/%s.git")
     private String gitUriFormat;
 
-    @Value("${gitea.git.username}")
-    private String gitUsername;
+    @Value("${gitea.admin.username}")
+    private String adminUsername;
 
-    @Value("${gitea.git.password}")
-    private String gitPassword;
+    @Value("${gitea.admin.password}")
+    private String adminPassword;
 
-    @Value("${gitea.git.email}")
-    private String gitEmail;
+    @Value("${gitea.admin.email}")
+    private String adminEmail;
 
     @Value("${gitea.git.repo-path}")
     private String reposPath;
 
-    public void squashCommits(String userName, String repoName, int commitQuantity, String guildId) {
+    public void squashCommits(String userName, String repoName, int commitQuantity, String guildId) throws NoCommitsException {
         final var repoDir = String.format(REPO_FOLDER_FORMAT, reposPath, repoName);
         final var repoUri = String.format(gitUriFormat, userName, repoName);
         final var branchRef = String.format(REFS_HEADS_PATH_FORMAT, branchName);
@@ -72,8 +72,8 @@ public class GitApiService {
 
             git.commit()
                     .setMessage(COMMIT_MESSAGE)
-                    .setAuthor(gitUsername, gitEmail)
-                    .setCommitter(gitUsername, gitEmail)
+                    .setAuthor(adminUsername, adminEmail)
+                    .setCommitter(adminUsername, adminEmail)
                     .call();
 
             git.reset()
@@ -86,7 +86,7 @@ public class GitApiService {
                     .add(branchName)
                     .setForce(true)
                     .setCredentialsProvider(
-                            new UsernamePasswordCredentialsProvider(gitUsername, gitPassword)
+                            new UsernamePasswordCredentialsProvider(adminUsername, adminPassword)
                     ).call();
         } catch (GitAPIException | IOException e) {
             e.printStackTrace();

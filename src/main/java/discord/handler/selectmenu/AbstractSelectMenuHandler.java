@@ -1,9 +1,8 @@
 package discord.handler.selectmenu;
 
-import discord.exception.EmptyOptionalException;
+import discord.exception.main.EmptyOptionalException;
 import discord.handler.DiscordEventHandler;
 import discord.localisation.LogMessage;
-import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.event.domain.interaction.SelectMenuInteractionEvent;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.SelectMenu;
