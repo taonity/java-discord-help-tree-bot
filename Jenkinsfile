@@ -48,10 +48,7 @@ pipeline {
             steps {
                 script {
                     echo "Pushing the image to docker hub"
-                    def localImage = "${params.Image_Name}:${params.Image_Tag}"
-                    def repositoryName = "generaltao725/${localImage}"
-
-                    sh "docker tag ${localImage} ${repositoryName} "
+                    def repositoryName = "generaltao725/${params.Image_Name}:${params.Image_Tag}"
 
                     docker.withRegistry("", "DockerHubCredentials") {
                         def image = docker.image("${repositoryName}");
