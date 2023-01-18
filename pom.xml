@@ -171,6 +171,11 @@
                                 </ports>
                                 <creationTime>${maven.build.timestamp}</creationTime>
                             </container>
+                            <extraDirectories>
+                                <paths>
+                                    <path>docker</path>
+                                </paths>
+                            </extraDirectories>
                         </configuration>
                         <executions>
                             <execution>

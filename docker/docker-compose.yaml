@@ -4,17 +4,17 @@ services:
 
   java-discord-help-bot-db:
     extends:
-      file: db/docker-compose.yaml
+      file: db/docker-compose.yml
       service: java-discord-help-bot-db
 
   java-discord-help-bot-gitea:
     extends:
-      file: gitea/docker-compose.yaml
+      file: gitea/docker-compose.yml
       service: java-discord-help-bot-gitea
 
   java-discord-help-bot-app:
     extends:
-      file: app/docker-compose.yaml
+      file: app/docker-compose.yml
       service: java-discord-help-bot-app
     depends_on:
       java-discord-help-bot-db:
