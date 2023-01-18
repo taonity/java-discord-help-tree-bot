@@ -38,10 +38,12 @@ pipeline {
                     docker.withRegistry("", "DockerHubCredentials") {
                         def image = docker.image(repositoryName);
                         try {
-                            image.push()
+                            image.push("latest")
+                            image.push("0.0.0")
                         } catch(Exception ex) {
                             println(ex);
-                            image.push()
+                            image.push("latest")
+                            image.push("0.0.0")
                         }
                     }
 
