@@ -33,10 +33,10 @@ pipeline {
             steps {
                 script {
                     echo "Pushing the image to docker hub"
-                    def repositoryName = "generaltao725/${params.image_name}:${params.image_tag}"
+                    def repositoryName = "generaltao725/${params.image_name}"
 
                     docker.withRegistry("", "DockerHubCredentials") {
-                        def image = docker.image("${repositoryName}");
+                        def image = docker.image(repositoryName);
                         try {
                             image.push()
                         } catch(Exception ex) {

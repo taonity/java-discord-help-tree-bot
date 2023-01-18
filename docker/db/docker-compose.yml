@@ -3,7 +3,7 @@ version: '3.7'
 services:
   java-discord-help-bot-db:
     container_name: java-discord-help-bot-db
-    image: postgres
+    image: postgres:15.1
     ports:
       - "5432:5432"
     volumes:
