@@ -1,0 +1,12 @@
+version: '2.4'
+
+services:
+  java-discord-help-bot-app:
+    container_name: java-discord-help-bot-app
+    image: generaltao725/java-discord-help-bot:latest
+    ports:
+      - "9015:9015"
+    env_file:
+      - ../.env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

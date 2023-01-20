@@ -1,0 +1,22 @@
+version: '2.4'
+
+services:
+  java-discord-help-bot-gitea:
+    container_name: java-discord-help-bot-gitea
+    image: gitea/gitea:1.17.3
+    restart: always
+    volumes:
+      - ./conf:/data/gitea/conf
+      - java-discord-help-bot-volume-gitea:/data
+      - java-discord-help-bot-volume-gitea:/var/lib/gitea
+      - java-discord-help-bot-volume-gitea:/etc/timezone:ro
+      - java-discord-help-bot-volume-gitea:/etc/localtime:ro
+    ports:
+      - "3000:3000"
+      - "2222:2222"
+    healthcheck:
+      test: curl -f localhost:3000/api/healthz || exit 1
+      interval: 5s
+      retries: 2
+volumes:
+  java-discord-help-bot-volume-gitea:
