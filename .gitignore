@@ -37,6 +37,3 @@ build/
 
 secret.yaml
 .env
-docker/gitea/data
-docker/gitea/localtime
-docker/gitea/timezone

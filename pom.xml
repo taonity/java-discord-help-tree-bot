@@ -143,12 +143,6 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-help-plugin</artifactId>
-            </plugin>
-
-
         </plugins>
     </build>
 
@@ -180,7 +174,13 @@
                             </container>
                             <extraDirectories>
                                 <paths>
-                                    <path>docker</path>
+                                    <path>
+                                        <from>docker</from>
+                                        <into>/docker</into>
+                                        <excludes>
+                                            <exclude>.env</exclude>
+                                        </excludes>
+                                    </path>
                                 </paths>
                             </extraDirectories>
                         </configuration>
