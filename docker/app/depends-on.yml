@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+
+  java-discord-help-bot-app:
+    depends_on:
+      java-discord-help-bot-db:
+        condition: service_healthy
+      java-discord-help-bot-gitea:
+        condition: service_healthy
