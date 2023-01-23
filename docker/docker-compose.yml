@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  java-discord-help-bot-app:
+    container_name: java-discord-help-bot-app
+    image: generaltao725/java-discord-help-bot:latest
+    ports:
+      - "9015:9015"
+    env_file:
+      - .env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  java-discord-help-bot-db:
+    container_name: java-discord-help-bot-db
+    image: postgres:14
+    ports:
+      - "5432:5432"
+    volumes:
+      - java-discord-help-bot-volume-db:/var/lib/postgresql/data
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+
+  java-discord-help-bot-gitea:
+    container_name: java-discord-help-bot-gitea
+    image: gitea/gitea:1.17.3
+    restart: always
+    volumes:
+      - ./gitea/conf:/data/gitea/conf
+      - java-discord-help-bot-volume-gitea:/data
+      - java-discord-help-bot-volume-gitea:/var/lib/gitea
+      - java-discord-help-bot-volume-gitea:/etc/timezone:ro
+      - java-discord-help-bot-volume-gitea:/etc/localtime:ro
+    ports:
+      - "3000:3000"
+      - "2222:2222"
+    healthcheck:
+      test: curl -f localhost:3000/api/healthz || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 2
+
+volumes:
+  java-discord-help-bot-volume-gitea:
+  java-discord-help-bot-volume-db:
