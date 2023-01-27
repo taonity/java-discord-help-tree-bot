@@ -16,7 +16,8 @@ services:
       - "2222:2222"
     healthcheck:
       test: curl -f localhost:3000/api/healthz || exit 1
-      interval: 5s
-      retries: 2
+      interval: 10s
+      timeout: 10s
+      retries: 3
 volumes:
   java-discord-help-bot-volume-gitea:
