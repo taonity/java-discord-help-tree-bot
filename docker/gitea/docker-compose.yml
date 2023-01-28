@@ -6,7 +6,7 @@ services:
     image: gitea/gitea:1.17.3
     restart: always
     volumes:
-      - ./conf:/data/gitea/conf
+      - ./gitea/conf:/data/gitea/conf
       - java-discord-help-bot-volume-gitea:/data
       - java-discord-help-bot-volume-gitea:/var/lib/gitea
       - java-discord-help-bot-volume-gitea:/etc/timezone:ro
