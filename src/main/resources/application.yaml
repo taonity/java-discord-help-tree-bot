@@ -22,7 +22,7 @@ gitea:
   token: ${JAVA_DISCORD_HELP_BOT_GITEA_TOKEN}
   protocol: http
   address: host.docker.internal
-  port: 3000
+  port: 3001
   branch-name: main
   failure-limit: 3
   admin:
