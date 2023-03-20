@@ -11,9 +11,9 @@ services:
       - java-discord-help-bot-volume-gitea:/etc/timezone:ro
       - java-discord-help-bot-volume-gitea:/etc/localtime:ro
     ports:
-      - "3001:3000"
+      - "3001:3001"
     healthcheck:
-      test: curl -f localhost:3000/api/healthz || exit 1
+      test: curl -f localhost:3001/api/healthz || exit 1
       interval: 10s
       timeout: 10s
       retries: 3

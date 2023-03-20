@@ -15,6 +15,8 @@ services:
       interval: 10s
       timeout: 10s
       retries: 3
+    labels:
+      - "docker-volume-backup.archive-pre=/bin/bash -c 'rm -r /backup & mkdir -p /backup & pg_dumpall -c -U ${POSTGRES_USER} > /backup/dump_`date +%d-%m-%Y_%H_%M_%S`.sql'"
 
 volumes:
   java-discord-help-bot-volume-db:
