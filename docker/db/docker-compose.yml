@@ -1,13 +1,15 @@
 version: '2.4'
 
 services:
-  java-discord-help-bot-db:
+  db:
     container_name: java-discord-help-bot-db
     image: postgres:14
     ports:
       - "5432:5432"
     volumes:
       - java-discord-help-bot-volume-db:/var/lib/postgresql/data
+      - java-discord-help-bot-volume-db-backup:/backup
+      - ./sql:/docker-entrypoint-initdb.d
     env_file:
       - ../.env
     healthcheck:
@@ -16,7 +18,8 @@ services:
       timeout: 10s
       retries: 3
     labels:
-      - "docker-volume-backup.archive-pre=/bin/bash -c 'rm -r /backup & mkdir -p /backup & pg_dumpall -c -U ${POSTGRES_USER} > /backup/dump_`date +%d-%m-%Y_%H_%M_%S`.sql'"
-
-volumes:
-  java-discord-help-bot-volume-db:
+      - docker-volume-backup.exec-label=java-discord-help-bot
+      - docker-volume-backup.archive-pre=/bin/bash -c 'mkdir -p /backup/current & pg_dumpall -c -U ${POSTGRES_USER} > /backup/current/dump.sql'
+      - command-runner.group=java-discord-help-bot
+      - command-runner.shell=/bin/sh -c
+      - command-runner.command=mc mirror --overwrite /backup/archived minio/loki-data; rm -r /backup/archived

@@ -14,8 +14,8 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
   datasource:
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    username: ${POSTGRES_APP_USER}
+    password: ${POSTGRES_APP_PASSWORD}
     url: ${POSTGRES_URL}
 
 gitea:

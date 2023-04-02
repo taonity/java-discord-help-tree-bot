@@ -1,0 +1,17 @@
+version: '2.4'
+
+services:
+
+  make-backup:
+    # image: offen/docker-volume-backup:v2.25.1
+    image: generaltao725/docker-volume-backup
+    container_name: java-discord-help-bot-make-backup
+    env_file:
+      - ./backup.env
+    volumes:
+      - java-discord-help-bot-volume-db-backup:/backup/java-discord-help-bot-volume-db:ro
+      - java-discord-help-bot-volume-gitea-backup:/tmp/java-discord-help-bot-volume-gitea:ro
+
+      - //var/run/docker.sock:/var/run/docker.sock:ro
+      - java-discord-help-bot-backup-data:/archive
+

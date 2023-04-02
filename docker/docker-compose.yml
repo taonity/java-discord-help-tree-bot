@@ -1,27 +1,51 @@
 version: '2.4'
 
 services:
-
-  java-discord-help-bot-db:
+  # APP
+  db:
     extends:
       file: db/docker-compose.yml
-      service: java-discord-help-bot-db
+      service: db
 
-  java-discord-help-bot-gitea:
+  gitea:
     extends:
       file: gitea/docker-compose.yml
-      service: java-discord-help-bot-gitea
+      service: gitea
 
-  java-discord-help-bot-app:
+  app:
     extends:
       file: app/docker-compose.yml
-      service: java-discord-help-bot-app
+      service: app
     depends_on:
-      java-discord-help-bot-db:
+      db:
         condition: service_healthy
-      java-discord-help-bot-gitea:
+      gitea:
         condition: service_healthy
+
+  # BACKUP
+  make-backup:
+    extends:
+      file: backup/make/docker-compose.yml
+      service: make-backup
+    depends_on:
+      db:
+        condition: service_healthy
+      gitea:
+        condition: service_healthy
+
+#  restore-backup:
+#    extends:
+#      file: backup/restore/docker-compose.yml
+#      service: restore-backup
+#    depends_on:
+#      db:
+#        condition: service_healthy
+#      gitea:
+#        condition: service_healthy
 
 volumes:
   java-discord-help-bot-volume-db:
+  java-discord-help-bot-volume-db-backup:
   java-discord-help-bot-volume-gitea:
+  java-discord-help-bot-volume-gitea-backup:
+  java-discord-help-bot-backup-data:

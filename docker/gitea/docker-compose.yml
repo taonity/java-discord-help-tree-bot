@@ -1,7 +1,7 @@
 version: '2.4'
 
 services:
-  java-discord-help-bot-gitea:
+  gitea:
     container_name: java-discord-help-bot-gitea
     image: gitea/gitea:1.17.3
     volumes:
@@ -10,8 +10,13 @@ services:
       - java-discord-help-bot-volume-gitea:/var/lib/gitea
       - java-discord-help-bot-volume-gitea:/etc/timezone:ro
       - java-discord-help-bot-volume-gitea:/etc/localtime:ro
+      - java-discord-help-bot-volume-gitea-backup:/tmp
     ports:
       - "3001:3001"
+    labels:
+      - docker-volume-backup.exec-label=java-discord-help-bot
+      - docker-volume-backup.archive-pre.user=git
+      - docker-volume-backup.archive-pre=/bin/bash -c 'mkdir -p /tmp/current; cd /tmp/current; /usr/local/bin/gitea dump -c /data/gitea/conf/app.ini -f dump.zip'
     healthcheck:
       test: curl -f localhost:3001/api/healthz || exit 1
       interval: 10s
@@ -19,3 +24,5 @@ services:
       retries: 3
 volumes:
   java-discord-help-bot-volume-gitea:
+
+# psql -U ${POSTGRES_USER} -f /backup/current/dump.sql postgres                                                     7

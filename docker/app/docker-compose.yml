@@ -1,7 +1,7 @@
 version: '2.4'
 
 services:
-  java-discord-help-bot-app:
+  app:
     container_name: java-discord-help-bot-app
     image: generaltao725/java-discord-help-bot:latest
     ports:
