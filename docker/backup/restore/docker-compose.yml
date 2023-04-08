@@ -3,14 +3,12 @@ version: '2.4'
 services:
   restore-backup:
     image: generaltao725/command-runner
-    container_name: appenv-java-discord-help-bot-backup
+    container_name: java-discord-help-bot-restore-backup
     environment:
       - COMMAND_RUNNER_GROUP=java-discord-help-bot
-    command:
-      - backup-2023-03-12T17-52-00.tar.gz
     volumes:
       - //var/run/docker.sock:/var/run/docker.sock:ro
       - ./shared:/etc/runner/scripts/shared:ro
       - java-discord-help-bot-backup-data:/archive:ro
 
-      - java-discord-help-bot-volume-db:/backup/java-discord-help-bot-volume-db
+      - java-discord-help-bot-volume-db-backup:/backup/java-discord-help-bot-volume-db

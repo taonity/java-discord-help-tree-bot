@@ -4,4 +4,4 @@ echo Hello
 
 tar -xf "/archive/$1" -C /tmp
 
-cp -r /tmp/backup/prodenv-mc-data/current /backup/prodenv-mc-data/archived
+cp -r /tmp/backup/java-discord-help-bot-volume-db/current /backup/java-discord-help-bot-volume-db/archived
