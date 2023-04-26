@@ -15,13 +15,13 @@ services:
       - ../.env
     healthcheck:
       test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'" ]
-      interval: 10s
-      timeout: 10s
-      retries: 3
+      interval: 1s
+      timeout: 1s
+      retries: 30
     labels:
       - docker-volume-backup.exec-label=java-discord-help-bot
       - docker-volume-backup.archive-pre=/bin/bash -c '/shared/make-backup.sh'
       - command-runner.group=java-discord-help-bot
       - command-runner.shell=/bin/bash -c
-      - command-runner.command=/shared/restore_backup.sh;
+      - command-runner.command=/shared/restore-backup.sh;
 

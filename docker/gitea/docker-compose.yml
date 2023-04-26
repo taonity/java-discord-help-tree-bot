@@ -6,8 +6,9 @@ services:
     image: gitea/gitea:1.17.3
     volumes:
       - ./conf:/data/gitea/conf
+      - ./shared:/shared
       - java-discord-help-bot-volume-gitea:/data
-      - java-discord-help-bot-volume-gitea:/var/lib/gitea
+#      - java-discord-help-bot-volume-gitea:/var/lib/gitea
       - java-discord-help-bot-volume-gitea:/etc/timezone:ro
       - java-discord-help-bot-volume-gitea:/etc/localtime:ro
       - java-discord-help-bot-volume-gitea-backup:/tmp
@@ -16,12 +17,15 @@ services:
     labels:
       - docker-volume-backup.exec-label=java-discord-help-bot
       - docker-volume-backup.archive-pre.user=git
-      - docker-volume-backup.archive-pre=/bin/bash -c 'mkdir -p /tmp/current; cd /tmp/current; /usr/local/bin/gitea dump -c /data/gitea/conf/app.ini -f dump.zip'
+      - docker-volume-backup.archive-pre=/bin/bash -c '/shared/make-backup.sh'
+      - command-runner.group=java-discord-help-bot
+      - command-runner.shell=/bin/bash -c
+      - command-runner.command=/shared/restore-backup.sh
     healthcheck:
       test: curl -f localhost:3001/api/healthz || exit 1
-      interval: 10s
-      timeout: 10s
-      retries: 3
+      interval: 1s
+      timeout: 1s
+      retries: 30
 volumes:
   java-discord-help-bot-volume-gitea:
 
