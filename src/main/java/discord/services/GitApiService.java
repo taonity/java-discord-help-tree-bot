@@ -4,7 +4,7 @@ import com.google.common.collect.Iterables;
 import discord.exception.main.FailedToRemoveGitApiWorkingDirException;
 import discord.exception.client.FailedToSquashCommitsException;
 import discord.exception.NoCommitsException;
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;

@@ -3,7 +3,7 @@ package discord.handler.command;
 import discord.exception.main.EmptyOptionalException;
 import discord.exception.client.ModeratorRoleNotFoundException;
 import discord.handler.EventPredicates;
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 import discord.localisation.SimpleMessage;
 import discord.services.GuildRoleService;
 import discord.services.MessageChannelService;

@@ -1,6 +1,6 @@
 package discord.exception.client;
 
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 
 public class TreeRootNoValidCommitsException extends ClientGuildAwareException {
     public TreeRootNoValidCommitsException(LogMessage logMessage, String guildId) {

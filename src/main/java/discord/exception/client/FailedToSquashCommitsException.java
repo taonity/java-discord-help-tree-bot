@@ -1,6 +1,6 @@
 package discord.exception.client;
 
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 
 public class FailedToSquashCommitsException extends ClientGuildAwareException {
     public FailedToSquashCommitsException(LogMessage logMessage, String guildId) {

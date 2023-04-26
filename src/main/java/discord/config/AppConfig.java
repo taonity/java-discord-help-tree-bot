@@ -1,7 +1,7 @@
 package discord.config;
 
 import discord.exception.main.EmptyOptionalException;
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.presence.ClientActivity;

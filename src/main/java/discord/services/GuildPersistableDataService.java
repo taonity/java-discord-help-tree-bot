@@ -3,7 +3,7 @@ package discord.services;
 import discord.exception.client.CorruptGiteaUserException;
 import discord.exception.main.EmptyOptionalException;
 import discord.exception.GiteaApiException;
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 import discord.model.GuildSettings;
 import discord.repository.GuildSettingsRepository;
 import discord4j.common.util.Snowflake;

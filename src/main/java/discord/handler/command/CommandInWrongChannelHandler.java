@@ -2,7 +2,7 @@ package discord.handler.command;
 
 import discord.exception.main.EmptyOptionalException;
 import discord.handler.EventPredicates;
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 import discord.localisation.SimpleMessage;
 import discord.services.MessageChannelService;
 import discord.structure.ChannelRole;

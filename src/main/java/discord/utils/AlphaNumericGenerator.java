@@ -1,7 +1,7 @@
 package discord.utils;
 
 import discord.exception.main.AlphaNumericMaxNumberReachedException;
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 
 public class AlphaNumericGenerator {
     private final static String CHARACTERS_STRING = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";

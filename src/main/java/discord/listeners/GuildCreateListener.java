@@ -1,6 +1,6 @@
 package discord.listeners;
 
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 import discord.repository.GuildSettingsRepository;
 import discord.services.GuildDataService;
 import discord4j.core.event.domain.guild.GuildCreateEvent;

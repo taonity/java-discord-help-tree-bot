@@ -1,6 +1,6 @@
 package discord.exception;
 
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 
 public abstract class LogMessageException extends RuntimeException {
     public LogMessageException(LogMessage logMessage) {

@@ -1,7 +1,7 @@
 package discord.handler;
 
 import discord.exception.main.EmptyOptionalException;
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 import discord.repository.GuildSettingsRepository;
 import discord.services.GuildRoleService;
 import discord.structure.ChannelRole;

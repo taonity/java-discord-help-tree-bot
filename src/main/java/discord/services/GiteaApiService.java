@@ -4,7 +4,7 @@ import discord.dto.gitea.api.*;
 import discord.exception.main.EmptyOptionalException;
 import discord.exception.main.FailedToCreateGiteaAdminTokenException;
 import discord.exception.GiteaApiException;
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 import discord.model.AppSettings;
 import discord.repository.AppSettingsRepository;
 import lombok.RequiredArgsConstructor;

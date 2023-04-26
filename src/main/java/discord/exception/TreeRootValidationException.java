@@ -1,6 +1,6 @@
 package discord.exception;
 
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 
 public class TreeRootValidationException extends AbstractLogWithMessageException {
     public TreeRootValidationException(LogMessage logMessage, String message) {

@@ -1,6 +1,6 @@
 package discord.exception;
 
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 
 public class YamlProcessingException extends AbstractLogWithMessageException {
     public YamlProcessingException(LogMessage logMessage, String message) {

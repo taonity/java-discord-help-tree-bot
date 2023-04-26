@@ -1,7 +1,7 @@
 package discord.services;
 
 import discord.exception.main.EmptyOptionalException;
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.spec.RoleCreateSpec;
 import lombok.RequiredArgsConstructor;

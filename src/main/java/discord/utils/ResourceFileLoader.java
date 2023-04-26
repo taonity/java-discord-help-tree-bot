@@ -1,7 +1,7 @@
 package discord.utils;
 
 import discord.exception.main.FailedToLoadResourceFileException;
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;

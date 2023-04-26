@@ -1,7 +1,7 @@
 package discord.exception.client;
 
 import discord.exception.LogMessageException;
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 import lombok.Getter;
 
 public abstract class ClientGuildAwareException extends LogMessageException {

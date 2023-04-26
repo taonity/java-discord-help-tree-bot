@@ -1,6 +1,6 @@
 package discord.exception.client;
 
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 
 public class CorruptGiteaUserException extends ClientGuildAwareException {
     public CorruptGiteaUserException(LogMessage logMessage, String guildId) {

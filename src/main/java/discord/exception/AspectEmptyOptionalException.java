@@ -1,6 +1,6 @@
 package discord.exception;
 
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 
 public class AspectEmptyOptionalException extends LogMessageException {
     public AspectEmptyOptionalException(LogMessage logMessage, Throwable cause) {

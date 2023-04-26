@@ -1,6 +1,6 @@
 package discord.exception;
 
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 
 public class ExceptionUtils {
     private final static String MESSAGE_FORMAT = "%s\n%s";

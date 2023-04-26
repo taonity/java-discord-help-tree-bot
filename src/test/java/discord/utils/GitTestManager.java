@@ -2,7 +2,7 @@ package discord.utils;
 
 import discord.config.PropertyConfig;
 import discord.exception.main.FailedToRemoveGitApiWorkingDirException;
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 import discord.services.GitApiService;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.eclipse.jgit.api.Git;

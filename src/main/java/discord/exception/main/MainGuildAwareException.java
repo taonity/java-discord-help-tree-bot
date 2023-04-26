@@ -1,7 +1,7 @@
 package discord.exception.main;
 
 import discord.exception.LogMessageException;
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 
 public abstract class MainGuildAwareException extends LogMessageException {
     public MainGuildAwareException(LogMessage logMessage) {

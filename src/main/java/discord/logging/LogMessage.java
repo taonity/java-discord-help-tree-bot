@@ -1,4 +1,4 @@
-package discord.localisation;
+package discord.logging;
 
 public enum LogMessage {
     ALERT_20001,

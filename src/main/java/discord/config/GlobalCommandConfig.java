@@ -1,7 +1,7 @@
 package discord.config;
 
 import discord.exception.main.EmptyOptionalException;
-import discord.localisation.LogMessage;
+import discord.logging.LogMessage;
 import discord4j.common.JacksonResources;
 import discord4j.discordjson.json.ApplicationCommandRequest;
 import discord4j.rest.RestClient;
