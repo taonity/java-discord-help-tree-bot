@@ -17,9 +17,8 @@ public class GitHubWebHookController {
     @PostMapping(value = "/dialog-push")
     @ResponseStatus(code = HttpStatus.OK)
     public void webHook(@RequestBody WebhookEvent event) {
-        log.info("Dialog update request received: {}", event);
+        log.info("Dialog update request received with content: {}", event);
         treeRootService.updateRoot(event);
-
     }
 
 }

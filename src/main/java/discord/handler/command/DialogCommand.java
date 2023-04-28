@@ -16,8 +16,10 @@ import discord.structure.EmbedType;
 import discord.utils.AlphaNumericGenerator;
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
+import discord4j.core.object.entity.Member;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +27,7 @@ import java.util.stream.Stream;
 
 import static discord.structure.CommandName.DIALOG;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class DialogCommand extends AbstractSlashCommand {
@@ -84,5 +87,15 @@ public class DialogCommand extends AbstractSlashCommand {
                 ),
                 EmbedType.SIMPLE_MESSAGE_EMBED_TYPE
         )).withEphemeral(true).subscribe();
+
+        log.info("Command {} successfully executed by user {} in guild {}",
+                command.getCommandName(),
+                event.getInteraction().getMember()
+                        .map(Member::getId)
+                        .map(Snowflake::asString)
+                        .orElse("NULL"),
+                event.getInteraction().getGuildId()
+                        .map(Snowflake::asString)
+                        .orElse("NULL"));
     }
 }

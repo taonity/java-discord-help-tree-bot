@@ -9,14 +9,18 @@ import discord.structure.ChannelRole;
 import discord.structure.CommandName;
 import discord.structure.EmbedBuilder;
 import discord.structure.EmbedType;
+import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
+import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.channel.Channel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Stream;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CommandInWrongChannelHandler extends AbstractSlashCommand {
@@ -52,5 +56,15 @@ public class CommandInWrongChannelHandler extends AbstractSlashCommand {
                 EmbedType.SIMPLE_MESSAGE_EMBED_TYPE
         )).withEphemeral(true).subscribe();
 
+        log.info("Command {} failed in wrong channel {} by user {} in guild {}",
+                command.getCommandName(),
+                event.getInteraction().getChannelId().asString(),
+                event.getInteraction().getMember()
+                        .map(Member::getId)
+                        .map(Snowflake::asString)
+                        .orElse("NULL"),
+                event.getInteraction().getGuildId()
+                        .map(Snowflake::asString)
+                        .orElse("NULL"));
     }
 }

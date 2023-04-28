@@ -8,12 +8,15 @@ import discord.structure.ChannelRole;
 import discord.structure.CommandName;
 import discord.structure.EmbedBuilder;
 import discord.structure.EmbedType;
+import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
+import discord4j.core.object.entity.Member;
 import discord4j.core.spec.EmbedCreateSpec;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +27,7 @@ import static discord.localisation.SimpleMessage.FAIL_CHANNEL_UPDATE_MESSAGE;
 import static discord.localisation.SimpleMessage.SUCCESS_CHANNEL_UPDATE_MESSAGE;
 import static discord.structure.CommandName.CHANNELROLE;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 @ConfigurationProperties(prefix="discord")
@@ -56,8 +60,31 @@ public class ChannelRoleCommand extends AbstractSlashCommand {
             channelService.updateChannelById(guildId.asString(), channelType.get(), channelId);
 
             embedCreateSpec = EmbedBuilder.buildSimpleMessage(SUCCESS_CHANNEL_UPDATE_MESSAGE.getMessage(), EmbedType.SIMPLE_MESSAGE_EMBED_TYPE);
+
+            log.info("Command {} successfully defined role {} for channel {} by user {} in guild {}",
+                    command.getCommandName(),
+                    channelType.get().getRoleName(),
+                    event.getInteraction().getChannelId().asString(),
+                    event.getInteraction().getMember()
+                            .map(Member::getId)
+                            .map(Snowflake::asString)
+                            .orElse("NULL"),
+                    event.getInteraction().getGuildId()
+                            .map(Snowflake::asString)
+                            .orElse("NULL"));
         } else {
             embedCreateSpec = EmbedBuilder.buildSimpleMessage(FAIL_CHANNEL_UPDATE_MESSAGE.getMessage(), EmbedType.SIMPLE_MESSAGE_EMBED_TYPE);
+
+            log.info("Command {} failed with empty role for channel {} by user {} in guild {}",
+                    command.getCommandName(),
+                    event.getInteraction().getChannelId().asString(),
+                    event.getInteraction().getMember()
+                            .map(Member::getId)
+                            .map(Snowflake::asString)
+                            .orElse("NULL"),
+                    event.getInteraction().getGuildId()
+                            .map(Snowflake::asString)
+                            .orElse("NULL"));
         }
         event.reply().withEmbeds(embedCreateSpec).withEphemeral(true).subscribe();
     }

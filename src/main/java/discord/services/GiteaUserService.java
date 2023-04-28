@@ -54,7 +54,7 @@ public class GiteaUserService {
 
         try {
             // TODO: For some reason giteaApiService.createFile is synchronous, so a delay needed before applying webhook
-            Thread.sleep(500);
+            Thread.sleep(1500);
         } catch (InterruptedException e) {
             throw new MainInterruptedException(LogMessage.ALERT_20083, e);
         }

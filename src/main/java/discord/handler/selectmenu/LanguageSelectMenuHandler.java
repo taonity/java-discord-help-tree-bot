@@ -13,6 +13,7 @@ import discord4j.core.event.domain.interaction.SelectMenuInteractionEvent;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.entity.Member;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -20,6 +21,7 @@ import java.util.stream.Stream;
 
 import static discord.localisation.LocalizedMessage.GREETING_MESSAGE;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class LanguageSelectMenuHandler extends AbstractSelectMenuHandler {
@@ -72,6 +74,13 @@ public class LanguageSelectMenuHandler extends AbstractSelectMenuHandler {
                 .subscribe();
 
         disableAndEditCurrentSelectMenu(event, optionValue);
+
+        log.info("Language select menu was set to {} by user {} in guild {}",
+                optionValue,
+                smManager.getUserId().asString(),
+                event.getInteraction().getGuildId()
+                        .map(Snowflake::asString)
+                        .orElse("NULL"));
     }
 
     private Optional<SelectMenuManager> getSmManager(SelectMenuInteractionEvent event, String guildId) {

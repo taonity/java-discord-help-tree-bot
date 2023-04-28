@@ -13,9 +13,11 @@ import discord.structure.EmbedType;
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.entity.Guild;
+import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Role;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -25,6 +27,7 @@ import java.util.stream.Stream;
 
 import static discord.structure.CommandName.DIALOG;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class IsNotModeratorHandler extends AbstractSlashCommand {
@@ -67,5 +70,14 @@ public class IsNotModeratorHandler extends AbstractSlashCommand {
                 EmbedType.SIMPLE_MESSAGE_EMBED_TYPE
         )).withEphemeral(true).subscribe();
 
+        log.info("Command {} failed to execute by non-moderator user {} in guild {}",
+                command.getCommandName(),
+                event.getInteraction().getMember()
+                        .map(Member::getId)
+                        .map(Snowflake::asString)
+                        .orElse("NULL"),
+                event.getInteraction().getGuildId()
+                        .map(Snowflake::asString)
+                        .orElse("NULL"));
     }
 }

@@ -13,6 +13,7 @@ import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.SelectMenu;
 import discord4j.core.object.entity.Member;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -20,6 +21,7 @@ import java.util.stream.Stream;
 
 import static discord.localisation.LocalizedMessage.CLARIFICATION_MESSAGE;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TreeSelectMenuHandler extends AbstractSelectMenuHandler {
@@ -61,18 +63,36 @@ public class TreeSelectMenuHandler extends AbstractSelectMenuHandler {
         final String optionValue = getOptionValueFromEvent(event);
 
         final var helpChannel = channelService.getChannel(guild, ChannelRole.HELP);
-
+        // TODO move to else
         final SelectMenu selectMenu = smManager.createNextTreeSelectMenu(optionValue);
+
+        final var guildIdLogValue = event.getInteraction().getGuildId()
+                .map(Snowflake::asString)
+                .orElse("NULL");
+        log.info("Select menu was selected with node {} by user {} in guild {}",
+                optionValue,
+                smManager.getUserId().asString(),
+                guildIdLogValue);
 
         if(smManager.atLastQuestionInBranch()) {
             selectMenuService.configureSmManagerAnswerStage(smManager, guildId);
 
-            helpChannel.createMessage(smManager.getTranslatedText()).subscribe();
+            helpChannel.createMessage(smManager.getTranslatedAnswerText()).subscribe();
+
+            log.info("Select menu answer {} entered in {} stage by user {} in guild {}",
+                    smManager.getAnswerNode().getId(),
+                    smManager.getAnswerNode().getNodeFunction().name(),
+                    smManager.getUserId().asString(),
+                    guildIdLogValue);
         } else {
             smManager.updateLastUpdateTime();
 
             helpChannel.createMessage(CLARIFICATION_MESSAGE.translate(smManager.getLanguage()))
                     .withComponents(ActionRow.of(selectMenu)).subscribe();
+
+            log.info("Next select menu was sent for user {} in guild {}",
+                    smManager.getUserId().asString(),
+                    guildIdLogValue);
         }
 
         disableAndEditCurrentSelectMenu(event, optionValue);

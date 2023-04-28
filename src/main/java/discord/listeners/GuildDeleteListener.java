@@ -20,5 +20,7 @@ public class GuildDeleteListener implements DiscordEventListener<GuildDeleteEven
         final var guildId = event.getGuildId().asString();
 
         guildDataService.remove(guildId);
+
+        log.info("Bot left guild {}", guildId);
     }
 }

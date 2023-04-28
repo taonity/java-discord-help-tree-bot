@@ -28,9 +28,11 @@ public class GuildCreateListener implements DiscordEventListener<GuildCreateEven
         if(guildIsNotPresent) {
             guildDataService.removeIfLeftInDiscord();
             guildDataService.create(guildId);
+
+            log.info("New guild {} was initialised", guildId);
         } else {
             // means that bot didn't really join the guild
-            log.warn(LogMessage.ALERT_20055.name());
+            log.info("Existing guild {} was initialised", guildId);
         }
     }
 }

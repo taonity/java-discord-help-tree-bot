@@ -1,12 +1,16 @@
 package discord.tree;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import discord.localisation.Language;
 import discord.localisation.LocalizedText;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Getter
@@ -46,6 +50,29 @@ public class Node implements Cloneable {
                 .map(Node::getIdentifiedNodeLocalizedText)
                 .collect(Collectors.toList());
     }
+
+    private Map<String, Object> toMap() {
+        final var map = new HashMap<String, Object>();
+        map.put("id", id);
+        final var childNodesMap = new ArrayList<>();
+        if(childText != null) {
+            for (Node child : childText) {
+                childNodesMap.add(child.toMap());
+            }
+        }
+        map.put("cn", childNodesMap);
+        return map;
+    }
+
+
+    public String asIdJsonString() {
+        final var objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(toMap());
+        } catch (JsonProcessingException e) {
+            return "NULL";
+        }
+    };
 
     @Override
     protected Object clone() throws CloneNotSupportedException {

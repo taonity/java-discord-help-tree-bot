@@ -6,16 +6,21 @@ import discord.logging.LogMessage;
 import discord.services.SelectMenuService;
 import discord.services.MessageChannelService;
 import discord.structure.ChannelRole;
+import discord.utils.SelectMenuManager;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.User;
 import discord4j.core.spec.MessageCreateSpec;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class RespondOnQuestionHandler implements MessageHandler {
@@ -31,20 +36,14 @@ public class RespondOnQuestionHandler implements MessageHandler {
                 .filter(eventPredicates::filterEmptyAuthor)
                 .filter(eventPredicates::filterBot)
                 .filter(e -> eventPredicates.filterByChannelRole(e, ChannelRole.HELP))
+                .filter(e -> this.getSmManager(event).isPresent())
                 .count() == 1;
     }
 
     @Override
     public void handle(MessageCreateEvent event) {
-        final var guildId = event.getGuildId()
-                .map(Snowflake::asString)
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20038));
-
-        final var authorId = event.getMessage().getAuthor()
-                .map(User::getId)
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20011));
-
-        final var smManager = selectMenuService.getSmManager(authorId, guildId)
+        final var guildId = getGuildId(event);
+        final var smManager = getSmManager(event)
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20012));
 
         final var targetId = smManager.getTargetId();
@@ -61,5 +60,28 @@ public class RespondOnQuestionHandler implements MessageHandler {
                         .content(targetUser.getMention())
                         .build()
         ).subscribe();
+
+        log.info("Respond came on question with mention of {} by user {} in guild {}",
+                targetUser.getId().asString(),
+                smManager.getUserId().asString(),
+                event.getGuild().blockOptional()
+                        .map(Guild::getId)
+                        .map(Snowflake::asString)
+                        .orElse("NULL"));
+    }
+
+    private String getGuildId(MessageCreateEvent event) {
+        return event.getGuildId()
+                .map(Snowflake::asString)
+                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20038));
+    }
+
+    private Optional<SelectMenuManager> getSmManager(MessageCreateEvent event) {
+        final var guildId = getGuildId(event);
+        final var authorId = event.getMessage().getAuthor()
+                .map(User::getId)
+                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20011));
+
+        return  selectMenuService.getSmManager(authorId, guildId);
     }
 }

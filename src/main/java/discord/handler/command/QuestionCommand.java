@@ -9,6 +9,7 @@ import discord.structure.CommandName;
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.component.ActionRow;
+import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -55,5 +56,14 @@ public class QuestionCommand extends AbstractSlashCommand {
                 ActionRow.of(selectMenuManager.createLanguageSelectMenu())
         ).subscribe();
 
+        log.info("Command {} successfully created first select menu from user {} in guild {}",
+                command.getCommandName(),
+                event.getInteraction().getMember()
+                        .map(Member::getId)
+                        .map(Snowflake::asString)
+                        .orElse("NULL"),
+                event.getInteraction().getGuildId()
+                        .map(Snowflake::asString)
+                        .orElse("NULL"));
     }
 }

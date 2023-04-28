@@ -42,7 +42,7 @@ public class GuildDataService {
 
         selectMenuService.createSmManagerList(guildId);
         guildSettingsRepository.findGuildSettingByGuildId(guildId)
-                .ifPresentOrElse(treeRootService::makeAndSetRoot,
+                .ifPresentOrElse(treeRootService::createNewRoot,
                         () -> {throw new EmptyOptionalException(LogMessage.ALERT_20070);});
     }
 

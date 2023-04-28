@@ -93,7 +93,7 @@ public class SelectMenuManager {
         return treeWalker.getCurrentNode().getChildText().get(0);
     }
 
-    public String getTranslatedText() {
+    public String getTranslatedAnswerText() {
         return getAnswerNode().getLocalizedText().getTranslatedText(language);
     }
 }
