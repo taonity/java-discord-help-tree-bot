@@ -1,7 +1,7 @@
 package discord.controllers;
 
 import discord.dto.WebhookEvent;
-import discord.tree.TreeRootService;
+import discord.services.TreeRootService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

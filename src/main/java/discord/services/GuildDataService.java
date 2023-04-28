@@ -4,7 +4,6 @@ import discord.exception.main.EmptyOptionalException;
 import discord.logging.LogMessage;
 import discord.model.GuildSettings;
 import discord.repository.GuildSettingsRepository;
-import discord.tree.TreeRootService;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.Guild;

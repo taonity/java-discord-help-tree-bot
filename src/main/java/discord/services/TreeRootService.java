@@ -1,4 +1,4 @@
-package discord.tree;
+package discord.services;
 
 import discord.dto.WebhookEvent;
 import discord.exception.client.CorruptGiteaUserException;
@@ -15,6 +15,7 @@ import discord.services.MessageChannelService;
 import discord.structure.ChannelRole;
 import discord.structure.EmbedBuilder;
 import discord.structure.NodeAndError;
+import discord.tree.Node;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.spec.EmbedCreateSpec;
