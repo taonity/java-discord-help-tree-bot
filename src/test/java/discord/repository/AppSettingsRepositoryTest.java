@@ -20,7 +20,6 @@ class AppSettingsRepositoryTest {
 
     @Test
     void findFirst() {
-        appSettingsRepository.save(new AppSettings("bruh"));
         System.out.println(appSettingsRepository.findOne().get());
     }
 }

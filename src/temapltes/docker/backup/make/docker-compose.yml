@@ -5,6 +5,7 @@ services:
   make-backup:
     # image: offen/docker-volume-backup:v2.25.1
     image: generaltao725/docker-volume-backup
+    container_name: java-discord-help-bot-make-backup
     env_file:
       - ./backup.env
     volumes:

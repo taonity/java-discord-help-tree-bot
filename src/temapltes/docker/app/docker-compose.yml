@@ -2,6 +2,7 @@ version: '2.4'
 
 services:
   app:
+    container_name: java-discord-help-bot-app
     image: generaltao725/java-discord-help-bot:latest
     ports:
       - "9015:9015"
@@ -11,6 +12,6 @@ services:
       - "host.docker.internal:host-gateway"
     healthcheck:
       test: curl localhost:9015/actuator/health
-      interval: 10s
-      timeout: 10s
+      interval: 1s
+      timeout: 1s
       retries: 30

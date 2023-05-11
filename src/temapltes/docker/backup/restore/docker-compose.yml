@@ -3,6 +3,7 @@ version: '2.4'
 services:
   restore-backup:
     image: generaltao725/command-runner
+    container_name: java-discord-help-bot-restore-backup
     environment:
       - COMMAND_RUNNER_GROUP=java-discord-help-bot
     volumes:

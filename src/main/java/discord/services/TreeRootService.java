@@ -48,10 +48,13 @@ public class TreeRootService {
     private final GatewayDiscordClient gatewayDiscordClient;
     private final MessageChannelService messageChannelService;
 
+    private static boolean created = false;
+
     @PostConstruct
     private void postConstruct() {
         StreamSupport.stream(guildSettingsRepository.findAll().spliterator(), true)
                 .forEach(this::createExistingRoot);
+        created = true;
     }
 
     private void createExistingRoot(GuildSettings guildSettings) {
@@ -164,5 +167,9 @@ public class TreeRootService {
 
     public void removeRootByGuildId(String guildId) {
         rootMap.remove(guildId);
+    }
+
+    public static boolean wasCreated() {
+        return created;
     }
 }
