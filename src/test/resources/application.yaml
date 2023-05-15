@@ -1,4 +1,0 @@
----
-discord:
-  automation:
-    token: ${discord.automation.token}
