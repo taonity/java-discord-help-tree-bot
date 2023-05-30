@@ -52,7 +52,8 @@ public class TreeRootService {
 
     @PostConstruct
     private void postConstruct() {
-        StreamSupport.stream(guildSettingsRepository.findAll().spliterator(), true)
+        // TODO: A good way to use parallel true?
+        StreamSupport.stream(guildSettingsRepository.findAll().spliterator(), false)
                 .forEach(this::createExistingRoot);
         created = true;
     }

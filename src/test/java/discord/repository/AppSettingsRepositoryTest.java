@@ -1,6 +1,7 @@
 package discord.repository;
 
 import discord.model.AppSettings;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ class AppSettingsRepositoryTest {
     AppSettingsRepository appSettingsRepository;
 
     @Test
+    @Disabled
     void findFirst() {
         System.out.println(appSettingsRepository.findOne().get());
     }

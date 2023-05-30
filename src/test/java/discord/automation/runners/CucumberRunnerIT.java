@@ -1,6 +1,7 @@
 package discord.automation.runners;
 
-import discord.automation.config.DiscordAutomationBotConfig;
+import discord.automation.config.GiteaApiTestService;
+import discord.automation.config.GiteaUserTestService;
 import discord.config.PropertyConfig;
 import discord.services.GiteaApiService;
 import io.cucumber.spring.CucumberContextConfiguration;
@@ -30,7 +31,7 @@ import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
 // Is crucial for Junit 4 to 5 migration, for testcontainers
 @CucumberContextConfiguration
 @ExtendWith(SpringExtension.class)
-//@TestPropertySource(locations="classpath:application-test.yml")
+@ActiveProfiles("test")
 // DB configs
 @EntityScan("discord.model")
 @EnableJpaRepositories(basePackages = {"discord.repository"})
@@ -39,7 +40,10 @@ import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
 // Gitea configs
 @ContextConfiguration(
         initializers = {ConfigDataApplicationContextInitializer.class},
-        classes = {GiteaApiService.class, PropertyConfig.class, DiscordAutomationBotConfig.class})
-@ActiveProfiles("test")
-public class CucumberRunnerIT {
+        classes = {
+                PropertyConfig.class,
+                GiteaApiTestService.class,
+                GiteaUserTestService.class
+        })
+public class CucumberRunnerIT extends AbstractContainerRunner {
 }

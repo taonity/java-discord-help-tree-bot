@@ -1,11 +1,14 @@
 package discord.automation.steps;
 
+import discord.automation.config.GiteaApiTestService;
+import discord.automation.config.GiteaUserTestService;
 import discord.exception.GiteaApiException;
 import discord.exception.main.EmptyOptionalException;
 import discord.logging.LogMessage;
 import discord.repository.AppSettingsRepository;
 import discord.repository.GuildSettingsRepository;
 import discord.services.GiteaApiService;
+import discord.utils.ResourceFileLoader;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.Guild;
@@ -13,74 +16,41 @@ import discord4j.core.object.entity.channel.GuildChannel;
 import discord4j.core.object.entity.channel.MessageChannel;
 import discord4j.discordjson.Id;
 import discord4j.discordjson.json.ApplicationCommandData;
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import lombok.RequiredArgsConstructor;
+import org.assertj.core.api.SoftAssertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 
-class IsItFriday {
-    static String isItFriday(String today) {
-        return "Friday".equals(today) ? "TGIF" : "Nope";
-    }
-}
-
-
+@RequiredArgsConstructor
 public class StepDefinitions {
-    private String today;
-    private String actualAnswer;
 
-    @Autowired
-    AppSettingsRepository appSettingsRepository;
+    private final GuildSettingsRepository guildSettingsRepository;
 
-    @Autowired
-    GiteaApiService giteaApiService;
+    private final GiteaUserTestService giteaUserTestService;
 
-    @Autowired
-    GuildSettingsRepository guildSettingsRepository;
-
-    @Autowired
-    GatewayDiscordClient automationClient;
-
-    @Autowired
-    Guild guild;
-
-    @Autowired
-    MessageChannel automationChannel;
-
-    @Given("today is {string}")
-    public void today_is(String today) throws GiteaApiException {
-        System.out.println(appSettingsRepository.findOne().get());
-        final var guildSettings = guildSettingsRepository.findGuildSettingByGuildId("448934652992946176").get();
-        System.out.println(giteaApiService.getUserByUid(guildSettings.getGiteaUserId()));
-        final long applicationId = automationClient.getRestClient().getApplicationId().blockOptional()
-                .orElseThrow(() -> new RuntimeException("Failed to retrieve application id"));
-        var id = automationClient.getRestClient().getApplicationService()
-                .getGuildApplicationCommands(applicationId, guild.getId().asLong())
-                .collectList()
-                .blockOptional()
-                .orElseThrow(() -> new RuntimeException("Failed to retrieve commands"))
-                .stream()
-                .filter(command -> command.name().equals("question"))
-                .map(ApplicationCommandData::id)
-                .map(Id::asLong)
-                .findAny()
-                .orElseThrow(() -> new RuntimeException("Can't find a command"));
-
-        automationChannel.createMessage().withContent("/question").block();
-
-        this.today = today;
+    @Then("Gitea user id, alphanumeric and dialog file content must match")
+    public void checkGiteaDataTable(DataTable table) {
+        final var rows = table.asMaps(String.class, String.class);
+        rows.forEach(this::checkGiteaData);
     }
 
-    @When("I ask whether it's Friday yet")
-    public void i_ask_whether_it_s_Friday_yet() {
-        actualAnswer = IsItFriday.isItFriday(today);
-    }
+    private void checkGiteaData(Map<String, String> map) {
+        final var guildSettings = guildSettingsRepository.findGuildSettingByGuildId(map.get("guildId"))
+                .orElseThrow(() -> new RuntimeException("Failed to retrieve guild setting"));
+        final var expectedDialogFileContent = ResourceFileLoader.loadFile(map.get("dialogFile"));
+        final var actualDialogFileContent = giteaUserTestService.getGiteaUserFileContent(map.get("guildId"));
 
-    @Then("I should be told {string}")
-    public void i_should_be_told(String expectedAnswer) {
-        assertEquals(expectedAnswer, actualAnswer);
+        final var softly = new SoftAssertions();
+        softly.assertThat(guildSettings.getGiteaUserId()).isEqualTo(map.get("giteaUserId"));
+        softly.assertThat(guildSettings.getGiteaUserAlphanumeric()).isEqualTo(map.get("giteaUserAlphaNumeric"));
+        softly.assertThat(actualDialogFileContent).isEqualTo(expectedDialogFileContent);
     }
 }

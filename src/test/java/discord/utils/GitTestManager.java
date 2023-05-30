@@ -38,13 +38,13 @@ public class GitTestManager {
     @Value("${gitea.protocol}://${gitea.address}:${gitea.port}/%s/%s.git")
     private String gitUriFormat;
 
-    @Value("${gitea.git.username}")
+    @Value("${gitea.admin.username}")
     private String gitUsername;
 
-    @Value("${gitea.git.password}")
+    @Value("${gitea.admin.password}")
     private String gitPassword;
 
-    @Value("${gitea.git.email}")
+    @Value("${gitea.admin.email}")
     private String gitEmail;
 
     @Value("${gitea.git.repo-path}")

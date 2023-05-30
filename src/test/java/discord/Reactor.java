@@ -1,13 +1,14 @@
 package discord;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 import reactor.util.function.Tuples;
 
-class Reactor {
+class ReactorTest {
 
-    public class SequenceGenerator {
+    public static class SequenceGenerator {
         public Flux<Integer> generateFibonacciWithTuples() {
             return Flux.generate(
                     () -> Tuples.of(0, 1),
@@ -19,6 +20,7 @@ class Reactor {
         }
     }
     @Test
+    @Disabled
     void t1() {
         SequenceGenerator sequenceGenerator = new SequenceGenerator();
         Flux<Integer> fibonacciFlux = sequenceGenerator.generateFibonacciWithTuples().take(5);

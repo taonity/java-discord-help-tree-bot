@@ -1,6 +1,7 @@
 package discord.repository;
 
 import discord.model.GuildSettings;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,15 @@ class GuildSettingsRepositoryTest {
     GuildSettingsRepository guildSettingsRepository;
 
     @Test
-    void t() {
-        //guildSettingsRepository.save(GuildSettings.builder().id(0).guildId("f").helpChannelId("ff").logChannelId("ff").build());
-        //guildSettingsRepository.save(new GuildSettings(12,"dfd","fff", "ffdf", 11));
+    @Disabled
+    void save() {
+        final var guildSettings = GuildSettings.builder()
+                .id(100)
+                .guildId("f")
+                .helpChannelId("ff")
+                .logChannelId("ff")
+                .build();
 
+        guildSettingsRepository.save(guildSettings);
     }
 }

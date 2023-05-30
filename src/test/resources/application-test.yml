@@ -1,6 +1,4 @@
 ---
-discord:
-  automation:
-    token: MTEwNTgzNDEzODU5NjAzMjU0Mg.GqDj4I.STQEifYAkXUwvBqZsqHq57Jp1_UeOihAT0WL9Y
-    channelId: 1107289996395819078
-    guildId: 448934652992946176
+spring:
+  flyway:
+    enabled: false

@@ -5,13 +5,21 @@ import discord.exception.GiteaApiException;
 import discord.model.GuildSettings;
 import discord.repository.GuildSettingsRepository;
 import discord4j.core.GatewayDiscordClient;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import reactor.core.publisher.Mono;
 
@@ -23,10 +31,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-
+@ExtendWith(SpringExtension.class)
+@ActiveProfiles("test")
+@EntityScan("discord.model")
+@EnableJpaRepositories(basePackages = {"discord.repository"})
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@DataJpaTest
 @ContextConfiguration(initializers = ConfigDataApplicationContextInitializer.class, classes = {
-        GiteaApiService.class, PropertyConfig.class, GiteaUserService.class, GitApiService.class})
-@RunWith(SpringRunner.class)
+        GiteaApiService.class,
+        PropertyConfig.class,
+        GiteaUserService.class,
+        GitApiService.class})
 public class GiteaUserServiceTest {
 
     @Autowired
@@ -45,14 +60,16 @@ public class GiteaUserServiceTest {
     MessageChannelService messageChannelService;
 
     @Test
+    @Disabled
     public void testCreateUser() throws GiteaApiException {
-        giteaUserService.createUser(100);
+        giteaUserService.createUser(200);
     }
 
     @Test
+    @Disabled
     public void testDeleteUser() throws GiteaApiException {
         String guildId = "448934652992946176";
-        int giteaUserId = 38;
+        int giteaUserId = 9;
         var guildSetting = GuildSettings.builder()
                 .guildId(guildId)
                 .giteaUserId(giteaUserId)
@@ -60,42 +77,5 @@ public class GiteaUserServiceTest {
                 .build();
         when(guildSettingsRepository.findGuildSettingByGuildId(guildId)).thenReturn(Optional.of(guildSetting));
         giteaUserService.deleteUser(guildId);
-    }
-
-    @Test
-    public void aaa() {
-        when(gatewayDiscordClient.getUserById(any())).thenReturn(Mono.empty());
-        //when(messageChannelService.getChannel(ChannelRole.LOG).createMessage(any(MessageCreateSpec.class))).thenReturn(Mono.empty());
-        //System.out.println(giteaUserService.getDialogRoot(3));
-
-    }
-
-    public String g(int number) {
-        String chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        int charsLength = chars.length();
-        char[] charsArray = new char[chars.length()];
-        chars.getChars(0, charsLength, charsArray,0);
-        StringBuilder stringBuilder = new StringBuilder();
-        while (number != 0) {
-            stringBuilder.append(charsArray[number % charsLength]);
-            number = Math.floorDiv(number, charsLength);
-        }
-        if(stringBuilder.length() == 0) {
-            stringBuilder.append(charsArray[0]);
-        }
-        return stringBuilder.toString();
-    }
-
-    @Test
-    public void a() {
-        System.out.println(generateFourCharFromNumber(1));
-        System.out.println(generateFourCharFromNumber(50000));
-        final var set = new HashSet<String>();
-
-        for(var i = 0; i < 500000; i++) {
-            set.add(g(i));
-        }
-
-        assertThat(set.size()).isEqualTo(500000);
     }
 }

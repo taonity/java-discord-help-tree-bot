@@ -27,6 +27,10 @@ public abstract class AbstractContainerRunner {
         Startables.deepStart(environment).join();
     }
 
+    // TODO: Without this test db beans are being created without container being riced
+    @Test
+    void dummyTest() {}
+
     private static File getComposeFile() {
         return Paths.get("target/docker/docker-compose.yml").toFile();
     }

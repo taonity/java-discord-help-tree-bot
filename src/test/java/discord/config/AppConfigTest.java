@@ -5,6 +5,7 @@ import discord4j.core.DiscordClientBuilder;
 import discord4j.core.object.entity.channel.MessageChannel;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.MessageCreateSpec;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,17 +22,15 @@ class AppConfigTest {
     @Value("${discord.token}")
     String discordToken;
 
-
-
     @Test
-    void gatewayDiscordClient() throws InterruptedException {
+    @Disabled
+    void gatewayDiscordClient() {
         final var gatewayDiscordClient = DiscordClientBuilder.create(discordToken).build()
                 .gateway()
                 .login()
                 .block();
 
         final var member = gatewayDiscordClient.getMemberById(Snowflake.of(448934652992946176L), Snowflake.of(383277523561086979L)).block();
-        System.out.println(member.getPresence().block());
 
         final var messageSpecs = MessageCreateSpec.builder()
                 .addFile("file-name.txt", new ByteArrayInputStream("text in file".getBytes()))

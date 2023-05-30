@@ -52,10 +52,10 @@ public class GiteaApiService {
     @Value("${gitea.branch-name}")
     private String branchName;
 
-    @Value("${app-reference.protocol}://${app-reference.address}:${server.port}")
+    @Value("${app-reference.url}")
     private String hookServerUrl;
 
-    @Value("${gitea.protocol}://${gitea.address}:${gitea.port}")
+    @Value("${gitea.url}")
     private String giteaBaseUrl;
 
     @Value("${gitea.admin.username}")

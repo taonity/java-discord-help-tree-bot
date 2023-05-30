@@ -1,17 +1,27 @@
 package discord.services;
 
 import discord.config.PropertyConfig;
+import discord.exception.GiteaApiException;
+import discord.model.GuildSettings;
 import discord.repository.GuildSettingsRepository;
 import discord.utils.CommitState;
 import discord.utils.GitTestManager;
 import discord4j.core.GatewayDiscordClient;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import reactor.core.publisher.Mono;
 
@@ -21,9 +31,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 
+@ExtendWith(SpringExtension.class)
+@ActiveProfiles("test")
+@EntityScan("discord.model")
+@EnableJpaRepositories(basePackages = {"discord.repository"})
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@DataJpaTest
 @ContextConfiguration(initializers = ConfigDataApplicationContextInitializer.class, classes = {
-        GiteaApiService.class, GitApiService.class, PropertyConfig.class, GiteaUserService.class, GitTestManager.class})
-@RunWith(SpringRunner.class)
+        GiteaApiService.class,
+        GitApiService.class,
+        PropertyConfig.class,
+        GiteaUserService.class,
+        GitTestManager.class})
 public class GiteaUserServiceGetDialogRootTest {
 
     @Autowired
@@ -42,11 +61,12 @@ public class GiteaUserServiceGetDialogRootTest {
     MessageChannelService messageChannelService;
 
     @Test
-    public void aaa() throws InterruptedException {
+    @Disabled
+    public void getDialogRoot() throws InterruptedException, GiteaApiException {
         when(gatewayDiscordClient.getUserById(any())).thenReturn(Mono.empty());
 
-        final var userName = "user_123";
-        final var repoName = "repo_123";
+        final var userName = "user_WtXF";
+        final var repoName = "repo_WtXF";
         gitManager.createTestGitRepo(userName, repoName, List.of(
                 CommitState.VALID,
                 CommitState.VALID,
@@ -61,12 +81,12 @@ public class GiteaUserServiceGetDialogRootTest {
                 CommitState.VALID
         ));
 
-        //System.out.println(giteaUserService.getDialogRoot(3));
+        final var guildSettings = GuildSettings.builder()
+                .id(100)
+                .guildId("123")
+                .build();
 
-    }
 
-    @Test
-    public void aaa1() throws InterruptedException {
-        //System.out.println(giteaUserService.getDialogRoot(3));
+        System.out.println(giteaUserService.getDialogRoot(guildSettings));
     }
 }

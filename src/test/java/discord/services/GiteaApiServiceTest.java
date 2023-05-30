@@ -1,64 +1,63 @@
 package discord.services;
 
+import discord.automation.config.GiteaApiTestService;
+import discord.automation.config.GiteaUserTestService;
 import discord.config.PropertyConfig;
-import org.junit.Test;
+import discord.dto.gitea.api.CreateFileOption;
+import discord.dto.gitea.api.CreateRepoOption;
+import discord.dto.gitea.api.CreateUserOption;
+import discord.exception.GiteaApiException;
+import io.cucumber.spring.CucumberContextConfiguration;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
-@ContextConfiguration(initializers = ConfigDataApplicationContextInitializer.class, classes = {GiteaApiService.class, PropertyConfig.class})
-@RunWith(SpringRunner.class)
+import static org.assertj.core.api.Assertions.assertThat;
+
+@ExtendWith(SpringExtension.class)
+@ActiveProfiles("test")
+@EntityScan("discord.model")
+@EnableJpaRepositories(basePackages = {"discord.repository"})
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@DataJpaTest
+@ContextConfiguration(
+        initializers = {ConfigDataApplicationContextInitializer.class},
+        classes = {PropertyConfig.class, GiteaApiService.class})
 public class GiteaApiServiceTest {
 
     @Autowired
     GiteaApiService giteaApiService;
 
-    @Value("${app-reference.protocol}://${app-reference.address}:${server.port}")
-    String serverPath;
-
     @Test
-    public void testGetUsers() throws InterruptedException {
-        String username = "test_user1211111";
-        String email = "d@d.d31211111";
-        String repo = "test_repo1211111";
-        String filepath = "test_file11.json";
-        //System.out.println(giteaApiService.createUser(new CreateUserOption(username, "d", email)));
-        //giteaApiService.createRepository(username, new CreateRepoOption(repo));
-        //giteaApiService.createFile(username, repo, filepath, new CreateFileOption("test_text"));
-        // TODO: falls without delay
+    @Disabled
+    public void testGiteaUserFlow() throws GiteaApiException, InterruptedException {
+        final var username = "user_WtXF";
+        final var email = "WtXF@d.d";
+        final var repo = "repo_WtXF";
+        final var filepath = "test_file.json";
+        final var branch_name = "main";
+        final var fileContent = "test_text";
+
+        System.out.println(giteaApiService.createUser(new CreateUserOption(username, "d12345", email)));
+        giteaApiService.createRepository(username, new CreateRepoOption(repo));
+        giteaApiService.createFile(username, repo, filepath, new CreateFileOption(fileContent));
         Thread.sleep(500);
-        /*System.out.println(giteaApiService.getFile(username, repo, filepath, GiteaApiService.BRANCH_NAME));
-        System.out.println(giteaApiService.getFile(username, repo, filepath, GiteaApiService.BRANCH_NAME));
-        System.out.println(giteaApiService.getFile(username, repo, filepath, GiteaApiService.BRANCH_NAME));
-        System.out.println(giteaApiService.getFile(username, repo, filepath, GiteaApiService.BRANCH_NAME));*/
+        assertThat(giteaApiService.getFile(username, repo, filepath, branch_name).getContentAsString())
+                .isEqualTo(fileContent);
     }
 
-    @Test
-    public void testIt() throws InterruptedException {
-        String username = "test_user";
-        String email = "d@d.d312111111";
-        String repo = "test_repo";
-        String filepath = "test_file11.json";
-        //System.out.println(giteaApiService.createUser(new GiteaNewUser(username, "d", email)));
-        //System.out.println(giteaApiService.createRepository(username, new GiteaNewRepo(repo)));
-        //System.out.println(giteaApiService.createFile(username, repo, filepath, new GiteaNewFile("test_text")));
-        //System.out.println(giteaApiService.getFile(username, repo, filepath, GiteaApiService.BRANCH_NAME).orElse(null));
-        //System.out.println(giteaApiService.editUser(new GiteaEditUser(username, "d123456")));
-        //System.out.println(giteaApiService.deleteRepo("test_user1211111","test_repo1211111"));
-        //System.out.println(giteaApiService.deleteUser("test_user1211111"));
-        //System.out.println(giteaApiService.getReposByUid(3));
-        //System.out.println(giteaApiService.getCommits(username, repo, 1));
-        //giteaApiService.createFile(username, repo, filepath, new CreateFileOption("test_text"));
-        //giteaApiService.createHook(username, repo);
-
-
-    }
-
-    @Test
-    public void pass() {
-
-    }
 }
