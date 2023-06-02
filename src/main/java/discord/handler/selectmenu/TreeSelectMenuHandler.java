@@ -37,16 +37,14 @@ public class TreeSelectMenuHandler extends AbstractSelectMenuHandler {
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20038));
 
         final var smManagerOpt = getSmManager(event, guildId);
-        if (smManagerOpt.isEmpty()) {
-            return false;
-        }
 
-        return Stream.of(event)
-                        .filter(eventPredicates::filterBot)
-                        .filter(e -> eventPredicates.filterByChannelRole(event, ChannelRole.HELP))
-                        .filter(e -> isTreeSelectMenu(smManagerOpt.get(), e))
-                        .count()
-                == 1;
+        return smManagerOpt.filter(selectMenuManager -> Stream.of(event)
+                .filter(eventPredicates::filterBot)
+                .filter(e -> eventPredicates.filterByChannelRole(event, ChannelRole.HELP))
+                .filter(e -> isTreeSelectMenu(selectMenuManager, e))
+                .count()
+                == 1).isPresent();
+
     }
 
     @Override

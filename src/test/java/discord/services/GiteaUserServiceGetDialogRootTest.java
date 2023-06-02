@@ -61,7 +61,7 @@ public class GiteaUserServiceGetDialogRootTest {
 
     @Test
     @Disabled
-    public void getDialogRoot() throws InterruptedException, GiteaApiException {
+    public void getDialogRoot() throws GiteaApiException {
         when(gatewayDiscordClient.getUserById(any())).thenReturn(Mono.empty());
 
         final var userName = "user_WtXF";

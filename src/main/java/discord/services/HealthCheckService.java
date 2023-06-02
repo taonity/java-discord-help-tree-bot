@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class HealthCheckService extends AbstractHealthIndicator {
     @Override
-    protected void doHealthCheck(Health.Builder builder) throws Exception {
+    protected void doHealthCheck(Health.Builder builder) {
         if (TreeRootService.wasCreated()) {
             builder.up();
         } else {

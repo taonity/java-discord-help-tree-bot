@@ -32,10 +32,6 @@ class AppConfigTest {
                 .login()
                 .block();
 
-        final var member = gatewayDiscordClient
-                .getMemberById(Snowflake.of(448934652992946176L), Snowflake.of(383277523561086979L))
-                .block();
-
         final var messageSpecs = MessageCreateSpec.builder()
                 .addFile("file-name.txt", new ByteArrayInputStream("text in file".getBytes()))
                 .addEmbed(EmbedCreateSpec.builder().title("test").build())

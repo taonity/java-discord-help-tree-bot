@@ -1,7 +1,5 @@
 package discord.services;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import discord.config.PropertyConfig;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

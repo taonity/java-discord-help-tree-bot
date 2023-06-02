@@ -38,7 +38,6 @@ public class GuildPersistableDataStartupService {
         final var guildSettingsList = StreamSupport.stream(
                         guildSettingsRepository.findAll().spliterator(), true)
                 .collect(Collectors.toList());
-        ;
 
         guildSettingsList.stream()
                 .filter(guildSettings -> !discordGuildIdList.contains(guildSettings.getGuildId()))

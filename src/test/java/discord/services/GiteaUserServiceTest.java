@@ -35,9 +35,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public class GiteaUserServiceTest {
 
     @Autowired
-    GiteaApiService giteaApiService;
-
-    @Autowired
     GiteaUserService giteaUserService;
 
     @MockBean

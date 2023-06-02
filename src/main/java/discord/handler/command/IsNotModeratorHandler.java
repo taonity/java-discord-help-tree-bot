@@ -33,7 +33,6 @@ public class IsNotModeratorHandler extends AbstractSlashCommand {
     @Getter
     private final CommandName command = DIALOG;
 
-    private final MessageChannelService messageChannelService;
     private final EventPredicates eventPredicates;
 
     @Override

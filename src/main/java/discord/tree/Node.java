@@ -69,11 +69,10 @@ public class Node implements Cloneable {
             return "NULL";
         }
     }
-    ;
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
-        Node helpTreeNode = null;
+        Node helpTreeNode;
         helpTreeNode = (Node) super.clone();
         if (helpTreeNode.childText != null) {
             helpTreeNode.childText = new ArrayList<>();

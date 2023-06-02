@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
 @Slf4j
-@SuppressWarnings("unchecked")
 @Component
 @RequiredArgsConstructor
 public class SlashCommandListener implements DiscordEventListener<ChatInputInteractionEvent> {
