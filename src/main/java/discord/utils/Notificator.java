@@ -1,12 +1,12 @@
 package discord.utils;
 
-import java.time.Instant;
-
 import static discord.localisation.LocalizedMessage.HELP_ADVICE_GENERATOR_MESSAGE;
+
+import java.time.Instant;
 
 public class Notificator {
     private long lastNotificationTime;
-    private final static long ONE_HOUR = 60 * 60;
+    private static final long ONE_HOUR = 60 * 60;
 
     public Notificator() {
         updateTime();

@@ -1,8 +1,7 @@
 package discord.dto.gitea.api;
 
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class CreateHookOption {

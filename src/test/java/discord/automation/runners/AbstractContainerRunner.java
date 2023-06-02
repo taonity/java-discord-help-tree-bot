@@ -1,23 +1,17 @@
 package discord.automation.runners;
 
-import org.junit.ClassRule;
-import org.junit.jupiter.api.Test;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.lifecycle.Startables;
-
 import java.io.File;
 import java.nio.file.Paths;
-
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.lifecycle.Startables;
 
 @Testcontainers
 public abstract class AbstractContainerRunner {
 
-    private final static DockerComposeContainer<?> environment;
+    private static final DockerComposeContainer<?> environment;
 
     static {
         environment = new DockerComposeContainer<>(getComposeFile())

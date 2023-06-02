@@ -1,9 +1,10 @@
 package discord.automation.runners;
 
+import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
+
 import discord.automation.config.GiteaApiTestService;
 import discord.automation.config.GiteaUserTestService;
 import discord.config.PropertyConfig;
-import discord.services.GiteaApiService;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.suite.api.ConfigurationParameter;
@@ -14,15 +15,10 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
-
 
 @Suite
 @IncludeEngines("cucumber")
@@ -40,10 +36,5 @@ import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
 // Gitea configs
 @ContextConfiguration(
         initializers = {ConfigDataApplicationContextInitializer.class},
-        classes = {
-                PropertyConfig.class,
-                GiteaApiTestService.class,
-                GiteaUserTestService.class
-        })
-public class CucumberRunnerIT extends AbstractContainerRunner {
-}
+        classes = {PropertyConfig.class, GiteaApiTestService.class, GiteaUserTestService.class})
+public class CucumberRunnerIT extends AbstractContainerRunner {}

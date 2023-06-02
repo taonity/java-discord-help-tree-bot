@@ -5,11 +5,10 @@ import discord.tree.Node;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.rest.http.client.ClientException;
-import lombok.RequiredArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class RootValidator {
@@ -31,18 +30,13 @@ public class RootValidator {
     private void validateLabels() {
         var labels = new ArrayList<String>();
         collectLabels(root, labels);
-        labels.stream()
-                .filter(label -> label.length() >= 100)
-                .forEach(messageCollector::addLabelTooBig);
+        labels.stream().filter(label -> label.length() >= 100).forEach(messageCollector::addLabelTooBig);
     }
 
     private void validateTargetIds() {
         var targetIds = new ArrayList<String>();
         collectTargetIds(root, targetIds);
-        targetIds.stream()
-                .map(this::toSnowflake)
-                .filter(Objects::nonNull)
-                .forEach(this::toUserId);
+        targetIds.stream().map(this::toSnowflake).filter(Objects::nonNull).forEach(this::toUserId);
     }
 
     private Snowflake toSnowflake(final String targetId) {
@@ -64,26 +58,25 @@ public class RootValidator {
 
     private static void collectTargetIds(Node node, List<String> targetIds) {
         String targetId = node.getTargetId();
-        if(targetId != null) {
+        if (targetId != null) {
             targetIds.add(targetId);
         }
-        if(node.getChildText() != null) {
-            for(Node childText: node.getChildText()) {
+        if (node.getChildText() != null) {
+            for (Node childText : node.getChildText()) {
                 collectTargetIds(childText, targetIds);
             }
         }
     }
 
     private static void collectLabels(Node node, List<String> labels) {
-        if(node.getChildText() != null) {
-            if(node.getLocalizedText() != null) {
+        if (node.getChildText() != null) {
+            if (node.getLocalizedText() != null) {
                 labels.add(node.getLocalizedText().getTranslatedText(Language.EN));
                 labels.add(node.getLocalizedText().getTranslatedText(Language.RU));
             }
-            for(Node childText: node.getChildText()) {
+            for (Node childText : node.getChildText()) {
                 collectLabels(childText, labels);
             }
         }
     }
-
 }

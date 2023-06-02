@@ -7,5 +7,6 @@ import lombok.Data;
 public class CreateHookOptionConfig {
     @JsonProperty("content_type")
     private final String contentType;
+
     private final String url;
 }

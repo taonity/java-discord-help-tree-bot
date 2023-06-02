@@ -21,14 +21,14 @@ public class AppConfig {
 
     @Bean
     public GatewayDiscordClient gatewayDiscordClient() {
-        return DiscordClientBuilder.create(discordToken).build()
+        return DiscordClientBuilder.create(discordToken)
+                .build()
                 .gateway()
                 .setInitialPresence(ignore -> ClientPresence.online(ClientActivity.listening("/question")))
                 .login()
                 .blockOptional()
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20040));
     }
-
 
     @Bean
     public RestClient discordRestClient(GatewayDiscordClient client) {

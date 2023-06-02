@@ -2,12 +2,10 @@ package discord.listeners;
 
 import discord.handler.message.MessageHandler;
 import discord4j.core.event.domain.message.MessageCreateEvent;
+import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
-import java.util.Collection;
 
 @Component
 @RequiredArgsConstructor

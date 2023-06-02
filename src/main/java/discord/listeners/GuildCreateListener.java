@@ -1,6 +1,5 @@
 package discord.listeners;
 
-import discord.logging.LogMessage;
 import discord.repository.GuildSettingsRepository;
 import discord.services.GuildDataService;
 import discord4j.core.event.domain.guild.GuildCreateEvent;
@@ -21,11 +20,10 @@ public class GuildCreateListener implements DiscordEventListener<GuildCreateEven
     @Transactional
     public void handle(GuildCreateEvent event) {
         final var guildId = event.getGuild().getId().asString();
-        final var guildIsNotPresent = guildSettingsRepository
-                .findGuildSettingByGuildId(guildId)
-                .isEmpty();
+        final var guildIsNotPresent =
+                guildSettingsRepository.findGuildSettingByGuildId(guildId).isEmpty();
 
-        if(guildIsNotPresent) {
+        if (guildIsNotPresent) {
             guildDataService.removeIfLeftInDiscord();
             guildDataService.create(guildId);
 

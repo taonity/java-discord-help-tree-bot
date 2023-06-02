@@ -4,6 +4,12 @@ import discord.config.PropertyConfig;
 import discord.exception.main.FailedToRemoveGitApiWorkingDirException;
 import discord.logging.LogMessage;
 import discord.services.GitApiService;
+import java.io.*;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.InitCommand;
@@ -16,21 +22,15 @@ import org.springframework.boot.test.context.ConfigDataApplicationContextInitial
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.io.*;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.List;
-
-@ContextConfiguration(initializers = ConfigDataApplicationContextInitializer.class, classes = {
-        PropertyConfig.class, GitApiService.class})
+@ContextConfiguration(
+        initializers = ConfigDataApplicationContextInitializer.class,
+        classes = {PropertyConfig.class, GitApiService.class})
 public class GitTestManager {
 
-    private final static String REPO_FOLDER_FORMAT = "%s%s-folder";
-    private final static String REFS_HEADS_PATH_FORMAT = "refs/heads/%s";
-    private final static String REMOTE_NAME = "origin";
-    private final static String COMMIT_MESSAGE = "Squash failed commits";
+    private static final String REPO_FOLDER_FORMAT = "%s%s-folder";
+    private static final String REFS_HEADS_PATH_FORMAT = "refs/heads/%s";
+    private static final String REMOTE_NAME = "origin";
+    private static final String COMMIT_MESSAGE = "Squash failed commits";
 
     @Value("${gitea.branch-name}")
     private String branchName;
@@ -52,7 +52,7 @@ public class GitTestManager {
 
     private void removeExistingRepoDir(String repoDir) {
         final var repoFolderExists = Paths.get(repoDir).toFile().exists();
-        if(repoFolderExists) {
+        if (repoFolderExists) {
             try {
                 FileUtils.deleteDirectory(new File(repoDir));
             } catch (IOException e) {
@@ -76,18 +76,13 @@ public class GitTestManager {
 
         InitCommand cloneCommand = null;
         try {
-            cloneCommand = Git.init()
-                    .setDirectory(new File(repoDir))
-                    .setInitialBranch(branchName);
+            cloneCommand = Git.init().setDirectory(new File(repoDir)).setInitialBranch(branchName);
         } catch (InvalidRefNameException e) {
             e.printStackTrace();
         }
 
-        try(final var git = cloneCommand.call()) {
-            git.remoteAdd()
-                    .setName(REMOTE_NAME)
-                    .setUri(new URIish(repoUri))
-                    .call();
+        try (final var git = cloneCommand.call()) {
+            git.remoteAdd().setName(REMOTE_NAME).setUri(new URIish(repoUri)).call();
 
             try {
                 Files.createFile(new File(repoFile).toPath());
@@ -126,18 +121,14 @@ public class GitTestManager {
                 } catch (GitAPIException e) {
                     e.printStackTrace();
                 }
-
             });
-
 
             git.push()
                     .setRemote(REMOTE_NAME)
                     .add(branchName)
                     .setForce(true)
-                    .setCredentialsProvider(
-                            new UsernamePasswordCredentialsProvider(gitUsername, gitPassword)
-                    ).call();
-
+                    .setCredentialsProvider(new UsernamePasswordCredentialsProvider(gitUsername, gitPassword))
+                    .call();
 
         } catch (GitAPIException | URISyntaxException e) {
             e.printStackTrace();
@@ -146,6 +137,4 @@ public class GitTestManager {
             removeExistingRepoDir(repoDir);
         }
     }
-
-
 }

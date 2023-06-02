@@ -12,9 +12,7 @@ public enum Language {
     private final String language;
 
     public static Language valueOfLanguage(String name) {
-        for(Language value : values())
-            if(value.getLanguage().equalsIgnoreCase(name))
-                return value;
+        for (Language value : values()) if (value.getLanguage().equalsIgnoreCase(name)) return value;
         throw new IllegalArgumentException();
     }
 }

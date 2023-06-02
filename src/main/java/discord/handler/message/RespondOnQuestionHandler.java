@@ -3,8 +3,8 @@ package discord.handler.message;
 import discord.exception.main.EmptyOptionalException;
 import discord.handler.EventPredicates;
 import discord.logging.LogMessage;
-import discord.services.SelectMenuService;
 import discord.services.MessageChannelService;
+import discord.services.SelectMenuService;
 import discord.structure.ChannelRole;
 import discord.utils.SelectMenuManager;
 import discord4j.common.util.Snowflake;
@@ -13,12 +13,11 @@ import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.User;
 import discord4j.core.spec.MessageCreateSpec;
+import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Slf4j
 @Component
@@ -32,39 +31,42 @@ public class RespondOnQuestionHandler implements MessageHandler {
     @Override
     public boolean filter(MessageCreateEvent event) {
         return Stream.of(event)
-                .filter(e -> eventPredicates.filterIfChannelExistsInSettings(e, ChannelRole.HELP))
-                .filter(eventPredicates::filterEmptyAuthor)
-                .filter(eventPredicates::filterBot)
-                .filter(e -> eventPredicates.filterByChannelRole(e, ChannelRole.HELP))
-                .filter(e -> this.getSmManager(event).isPresent())
-                .count() == 1;
+                        .filter(e -> eventPredicates.filterIfChannelExistsInSettings(e, ChannelRole.HELP))
+                        .filter(eventPredicates::filterEmptyAuthor)
+                        .filter(eventPredicates::filterBot)
+                        .filter(e -> eventPredicates.filterByChannelRole(e, ChannelRole.HELP))
+                        .filter(e -> this.getSmManager(event).isPresent())
+                        .count()
+                == 1;
     }
 
     @Override
     public void handle(MessageCreateEvent event) {
         final var guildId = getGuildId(event);
-        final var smManager = getSmManager(event)
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20012));
+        final var smManager = getSmManager(event).orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20012));
 
         final var targetId = smManager.getTargetId();
-        final var targetUser = client.getUserById(Snowflake.of(targetId)).blockOptional()
+        final var targetUser = client.getUserById(Snowflake.of(targetId))
+                .blockOptional()
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20013));
 
         selectMenuService.removeSmManager(smManager, guildId);
 
-        messageChannelService.getChannel(event.getGuild().block(), ChannelRole.HELP)
-                .createMessage(
-                MessageCreateSpec.builder()
+        messageChannelService
+                .getChannel(event.getGuild().block(), ChannelRole.HELP)
+                .createMessage(MessageCreateSpec.builder()
                         .messageReference(event.getMessage().getId())
                         // TODO: maybe add client log
                         .content(targetUser.getMention())
-                        .build()
-        ).subscribe();
+                        .build())
+                .subscribe();
 
-        log.info("Respond came on question with mention of {} by user {} in guild {}",
+        log.info(
+                "Respond came on question with mention of {} by user {} in guild {}",
                 targetUser.getId().asString(),
                 smManager.getUserId().asString(),
-                event.getGuild().blockOptional()
+                event.getGuild()
+                        .blockOptional()
                         .map(Guild::getId)
                         .map(Snowflake::asString)
                         .orElse("NULL"));
@@ -78,10 +80,11 @@ public class RespondOnQuestionHandler implements MessageHandler {
 
     private Optional<SelectMenuManager> getSmManager(MessageCreateEvent event) {
         final var guildId = getGuildId(event);
-        final var authorId = event.getMessage().getAuthor()
+        final var authorId = event.getMessage()
+                .getAuthor()
                 .map(User::getId)
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20011));
 
-        return  selectMenuService.getSmManager(authorId, guildId);
+        return selectMenuService.getSmManager(authorId, guildId);
     }
 }

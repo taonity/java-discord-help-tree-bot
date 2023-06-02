@@ -1,8 +1,8 @@
 package discord.services;
 
+import discord.exception.GiteaApiException;
 import discord.exception.client.CorruptGiteaUserException;
 import discord.exception.main.EmptyOptionalException;
-import discord.exception.GiteaApiException;
 import discord.logging.LogMessage;
 import discord.model.GuildSettings;
 import discord.repository.GuildSettingsRepository;
@@ -33,19 +33,18 @@ public class GuildPersistableDataService {
 
     @Transactional
     public void create(String guildId) {
-        final var guildSettings = GuildSettings.builder()
-                .guildId(guildId)
-                .build();
+        final var guildSettings = GuildSettings.builder().guildId(guildId).build();
         final var guildSettingsId = guildSettingsRepository.save(guildSettings).getId();
         try {
             giteaUserService.createUser(guildSettingsId);
         } catch (GiteaApiException e) {
             throw new CorruptGiteaUserException(LogMessage.ALERT_20032, guildId, e);
         }
-        gatewayDiscordClient.getGuildById(Snowflake.of(guildId)).blockOptional()
-                .ifPresentOrElse(
-                        guildRoleService::createModeratorRole,
-                        () -> {throw new EmptyOptionalException(LogMessage.ALERT_20064);}
-                );
+        gatewayDiscordClient
+                .getGuildById(Snowflake.of(guildId))
+                .blockOptional()
+                .ifPresentOrElse(guildRoleService::createModeratorRole, () -> {
+                    throw new EmptyOptionalException(LogMessage.ALERT_20064);
+                });
     }
 }

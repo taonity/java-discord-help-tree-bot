@@ -1,9 +1,8 @@
 package discord.dto.gitea.api;
 
+import java.util.List;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
-
-import java.util.List;
 
 @Data
 @Jacksonized

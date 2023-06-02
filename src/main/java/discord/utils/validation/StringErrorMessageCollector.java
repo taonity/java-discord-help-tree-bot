@@ -1,10 +1,10 @@
 package discord.utils.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static java.lang.String.format;
 import static java.lang.String.join;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StringErrorMessageCollector {
     private final List<String> errors = new ArrayList<>();

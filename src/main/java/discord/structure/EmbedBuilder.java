@@ -1,12 +1,11 @@
 package discord.structure;
 
-import discord4j.core.spec.EmbedCreateSpec;
-import discord4j.rest.util.Color;
-
-import java.time.Instant;
-
 import static discord.localisation.LocalizedMessage.TIP_MESSAGE;
 import static discord.localisation.SimpleMessage.*;
+
+import discord4j.core.spec.EmbedCreateSpec;
+import discord4j.rest.util.Color;
+import java.time.Instant;
 
 public class EmbedBuilder {
     public static final String LOG_ATTACHMENT_FILE_NAME = "file-name.txt";
@@ -36,5 +35,4 @@ public class EmbedBuilder {
                 .description(description)
                 .build();
     }
-
 }

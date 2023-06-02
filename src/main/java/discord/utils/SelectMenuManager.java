@@ -1,23 +1,22 @@
 package discord.utils;
 
+import discord.localisation.Language;
 import discord.structure.SelectMenuFactory;
 import discord.structure.UserStatus;
-import discord.localisation.Language;
 import discord.tree.*;
 import discord4j.common.util.Snowflake;
 import discord4j.core.object.component.SelectMenu;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
 public class SelectMenuManager {
     private final SelectMenuFactory selectMenuFactory = new SelectMenuFactory();
-    private final static long TTL = 60*24;
+    private static final long TTL = 60 * 24;
 
     private boolean firstNodeProcessed = false;
     private UserStatus userStatus = UserStatus.USES_SELECT_MENU;
@@ -63,8 +62,7 @@ public class SelectMenuManager {
     }
 
     public SelectMenu createNextTreeSelectMenu(String nodeId) {
-        final var localizedOptionsList =
-                treeWalker.getNextIdentifiedLocalizedNodeTextListById(nodeId);
+        final var localizedOptionsList = treeWalker.getNextIdentifiedLocalizedNodeTextListById(nodeId);
 
         return createTreeSelectMenuByLocalizedOptions(localizedOptionsList);
     }
@@ -73,11 +71,10 @@ public class SelectMenuManager {
         final List<IdentifiedNodeText> optionsList = localizedOptionsList.stream()
                 .map(localizedOption -> new IdentifiedNodeText(
                         localizedOption.getId(),
-                        localizedOption.getLocalizedText().getTranslatedText(language)
-                ))
+                        localizedOption.getLocalizedText().getTranslatedText(language)))
                 .collect(Collectors.toList());
         var selectMenu = selectMenuFactory.createTreeSelectMenu(optionsList);
-        treeSelectMenuCustomId =  selectMenu.getCustomId();
+        treeSelectMenuCustomId = selectMenu.getCustomId();
         return selectMenu;
     }
 

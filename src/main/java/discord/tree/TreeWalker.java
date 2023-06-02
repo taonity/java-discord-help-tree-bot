@@ -1,9 +1,8 @@
 package discord.tree;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.List;
 
 @AllArgsConstructor
 public class TreeWalker {
@@ -16,7 +15,7 @@ public class TreeWalker {
     }
 
     public List<IdentifiedLocalizedNodeText> getNextIdentifiedLocalizedNodeTextListById(String id) {
-        if(currentNode.getChildText().get(0).getChildText() == null) {
+        if (currentNode.getChildText().get(0).getChildText() == null) {
             return null;
         }
 

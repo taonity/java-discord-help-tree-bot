@@ -20,5 +20,4 @@ public class GitHubWebHookController {
         log.info("Dialog update request received with content: {}", event);
         treeRootService.updateRoot(event);
     }
-
 }

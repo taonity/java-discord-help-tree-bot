@@ -7,12 +7,11 @@ import discord.repository.GuildSettingsRepository;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.Guild;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Configuration
 @RequiredArgsConstructor
@@ -25,7 +24,10 @@ public class GuildPersistableDataStartupService {
     // TODO: is there a way to do it with proper way?
     @Bean
     public void updatePersistableData() {
-        final var discordGuildIdList = gatewayDiscordClient.getGuilds().cache().collectList()
+        final var discordGuildIdList = gatewayDiscordClient
+                .getGuilds()
+                .cache()
+                .collectList()
                 .blockOptional()
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20039))
                 .stream()
@@ -33,20 +35,20 @@ public class GuildPersistableDataStartupService {
                 .map(Snowflake::asString)
                 .collect(Collectors.toList());
 
-        final var guildSettingsList = StreamSupport.stream(guildSettingsRepository.findAll().spliterator(), true)
-                .collect(Collectors.toList());;
+        final var guildSettingsList = StreamSupport.stream(
+                        guildSettingsRepository.findAll().spliterator(), true)
+                .collect(Collectors.toList());
+        ;
 
         guildSettingsList.stream()
                 .filter(guildSettings -> !discordGuildIdList.contains(guildSettings.getGuildId()))
                 .forEach(guildPersistableDataService::remove);
 
-        final var guildSettingsIdList = guildSettingsList.stream()
-                .map(GuildSettings::getGuildId)
-                .collect(Collectors.toList());
+        final var guildSettingsIdList =
+                guildSettingsList.stream().map(GuildSettings::getGuildId).collect(Collectors.toList());
 
         discordGuildIdList.stream()
-                        .filter(discordGuildId -> !guildSettingsIdList.contains(discordGuildId))
-                        .forEach(guildPersistableDataService::create);
-
+                .filter(discordGuildId -> !guildSettingsIdList.contains(discordGuildId))
+                .forEach(guildPersistableDataService::create);
     }
 }

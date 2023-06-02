@@ -11,7 +11,7 @@ public class CreateUserOption {
     private final String email;
 
     public MultiValueMap<String, String> asMultiValueMap() {
-        final var map  = new LinkedMultiValueMap<String, String>();
+        final var map = new LinkedMultiValueMap<String, String>();
         map.add("user_name", username);
         map.add("email", email);
         map.add("password", password);

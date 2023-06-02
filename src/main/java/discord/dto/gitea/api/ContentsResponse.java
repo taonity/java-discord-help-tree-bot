@@ -1,9 +1,8 @@
 package discord.dto.gitea.api;
 
+import java.nio.charset.StandardCharsets;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
-
-import java.nio.charset.StandardCharsets;
 
 @Data
 @Jacksonized

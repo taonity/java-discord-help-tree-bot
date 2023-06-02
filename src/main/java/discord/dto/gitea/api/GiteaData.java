@@ -1,4 +1,3 @@
 package discord.dto.gitea.api;
 
-public interface GiteaData {
-}
+public interface GiteaData {}

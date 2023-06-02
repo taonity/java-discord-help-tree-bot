@@ -1,9 +1,8 @@
 package discord.structure;
 
+import java.util.Optional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 public enum ChannelRole {
@@ -14,9 +13,7 @@ public enum ChannelRole {
     private final String roleName;
 
     public static ChannelRole valueOfRoleName(String name) {
-        for(ChannelRole value : values())
-            if(value.getRoleName().equalsIgnoreCase(name))
-                return value;
+        for (ChannelRole value : values()) if (value.getRoleName().equalsIgnoreCase(name)) return value;
         throw new IllegalArgumentException();
     }
 

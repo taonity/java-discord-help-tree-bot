@@ -7,12 +7,11 @@ import discord.repository.GuildSettingsRepository;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.Guild;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Component
 @RequiredArgsConstructor
@@ -40,13 +39,18 @@ public class GuildDataService {
         guildPersistableDataService.create(guildId);
 
         selectMenuService.createSmManagerList(guildId);
-        guildSettingsRepository.findGuildSettingByGuildId(guildId)
-                .ifPresentOrElse(treeRootService::createNewRoot,
-                        () -> {throw new EmptyOptionalException(LogMessage.ALERT_20070);});
+        guildSettingsRepository
+                .findGuildSettingByGuildId(guildId)
+                .ifPresentOrElse(treeRootService::createNewRoot, () -> {
+                    throw new EmptyOptionalException(LogMessage.ALERT_20070);
+                });
     }
 
     public void removeIfLeftInDiscord() {
-        final var discordGuildIdList = gatewayDiscordClient.getGuilds().cache().collectList()
+        final var discordGuildIdList = gatewayDiscordClient
+                .getGuilds()
+                .cache()
+                .collectList()
                 .blockOptional()
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20039))
                 .stream()

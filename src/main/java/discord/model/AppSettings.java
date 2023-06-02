@@ -1,9 +1,8 @@
 package discord.model;
 
-import lombok.*;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import lombok.*;
 
 @Entity
 @NoArgsConstructor
@@ -13,6 +12,7 @@ import javax.persistence.Id;
 public class AppSettings {
     @Id
     private final int id = 0;
+
     private String giteaToken;
 
     public AppSettings(String giteaToken) {

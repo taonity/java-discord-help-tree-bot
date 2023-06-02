@@ -2,12 +2,11 @@ package discord.listeners;
 
 import discord.handler.selectmenu.AbstractSelectMenuHandler;
 import discord4j.core.event.domain.interaction.SelectMenuInteractionEvent;
+import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
-
-import java.util.Collection;
 
 @Slf4j
 @Component

@@ -19,5 +19,4 @@ public class LocalizedText {
                 throw new IllegalArgumentException("Undefined localized language");
         }
     }
-
 }

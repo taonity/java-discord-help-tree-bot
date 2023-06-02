@@ -1,12 +1,10 @@
 package discord.repository;
 
-import discord.config.AppConfig;
 import discord.model.GuildSettings;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-
-import java.util.Optional;
 
 public interface GuildSettingsRepository extends CrudRepository<GuildSettings, String> {
     @Modifying
@@ -22,5 +20,6 @@ public interface GuildSettingsRepository extends CrudRepository<GuildSettings, S
     void updateGiteaUser(int id, int giteaUserId, String giteaUserAlphanumeric);
 
     Optional<GuildSettings> findGuildSettingByGuildId(String guildId);
+
     Optional<GuildSettings> findGuildSettingByGiteaUserId(int giteaUserId);
 }

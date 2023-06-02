@@ -2,7 +2,6 @@ package discord.listeners;
 
 import discord4j.core.event.domain.Event;
 import org.springframework.core.GenericTypeResolver;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface DiscordEventListener<E extends Event> {

@@ -1,9 +1,8 @@
 package discord.model;
 
 import discord.structure.ChannelRole;
-import lombok.*;
-
 import javax.persistence.*;
+import lombok.*;
 
 @Entity
 @Getter
@@ -16,6 +15,7 @@ public class GuildSettings {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "default_generator")
     private int id;
+
     private String guildId;
     private String logChannelId;
     private String helpChannelId;

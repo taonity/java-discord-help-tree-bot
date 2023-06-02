@@ -1,14 +1,16 @@
 package discord.services;
 
+import static org.mockito.Mockito.when;
+
 import discord.config.PropertyConfig;
 import discord.exception.GiteaApiException;
 import discord.model.GuildSettings;
 import discord.repository.GuildSettingsRepository;
 import discord4j.core.GatewayDiscordClient;
+import java.util.Optional;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -20,16 +22,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
-import reactor.core.publisher.Mono;
-
-import java.util.HashSet;
-import java.util.Optional;
-
-import static discord.utils.AlphaNumericGenerator.generateFourCharFromNumber;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -37,11 +29,9 @@ import static org.mockito.Mockito.when;
 @EnableJpaRepositories(basePackages = {"discord.repository"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
-@ContextConfiguration(initializers = ConfigDataApplicationContextInitializer.class, classes = {
-        GiteaApiService.class,
-        PropertyConfig.class,
-        GiteaUserService.class,
-        GitApiService.class})
+@ContextConfiguration(
+        initializers = ConfigDataApplicationContextInitializer.class,
+        classes = {GiteaApiService.class, PropertyConfig.class, GiteaUserService.class, GitApiService.class})
 public class GiteaUserServiceTest {
 
     @Autowired
