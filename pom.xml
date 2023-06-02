@@ -176,16 +176,6 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-maven-plugin</artifactId>
-                <configuration>
-                    <configFiles>
-                        <configFile>flyway.conf</configFile>
-                    </configFiles>
-                </configuration>
-            </plugin>
-
         </plugins>
     </build>
 

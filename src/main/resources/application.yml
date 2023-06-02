@@ -18,6 +18,11 @@ spring:
     username: ${POSTGRES_APP_USER}
     password: ${POSTGRES_APP_PASSWORD}
     url: ${POSTGRES_URL}
+  flyway:
+    url: ${POSTGRES_URL}
+    user: ${POSTGRES_FLYWAY_USER}
+    password: ${POSTGRES_FLYWAY_PASSWORD}
+    defaultSchema: public
 
 gitea:
   token: ${JAVA_DISCORD_HELP_BOT_GITEA_TOKEN}
