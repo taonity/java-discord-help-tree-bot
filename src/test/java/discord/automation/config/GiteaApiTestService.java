@@ -75,6 +75,6 @@ public class GiteaApiTestService {
         final var path = String.format(REPO_FILE_PATH_FORMAT, owner, repo, filepath, ref);
         final var entity = new HttpEntity<String>(headers);
         return (ContentsResponse)
-                sendApiRequest(entity, path, HttpMethod.GET, new ParameterizedTypeReference<ContentsResponse>() {});
+                sendApiRequest(entity, path, new ParameterizedTypeReference<ContentsResponse>() {});
     }
 }
