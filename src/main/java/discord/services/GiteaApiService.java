@@ -129,9 +129,9 @@ public class GiteaApiService {
         sendRequest(httpEntity, path, httpMethod, onException, API_PATH_FORMAT);
     }
 
-    private void sendUrlRequest(HttpEntity<?> httpEntity, String path, HttpMethod httpMethod, LogMessage onException)
+    private void sendUrlRequest(HttpEntity<?> httpEntity)
             throws GiteaApiException {
-        sendRequest(httpEntity, path, httpMethod, onException, URL_PATH_FORMAT);
+        sendRequest(httpEntity, USER_SIGN_UP_PATH, HttpMethod.POST, LogMessage.ALERT_20075, URL_PATH_FORMAT);
     }
 
     public GiteaUser createUser(CreateUserOption createUserOption) throws GiteaApiException {
@@ -241,7 +241,7 @@ public class GiteaApiService {
         final var requestBody = new CreateUserOption(adminUsername, adminPassword, adminEmail).asMultiValueMap();
 
         final var entity = new HttpEntity<>(requestBody, headers);
-        sendUrlRequest(entity, USER_SIGN_UP_PATH, HttpMethod.POST, LogMessage.ALERT_20075);
+        sendUrlRequest(entity);
     }
 
     public AccessToken getAdminUserToken() throws GiteaApiException {

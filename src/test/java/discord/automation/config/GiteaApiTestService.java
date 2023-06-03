@@ -53,11 +53,10 @@ public class GiteaApiTestService {
     private Object sendApiRequest(
             HttpEntity<?> httpEntity,
             String path,
-            HttpMethod httpMethod,
             ParameterizedTypeReference<?> parameterizedTypeReference) {
         final String fullPath = String.format(API_PATH_FORMAT, giteaBaseUrl, path);
         try {
-            final var result = restTemplate.exchange(fullPath, httpMethod, httpEntity, parameterizedTypeReference);
+            final var result = restTemplate.exchange(fullPath, HttpMethod.GET, httpEntity, parameterizedTypeReference);
             return ofNullable(result.getBody()).orElseThrow(() -> new RuntimeException("Result body is null"));
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -69,7 +68,7 @@ public class GiteaApiTestService {
         final var entity = new HttpEntity<String>(headers);
         final var path = String.format(REPO_SEARCH_UID_PATH_FORMAT, userId);
         return (SearchResult<Repo>)
-                sendApiRequest(entity, path, HttpMethod.GET, new ParameterizedTypeReference<SearchResult<Repo>>() {});
+                sendApiRequest(entity, path, new ParameterizedTypeReference<SearchResult<Repo>>() {});
     }
 
     public ContentsResponse getFile(String owner, String repo, String filepath, String ref) {
