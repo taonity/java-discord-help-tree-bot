@@ -30,7 +30,7 @@ pipeline {
                 script {
 
                     withCredentials([string(credentialsId: 'discordAutomationTestToken', variable: 'TOKEN')]) {
-                        sh "clean install \"-Ddiscord.token=${$TOKEN}\" -DskipTests=true"
+                        sh "clean -P automation install \"-Ddiscord.token=${$TOKEN}\" -DskipTests=true"
                     }
 
                     // Read the content of a file
