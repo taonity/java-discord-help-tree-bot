@@ -18,10 +18,9 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "squid:S1075"})
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -67,23 +66,22 @@ public class GiteaApiService {
     private String adminEmail;
 
     private final RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
-    private final HttpHeaders headers = new HttpHeaders();
+    private final HttpHeaders tokenHeaders = new HttpHeaders();
 
     private final AppSettingsRepository appSettingsRepository;
 
     @PostConstruct
     private void postConstruct() {
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        tokenHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
         final var token = appSettingsRepository
                 .findOne()
                 .map(AppSettings::getGiteaToken)
                 .orElseGet(this::createAndSaveGiteaToken);
 
-        headers.add("Authorization", "token " + token);
+        tokenHeaders.add("Authorization", "token " + token);
     }
 
-    @Transactional
     private String createAndSaveGiteaToken() {
         try {
             createAdminUser();
@@ -135,7 +133,7 @@ public class GiteaApiService {
     }
 
     public GiteaUser createUser(CreateUserOption createUserOption) throws GiteaApiException {
-        final var entity = new HttpEntity<>(createUserOption, headers);
+        final var entity = new HttpEntity<>(createUserOption, tokenHeaders);
         return (GiteaUser) sendApiRequest(
                 entity,
                 ADMIN_USERS_PATH,
@@ -147,20 +145,20 @@ public class GiteaApiService {
 
     public void createRepository(String owner, CreateRepoOption createRepoOption) throws GiteaApiException {
         final var path = String.format(ADMIN_USER_REPO_PATH_FORMAT, owner);
-        final var entity = new HttpEntity<>(createRepoOption, headers);
+        final var entity = new HttpEntity<>(createRepoOption, tokenHeaders);
         sendApiRequest(entity, path, HttpMethod.POST, LogMessage.ALERT_20018);
     }
 
     public void createFile(String owner, String repo, String filepath, CreateFileOption createFileOption)
             throws GiteaApiException {
         final var path = String.format(REPO_FILE_PATH_FORMAT, owner, repo, filepath, branchName);
-        final var entity = new HttpEntity<>(createFileOption, headers);
+        final var entity = new HttpEntity<>(createFileOption, tokenHeaders);
         sendApiRequest(entity, path, HttpMethod.POST, LogMessage.ALERT_20019);
     }
 
     public ContentsResponse getFile(String owner, String repo, String filepath, String ref) throws GiteaApiException {
         final var path = String.format(REPO_FILE_PATH_FORMAT, owner, repo, filepath, ref);
-        final var entity = new HttpEntity<String>(headers);
+        final var entity = new HttpEntity<String>(tokenHeaders);
         return (ContentsResponse) sendApiRequest(
                 entity,
                 path,
@@ -172,7 +170,7 @@ public class GiteaApiService {
 
     public List<RepoCommit> getCommits(String owner, String repo, int limit) throws GiteaApiException {
         final var path = String.format(REPO_COMMITS_PATH_FORMAT, owner, repo, branchName, limit);
-        final var entity = new HttpEntity<String>(headers);
+        final var entity = new HttpEntity<String>(tokenHeaders);
         return (List<RepoCommit>) sendApiRequest(
                 entity,
                 path,
@@ -184,24 +182,24 @@ public class GiteaApiService {
 
     public void editUser(EditUserOption editUserOption) throws GiteaApiException {
         final var path = String.format(ADMIN_USER_PATH_FORMAT, editUserOption.getLoginName());
-        final var entity = new HttpEntity<>(editUserOption, headers);
+        final var entity = new HttpEntity<>(editUserOption, tokenHeaders);
         sendApiRequest(entity, path, HttpMethod.PATCH, LogMessage.ALERT_20024);
     }
 
     public void deleteUser(String username) throws GiteaApiException {
         final var path = String.format(ADMIN_USER_PATH_FORMAT, username);
-        final var entity = new HttpEntity<>(headers);
+        final var entity = new HttpEntity<>(tokenHeaders);
         sendApiRequest(entity, path, HttpMethod.DELETE, LogMessage.ALERT_20025);
     }
 
     public void deleteRepo(String owner, String repo) throws GiteaApiException {
         final var path = String.format(REPO_OWNER_PATH_FORMAT, owner, repo);
-        final var entity = new HttpEntity<>(headers);
+        final var entity = new HttpEntity<>(tokenHeaders);
         sendApiRequest(entity, path, HttpMethod.DELETE, LogMessage.ALERT_20026);
     }
 
     public SearchResult<Repo> getReposByUid(int userId) throws GiteaApiException {
-        final var entity = new HttpEntity<String>(headers);
+        final var entity = new HttpEntity<String>(tokenHeaders);
         final var path = String.format(REPO_SEARCH_UID_PATH_FORMAT, userId);
         return (SearchResult<Repo>) sendApiRequest(
                 entity,
@@ -213,7 +211,7 @@ public class GiteaApiService {
     }
 
     public GiteaUser getUserByUid(int userId) throws GiteaApiException {
-        final var entity = new HttpEntity<String>(headers);
+        final var entity = new HttpEntity<String>(tokenHeaders);
         final var path = String.format(USERS_SEARCH_UID_PATH_FORMAT, userId);
         final var searchResult = (SearchResult<GiteaUser>) sendApiRequest(
                 entity,
@@ -231,7 +229,7 @@ public class GiteaApiService {
         final var fullHookUrl = hookServerUrl + HOOK_PATH;
         final var hookConfig = new CreateHookOptionConfig(HOOK_CONTENT_TYPE, fullHookUrl);
         final var hook = new CreateHookOption(hookConfig, HOOK_EVENT_TYPES, HOOK_TYPE, HOOK_ACTIVE);
-        final var entity = new HttpEntity<>(hook, headers);
+        final var entity = new HttpEntity<>(hook, tokenHeaders);
         sendApiRequest(entity, path, HttpMethod.POST, LogMessage.ALERT_20049);
     }
 
@@ -245,13 +243,13 @@ public class GiteaApiService {
     }
 
     public AccessToken getAdminUserToken() throws GiteaApiException {
-        final var headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.add("Authorization", getBasicAuthenticationHeader(adminUsername, adminPassword));
+        final var basicAuthHeaders = new HttpHeaders();
+        basicAuthHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        basicAuthHeaders.add("Authorization", getBasicAuthenticationHeader(adminUsername, adminPassword));
         final var requestBody = new CreateAccessTokenOption(ADMIN_ACCESS_TOKEN_NAME);
         final var path = String.format(USERS_TOKENS_PATH_FORMAT, adminUsername);
 
-        final var entity = new HttpEntity<>(requestBody, headers);
+        final var entity = new HttpEntity<>(requestBody, basicAuthHeaders);
         return (AccessToken) sendApiRequest(
                 entity,
                 path,
