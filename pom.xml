@@ -266,7 +266,7 @@
                             <extraDirectories>
                                 <paths>
                                     <path>
-                                        <from>docker</from>
+                                        <from>${project.basedir}/src/templates/docker</from>
                                         <into>/docker</into>
                                         <excludes>
                                             <exclude>.env</exclude>
