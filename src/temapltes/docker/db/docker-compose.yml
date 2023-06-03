@@ -2,7 +2,6 @@ version: '2.4'
 
 services:
   db:
-    container_name: java-discord-help-bot-db
     image: postgres:14
     ports:
       - "5432:5432"
