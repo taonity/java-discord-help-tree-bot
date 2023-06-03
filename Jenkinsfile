@@ -26,27 +26,29 @@ pipeline {
         }
 
         stage('Run automation tests') {
-            script {
+            steps {
+                script {
 
-                withCredentials([string(credentialsId: 'discordAutomationTestToken', variable: 'TOKEN')]) {
-                    sh "clean install \"-Ddiscord.token=${$TOKEN}\" -DskipTests=true"
+                    withCredentials([string(credentialsId: 'discordAutomationTestToken', variable: 'TOKEN')]) {
+                        sh "clean install \"-Ddiscord.token=${$TOKEN}\" -DskipTests=true"
+                    }
+
+                    // Read the content of a file
+                    def fileContent = readFile "${WORKSPACE}/target/docker/.env"
+
+                    // Split the content into lines
+                    def lines = fileContent.readLines()
+
+                    // Build the string with properties
+                    def mvnCommand = lines.collect { line ->
+                        "\"-D${line.split('=')[0]}=${line.split('=')[1]}\""
+                    }.join(' ')
+
+                    // Append additional properties
+                    mvnCommand += " \"-Dtest=discord.automation.runners.CucumberRunnerIT\""
+
+                    sh "mvn ${mvnCommand} test"
                 }
-
-                // Read the content of a file
-                def fileContent = readFile "${WORKSPACE}/target/docker/.env"
-
-                // Split the content into lines
-                def lines = fileContent.readLines()
-
-                // Build the string with properties
-                def mvnCommand = lines.collect { line ->
-                    "\"-D${line.split('=')[0]}=${line.split('=')[1]}\""
-                }.join(' ')
-
-                // Append additional properties
-                mvnCommand += " \"-Dtest=discord.automation.runners.CucumberRunnerIT\""
-
-                sh "mvn ${mvnCommand} test"
             }
         }
 
