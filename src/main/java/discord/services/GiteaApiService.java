@@ -106,8 +106,7 @@ public class GiteaApiService {
         final String fullPath = String.format(API_PATH_FORMAT, giteaBaseUrl, path);
         try {
             final var result = restTemplate.exchange(fullPath, httpMethod, httpEntity, parameterizedTypeReference);
-            return ofNullable(result.getBody())
-                    .orElseThrow(() -> new GiteaApiException(onNull, "Result body is null"));
+            return ofNullable(result.getBody()).orElseThrow(() -> new GiteaApiException(onNull, "Result body is null"));
         } catch (Exception e) {
             log.warn(onException.name());
             throw new GiteaApiException(onException, e.getMessage());

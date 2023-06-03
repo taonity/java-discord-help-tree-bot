@@ -9,7 +9,6 @@ import discord4j.rest.service.ApplicationService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +24,6 @@ public class GlobalCommandConfig implements ApplicationRunner {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     private final RestClient client;
-
 
     // This method will run only once on each start up and is automatically called with Spring so blocking is okay.
     @Override

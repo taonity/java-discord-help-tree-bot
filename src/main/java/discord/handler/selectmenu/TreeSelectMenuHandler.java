@@ -38,13 +38,14 @@ public class TreeSelectMenuHandler extends AbstractSelectMenuHandler {
 
         final var smManagerOpt = getSmManager(event, guildId);
 
-        return smManagerOpt.filter(selectMenuManager -> Stream.of(event)
-                .filter(eventPredicates::filterBot)
-                .filter(e -> eventPredicates.filterByChannelRole(event, ChannelRole.HELP))
-                .filter(e -> isTreeSelectMenu(selectMenuManager, e))
-                .count()
-                == 1).isPresent();
-
+        return smManagerOpt
+                .filter(selectMenuManager -> Stream.of(event)
+                                .filter(eventPredicates::filterBot)
+                                .filter(e -> eventPredicates.filterByChannelRole(event, ChannelRole.HELP))
+                                .filter(e -> isTreeSelectMenu(selectMenuManager, e))
+                                .count()
+                        == 1)
+                .isPresent();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package discord.tree;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import discord.exception.YamlProcessingException;
 import discord.utils.ResourceFileLoader;
 import discord.utils.YamlStringToNodeConvertor;

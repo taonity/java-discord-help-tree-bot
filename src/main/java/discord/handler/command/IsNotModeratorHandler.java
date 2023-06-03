@@ -8,7 +8,6 @@ import discord.handler.EventPredicates;
 import discord.localisation.SimpleMessage;
 import discord.logging.LogMessage;
 import discord.services.GuildRoleService;
-import discord.services.MessageChannelService;
 import discord.structure.CommandName;
 import discord.structure.EmbedBuilder;
 import discord.structure.EmbedType;
