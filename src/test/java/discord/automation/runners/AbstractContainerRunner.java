@@ -39,6 +39,7 @@ public abstract class AbstractContainerRunner {
 
     private static File getComposeFile() {
         final var file = Paths.get("target/docker/docker-compose.yml").toFile();
+        log.info("bruh {} {}", System.getProperty("registry.username"), System.getProperty("registry.password"));
         log.info("Trying to open compose file with path: {}", file.getAbsolutePath());
         return file;
     }
