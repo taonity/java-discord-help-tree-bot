@@ -2,12 +2,15 @@ package discord.automation.runners;
 
 import java.io.File;
 import java.nio.file.Paths;
+
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.lifecycle.Startables;
 
+@Slf4j
 @Testcontainers
 public abstract class AbstractContainerRunner {
 
@@ -26,6 +29,8 @@ public abstract class AbstractContainerRunner {
     void dummyTest() {}
 
     private static File getComposeFile() {
-        return Paths.get("target/docker/docker-compose.yml").toFile();
+        final var file = Paths.get("target/docker/docker-compose.yml").toFile();
+        log.info("Trying to open compose file with path: {}", file.getAbsolutePath());
+        return file;
     }
 }
