@@ -18,8 +18,8 @@ public abstract class AbstractContainerRunner {
 
     static {
         environment = new DockerComposeContainer<>(getComposeFile())
-                .withLocalCompose(true)
-                .withOptions("--compatibility")
+//                .withLocalCompose(true)
+//                .withOptions("--compatibility")
                 .waitingFor("app", Wait.forHealthcheck());
         Startables.deepStart(environment).join();
     }
