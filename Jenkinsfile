@@ -47,7 +47,9 @@ pipeline {
                     // Append additional properties
                     mvnCommand += " \"-Dtest=discord.automation.runners.CucumberRunnerIT\""
 
-                    sh "mvn ${mvnCommand} test"
+                    docker.withRegistry("", "DockerHubCredentials") {
+                        sh "mvn ${mvnCommand} test"
+                    }
                 }
             }
         }
