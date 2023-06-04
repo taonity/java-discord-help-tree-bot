@@ -47,6 +47,13 @@ pipeline {
                     // Append additional properties
                     mvnCommand += " \"-Dtest=discord.automation.runners.CucumberRunnerIT\""
 
+                    withCredentials([string(
+                            credentialsId: 'DockerHubCredentials',
+                            usernameVariable: 'USERNAME',
+                            passwordVariable: 'PASSWORD')]) {
+                        mvnCommand += " \"-Dregistry.username=$USERNAME\" \"-Dregistry.password=$PASSWORD\""
+                    }
+
                     docker.withRegistry("", "DockerHubCredentials") {
                         sh "mvn ${mvnCommand} test"
                     }

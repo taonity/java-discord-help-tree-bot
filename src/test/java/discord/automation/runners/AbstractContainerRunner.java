@@ -9,6 +9,9 @@ import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.lifecycle.Startables;
+import org.testcontainers.shaded.org.apache.commons.lang3.SystemUtils;
+
+import static org.testcontainers.shaded.org.apache.commons.lang3.SystemUtils.*;
 
 @Slf4j
 @Testcontainers
@@ -17,10 +20,16 @@ public abstract class AbstractContainerRunner {
     private static final DockerComposeContainer<?> environment;
 
     static {
-        environment = new DockerComposeContainer<>(getComposeFile())
-//                .withLocalCompose(true)
-//                .withOptions("--compatibility")
-                .waitingFor("app", Wait.forHealthcheck());
+        if (IS_OS_WINDOWS) {
+            environment = new DockerComposeContainer<>(getComposeFile())
+                    .withLocalCompose(true)
+                    .withOptions("--compatibility");
+        } else if (IS_OS_UNIX) {
+            environment = new DockerComposeContainer<>(getComposeFile());
+        } else {
+            throw new RuntimeException(String.format("Unknown os encountered: %s", OS_NAME));
+        }
+        environment.waitingFor("app", Wait.forHealthcheck());
         Startables.deepStart(environment).join();
     }
 
