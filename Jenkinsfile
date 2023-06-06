@@ -29,9 +29,9 @@ pipeline {
             steps {
                 script {
 
-                    withCredentials([string(credentialsId: 'javaDiscordHelpBotAutomationTestToken', variable: 'TOKEN')]) {
-                        sh "mvn -P automation clean install \"-Ddiscord.token=$TOKEN\" -DskipTests=true"
-                    }
+//                    withCredentials([string(credentialsId: 'javaDiscordHelpBotAutomationTestToken', variable: 'TOKEN')]) {
+//                        sh "mvn -P automation clean install \"-Ddiscord.token=$TOKEN\" -DskipTests=true"
+//                    }
 
                     // Read the content of a file
                     def fileContent = readFile "${WORKSPACE}/target/docker/.env"
