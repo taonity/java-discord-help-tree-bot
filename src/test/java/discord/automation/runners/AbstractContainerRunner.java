@@ -25,7 +25,8 @@ public abstract class AbstractContainerRunner {
                     .withLocalCompose(true)
                     .withOptions("--compatibility");
         } else if (IS_OS_UNIX) {
-            environment = new DockerComposeContainer<>(getComposeFile());
+            environment = new DockerComposeContainer<>(getComposeFile())
+                    .withLocalCompose(true);
         } else {
             throw new RuntimeException(String.format("Unknown os encountered: %s", OS_NAME));
         }
@@ -39,7 +40,6 @@ public abstract class AbstractContainerRunner {
 
     private static File getComposeFile() {
         final var file = Paths.get("target/docker/docker-compose.yml").toFile();
-        log.info("bruh {} {}", System.getProperty("registry.username"), System.getProperty("registry.password"));
         log.info("Trying to open compose file with path: {}", file.getAbsolutePath());
         return file;
     }
