@@ -19,11 +19,11 @@ pipeline {
 
     stages {
 
-        stage('Build JAR & image') {
-            steps {
-                sh 'mvn -B -P docker clean package -DskipTests'
-            }
-        }
+//        stage('Build JAR & image') {
+//            steps {
+//                sh 'mvn -B -P docker clean package -DskipTests'
+//            }
+//        }
 
         stage('Run automation tests') {
             steps {
@@ -48,44 +48,44 @@ pipeline {
                     mvnCommand += " \"-Dtest=discord.automation.runners.CucumberRunnerIT\""
 
                     withCredentials([usernamePassword(
-                            credentialsId: 'DockerHubCredentials',
+                            credentialsId: 'generalTaoDockerHub',
                             usernameVariable: 'USERNAME',
                             passwordVariable: 'PASSWORD')]) {
                         mvnCommand += " \"-Dregistry.username=$USERNAME\" \"-Dregistry.password=$PASSWORD\""
                     }
 
-                    docker.withRegistry("", "DockerHubCredentials") {
+                    docker.withRegistry("", "generalTaoDockerHub") {
                         sh "mvn ${mvnCommand} test"
                     }
                 }
             }
         }
 
-        stage("Push to Dockerhub") {
-            when {
-                equals expected: "true",
-                actual: "${params.push_image}"
-            }
-            steps {
-                script {
-                    echo "Pushing the image to docker hub"
-                    def repositoryName = "generaltao725/${params.image_name}"
-
-                    docker.withRegistry("", "generalTaoDockerHub") {
-                        def image = docker.image(repositoryName);
-                        try {
-                            image.push("latest")
-                            image.push("0.0.0")
-                        } catch(Exception ex) {
-                            println(ex);
-                            image.push("latest")
-                            image.push("0.0.0")
-                        }
-                    }
-
-                    sh "docker rmi -f ${repositoryName} "
-                }
-            }
-        }
+//        stage("Push to Dockerhub") {
+//            when {
+//                equals expected: "true",
+//                actual: "${params.push_image}"
+//            }
+//            steps {
+//                script {
+//                    echo "Pushing the image to docker hub"
+//                    def repositoryName = "generaltao725/${params.image_name}"
+//
+//                    docker.withRegistry("", "generalTaoDockerHub") {
+//                        def image = docker.image(repositoryName);
+//                        try {
+//                            image.push("latest")
+//                            image.push("0.0.0")
+//                        } catch(Exception ex) {
+//                            println(ex);
+//                            image.push("latest")
+//                            image.push("0.0.0")
+//                        }
+//                    }
+//
+//                    sh "docker rmi -f ${repositoryName} "
+//                }
+//            }
+//        }
     }
 }
