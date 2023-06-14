@@ -127,8 +127,7 @@ public class GiteaApiService {
         sendRequest(httpEntity, path, httpMethod, onException, API_PATH_FORMAT);
     }
 
-    private void sendUrlRequest(HttpEntity<?> httpEntity)
-            throws GiteaApiException {
+    private void sendUrlRequest(HttpEntity<?> httpEntity) throws GiteaApiException {
         sendRequest(httpEntity, USER_SIGN_UP_PATH, HttpMethod.POST, LogMessage.ALERT_20075, URL_PATH_FORMAT);
     }
 

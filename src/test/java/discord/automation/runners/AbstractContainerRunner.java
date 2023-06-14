@@ -1,17 +1,15 @@
 package discord.automation.runners;
 
+import static org.testcontainers.shaded.org.apache.commons.lang3.SystemUtils.*;
+
 import java.io.File;
 import java.nio.file.Paths;
-
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.lifecycle.Startables;
-import org.testcontainers.shaded.org.apache.commons.lang3.SystemUtils;
-
-import static org.testcontainers.shaded.org.apache.commons.lang3.SystemUtils.*;
 
 @Slf4j
 @Testcontainers
@@ -25,8 +23,7 @@ public abstract class AbstractContainerRunner {
                     .withLocalCompose(true)
                     .withOptions("--compatibility");
         } else if (IS_OS_UNIX) {
-            environment = new DockerComposeContainer<>(getComposeFile())
-                    .withLocalCompose(true);
+            environment = new DockerComposeContainer<>(getComposeFile()).withLocalCompose(true);
         } else {
             throw new RuntimeException(String.format("Unknown os encountered: %s", OS_NAME));
         }

@@ -51,9 +51,7 @@ public class GiteaApiTestService {
     }
 
     private Object sendApiRequest(
-            HttpEntity<?> httpEntity,
-            String path,
-            ParameterizedTypeReference<?> parameterizedTypeReference) {
+            HttpEntity<?> httpEntity, String path, ParameterizedTypeReference<?> parameterizedTypeReference) {
         final String fullPath = String.format(API_PATH_FORMAT, giteaBaseUrl, path);
         try {
             final var result = restTemplate.exchange(fullPath, HttpMethod.GET, httpEntity, parameterizedTypeReference);
@@ -74,7 +72,6 @@ public class GiteaApiTestService {
     public ContentsResponse getFile(String owner, String repo, String filepath, String ref) {
         final var path = String.format(REPO_FILE_PATH_FORMAT, owner, repo, filepath, ref);
         final var entity = new HttpEntity<String>(headers);
-        return (ContentsResponse)
-                sendApiRequest(entity, path, new ParameterizedTypeReference<ContentsResponse>() {});
+        return (ContentsResponse) sendApiRequest(entity, path, new ParameterizedTypeReference<ContentsResponse>() {});
     }
 }
