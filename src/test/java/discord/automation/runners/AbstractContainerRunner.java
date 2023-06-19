@@ -4,6 +4,8 @@ import static org.testcontainers.shaded.org.apache.commons.lang3.SystemUtils.*;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.time.Duration;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.DockerComposeContainer;
@@ -11,6 +13,8 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.lifecycle.Startables;
+
+import javax.xml.datatype.DatatypeFactory;
 
 @Slf4j
 @Testcontainers
@@ -32,6 +36,7 @@ public abstract class AbstractContainerRunner {
                 .withLogConsumer("app", new Slf4jLogConsumer(log))
                 .withLogConsumer("gitea", new Slf4jLogConsumer(log))
                 .withLogConsumer("db", new Slf4jLogConsumer(log))
+                .withStartupTimeout(Duration.ofSeconds(150))
                 .waitingFor("app", Wait.forHealthcheck());
         Startables.deepStart(environment).join();
     }
