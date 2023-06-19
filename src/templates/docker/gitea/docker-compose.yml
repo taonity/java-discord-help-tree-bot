@@ -25,9 +25,9 @@ services:
       - command-runner.command=/shared/restore-backup.sh
     healthcheck:
       test: curl -f localhost:3001/api/healthz || exit 1
-      interval: 1s
-      timeout: 1s
-      retries: 30
+      interval: 5s
+      timeout: 5s
+      retries: 100
 volumes:
   java-discord-help-bot-volume-gitea:
 

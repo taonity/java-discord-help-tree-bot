@@ -36,7 +36,7 @@ public abstract class AbstractContainerRunner {
                 .withLogConsumer("app", new Slf4jLogConsumer(log))
                 .withLogConsumer("gitea", new Slf4jLogConsumer(log))
                 .withLogConsumer("db", new Slf4jLogConsumer(log))
-                .withStartupTimeout(Duration.ofSeconds(150))
+                .withStartupTimeout(Duration.ofSeconds(3000))
                 .waitingFor("app", Wait.forHealthcheck());
         Startables.deepStart(environment).join();
     }

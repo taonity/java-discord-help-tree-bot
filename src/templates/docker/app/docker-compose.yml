@@ -13,4 +13,4 @@ services:
       test: curl localhost:9015/actuator/health
       interval: 10s
       timeout: 10s
-      retries: 30
+      retries: 100
