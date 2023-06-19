@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.lifecycle.Startables;
@@ -27,7 +28,11 @@ public abstract class AbstractContainerRunner {
         } else {
             throw new RuntimeException(String.format("Unknown os encountered: %s", OS_NAME));
         }
-        environment.waitingFor("app", Wait.forHealthcheck());
+        environment
+                .withLogConsumer("app", new Slf4jLogConsumer(log))
+                .withLogConsumer("gitea", new Slf4jLogConsumer(log))
+                .withLogConsumer("db", new Slf4jLogConsumer(log))
+                .waitingFor("app", Wait.forHealthcheck());
         Startables.deepStart(environment).join();
     }
 
