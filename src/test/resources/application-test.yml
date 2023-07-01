@@ -2,3 +2,14 @@
 spring:
   flyway:
     enabled: false
+    url: jdbc:postgresql://localhost:5432/discord_help_bot
+  datasource:
+    url: jdbc:postgresql://localhost:5432/discord_help_bot
+
+app-reference:
+  address: localhost
+
+gitea:
+  address: localhost
+
+
