@@ -8,6 +8,8 @@ import java.time.Duration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -16,12 +18,12 @@ import org.testcontainers.lifecycle.Startables;
 
 import javax.xml.datatype.DatatypeFactory;
 
-@Slf4j
+//@Slf4j
 @Testcontainers
 public abstract class AbstractContainerRunner {
 
     private static final DockerComposeContainer<?> environment;
-
+    static Logger log = LoggerFactory.getLogger("container");
     static {
         if (IS_OS_WINDOWS) {
             environment = new DockerComposeContainer<>(getComposeFile())
@@ -33,9 +35,9 @@ public abstract class AbstractContainerRunner {
             throw new RuntimeException(String.format("Unknown os encountered: %s", OS_NAME));
         }
         environment
-                .withLogConsumer("app", new Slf4jLogConsumer(log))
-                .withLogConsumer("gitea", new Slf4jLogConsumer(log))
-                .withLogConsumer("db", new Slf4jLogConsumer(log))
+                .withLogConsumer("app", new Slf4jLogConsumer(log).withPrefix("app-1"))
+                .withLogConsumer("gitea", new Slf4jLogConsumer(log).withPrefix("gitea-1"))
+                .withLogConsumer("db", new Slf4jLogConsumer(log).withPrefix("db-1"))
                 .waitingFor("app",
                         Wait.forHealthcheck().withStartupTimeout(Duration.ofSeconds(1000))
                 );
