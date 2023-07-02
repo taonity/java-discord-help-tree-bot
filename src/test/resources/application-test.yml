@@ -1,15 +1,17 @@
 ---
+deployment-localhost-name: ${DEPLOYMENT_LOCALHOST_NAME:prodenv-jenkins-dind}
+
 spring:
   flyway:
     enabled: false
-    url: jdbc:postgresql://localhost:5432/discord_help_bot
+    url: jdbc:postgresql://${deployment-localhost-name}:5432/discord_help_bot
   datasource:
-    url: jdbc:postgresql://localhost:5432/discord_help_bot
+    url: jdbc:postgresql://${deployment-localhost-name}:5432/discord_help_bot
 
 app-reference:
-  address: localhost
+  address: ${deployment-localhost-name}
 
 gitea:
-  address: localhost
+  address: ${deployment-localhost-name}
 
 
