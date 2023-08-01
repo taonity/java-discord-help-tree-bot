@@ -1,3 +1,5 @@
+import hudson.FilePath
+
 pipeline {
     agent any
 
@@ -68,7 +70,7 @@ pipeline {
                     def logFolderPath = "${WORKSPACE}/at-compose-logs"
 
                     // Get a list of log files in the folder
-                    def logFiles = readFiles(glob: "${logFolderPath}/*.log")
+                    def logFiles = findLogFiles(logFolderPath)
 
                     // Sort log files by name (which includes date) in ascending order
                     logFiles.sort { a, b -> a.name <=> b.name }
@@ -117,4 +119,15 @@ pipeline {
 //            }
 //        }
     }
+}
+
+def findLogFiles(folderPath) {
+    def files = []
+    def folder = new FilePath(new File(folderPath))
+    folder.list().each { file ->
+        if (file.name.endsWith('.log')) {
+            files.add(file)
+        }
+    }
+    return files
 }
