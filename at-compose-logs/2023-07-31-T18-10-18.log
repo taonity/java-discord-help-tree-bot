@@ -1,0 +1,49 @@
+Trying to open compose file with path: C:\Users\gener\OneDrive\Documents\Intellij\java-discord-help-bot\target\docker\docker-compose-test.yml
+[app-1] : Picked up JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+[gitea-1] : Generating /data/ssh/ssh_host_ed25519_key...
+[app-1] : Listening for transport dt_socket at address: 5005
+[gitea-1] : Generating /data/ssh/ssh_host_rsa_key...
+[gitea-1] : Generating /data/ssh/ssh_host_ecdsa_key...
+[gitea-1] : Server listening on :: port 22.
+[gitea-1] : Server listening on 0.0.0.0 port 22.
+[gitea-1] : 2023/07/31 15:10:25 cmd/web.go:105:runWeb() [I] Starting Gitea on PID: 15
+[gitea-1] : 2023/07/31 15:10:25 cmd/web.go:159:runWeb() [I] Global init
+[gitea-1] : 2023/07/31 15:10:25 routers/init.go:118:GlobalInitInstalled() [I] Git Version: 2.38.5, Wire Protocol Version 2 Enabled (home: /data/gitea/home)
+[gitea-1] : 2023/07/31 15:10:25 routers/init.go:119:GlobalInitInstalled() [I] AppPath: /usr/local/bin/gitea
+[gitea-1] : 2023/07/31 15:10:25 routers/init.go:120:GlobalInitInstalled() [I] AppWorkPath: /app/gitea
+[gitea-1] : 2023/07/31 15:10:25 routers/init.go:121:GlobalInitInstalled() [I] Custom path: /data/gitea
+[gitea-1] : 2023/07/31 15:10:25 routers/init.go:122:GlobalInitInstalled() [I] Log path: /data/gitea/log
+[gitea-1] : 2023/07/31 15:10:25 routers/init.go:123:GlobalInitInstalled() [I] Configuration file: /data/gitea/conf/app.ini
+[gitea-1] : 2023/07/31 15:10:25 routers/init.go:124:GlobalInitInstalled() [I] Run Mode: Prod
+[gitea-1] : 2023/07/31 15:10:25 routers/init.go:125:GlobalInitInstalled() [I] Gitea v1.19.4 built with GNU Make 4.3, go1.20.5 : bindata, timetzdata, sqlite, sqlite_unlock_notify
+[gitea-1] : 2023/07/31 15:10:26 ...dules/setting/log.go:331:initLogFrom() [I] Gitea Log Mode: Console(Console:info)
+[gitea-1] : 2023/07/31 15:10:26 ...dules/setting/log.go:286:generateNamedLogger() [I] Router Log: Console(console:info)
+[gitea-1] : 2023/07/31 15:10:26 ...les/setting/cache.go:75:loadCacheFrom() [I] Cache Service Enabled
+[gitea-1] : 2023/07/31 15:10:26 ...les/setting/cache.go:90:loadCacheFrom() [I] Last Commit Cache Service Enabled
+[gitea-1] : 2023/07/31 15:10:26 ...s/setting/session.go:74:loadSessionFrom() [I] Session Service Enabled
+[gitea-1] : 2023/07/31 15:10:26 ...s/storage/storage.go:175:initAttachments() [I] Initialising Attachment storage with type: 
+[gitea-1] : 2023/07/31 15:10:26 ...les/storage/local.go:45:NewLocalStorage() [I] Creating new Local Storage at /data/gitea/attachments
+[gitea-1] : 2023/07/31 15:10:26 ...s/storage/storage.go:165:initAvatars() [I] Initialising Avatar storage with type: 
+[gitea-1] : 2023/07/31 15:10:26 ...les/storage/local.go:45:NewLocalStorage() [I] Creating new Local Storage at /data/gitea/avatars
+[gitea-1] : 2023/07/31 15:10:26 ...s/storage/storage.go:191:initRepoAvatars() [I] Initialising Repository Avatar storage with type: 
+[gitea-1] : 2023/07/31 15:10:26 ...les/storage/local.go:45:NewLocalStorage() [I] Creating new Local Storage at /data/gitea/repo-avatars
+[gitea-1] : 2023/07/31 15:10:26 ...s/storage/storage.go:197:initRepoArchives() [I] Initialising Repository Archive storage with type: 
+[gitea-1] : 2023/07/31 15:10:26 ...les/storage/local.go:45:NewLocalStorage() [I] Creating new Local Storage at /data/gitea/repo-archive
+[gitea-1] : 2023/07/31 15:10:26 ...s/storage/storage.go:207:initPackages() [I] Initialising Packages storage with type: 
+[gitea-1] : 2023/07/31 15:10:26 ...les/storage/local.go:45:NewLocalStorage() [I] Creating new Local Storage at /data/gitea/packages
+[gitea-1] : 2023/07/31 15:10:26 routers/init.go:143:GlobalInitInstalled() [I] SQLite3 support is enabled
+[gitea-1] : 2023/07/31 15:10:26 routers/common/db.go:21:InitDBEngine() [I] Beginning ORM engine initialization.
+[gitea-1] : 2023/07/31 15:10:26 routers/common/db.go:28:InitDBEngine() [I] ORM engine initialization attempt #1/10...
+[gitea-1] : 2023/07/31 15:10:26 cmd/web.go:163:runWeb() [I] PING DATABASE sqlite3
+[gitea-1] : 2023/07/31 15:10:27 routers/init.go:149:GlobalInitInstalled() [I] ORM engine initialization successful!
+[gitea-1] : 2023/07/31 15:10:29 ...er/issues/indexer.go:173:func2() [I] [64c7cee5-3] PID 15: Initializing Issue Indexer: bleve
+[gitea-1] : 2023/07/31 15:10:29 ...xer/stats/indexer.go:38:populateRepoIndexer() [I] Populating the repo stats indexer with existing repositories
+[gitea-1] : 2023/07/31 15:10:29 routers/init.go:89:syncAppConfForGit() [I] AppPath changed from '' to '/usr/local/bin/gitea'
+[gitea-1] : 2023/07/31 15:10:29 routers/init.go:94:syncAppConfForGit() [I] CustomConf changed from '' to '/data/gitea/conf/app.ini'
+[gitea-1] : 2023/07/31 15:10:29 routers/init.go:100:syncAppConfForGit() [I] re-sync repository hooks ...
+[gitea-1] : 2023/07/31 15:10:29 routers/init.go:103:syncAppConfForGit() [I] re-write ssh public keys ...
+[gitea-1] : 2023/07/31 15:10:29 ...er/issues/indexer.go:269:func3() [I] [64c7cee5-3] Issue Indexer Initialization took 19.1551ms
+[gitea-1] : 2023/07/31 15:10:29 cmd/web.go:220:listen() [I] [64c7cee5-27] Listen: http://0.0.0.0:3001
+[gitea-1] : 2023/07/31 15:10:29 cmd/web.go:224:listen() [I] [64c7cee5-27] AppURL(ROOT_URL): http://host.docker.internal:3001/
+[gitea-1] : 2023/07/31 15:10:29 ...s/graceful/server.go:62:NewServer() [I] [64c7cee5-27] Starting new Web server: tcp:0.0.0.0:3001 on PID: 15
+[gitea-1] : 2023/07/31 15:10:29 ...c/net/http/server.go:2122:ServeHTTP() [I] [64c7cee5-28] PING DATABASE sqlite3

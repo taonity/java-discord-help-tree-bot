@@ -1,0 +1,164 @@
+[db-1] : waiting for server to shut down...2023-07-31 15:10:25.915 UTC [48] LOG:  received fast shutdown request
+[db-1] : .2023-07-31 15:10:25.918 UTC [48] LOG:  aborting any active transactions
+[db-1] : 2023-07-31 15:10:25.919 UTC [48] LOG:  background worker "logical replication launcher" (PID 55) exited with exit code 1
+[db-1] : 2023-07-31 15:10:25.919 UTC [50] LOG:  shutting down
+[db-1] : 2023-07-31 15:10:25.936 UTC [48] LOG:  database system is shut down
+[db-1] :  done
+[db-1] : server stopped
+[db-1] : 
+[db-1] : PostgreSQL init process complete; ready for start up.
+[db-1] : 
+[db-1] : 2023-07-31 15:10:26.034 UTC [1] LOG:  starting PostgreSQL 14.8 (Debian 14.8-1.pgdg120+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+[db-1] : 2023-07-31 15:10:26.035 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+[db-1] : 2023-07-31 15:10:26.035 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+[db-1] : 2023-07-31 15:10:26.038 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+[db-1] : 2023-07-31 15:10:26.043 UTC [65] LOG:  database system was shut down at 2023-07-31 15:10:25 UTC
+[db-1] : 2023-07-31 15:10:26.047 UTC [1] LOG:  database system is ready to accept connections
+[app-1] : 15:10:31,865 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
+[app-1] : 15:10:31,866 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback.xml] at [file:/app/resources/logback.xml]
+[app-1] : 15:10:31,963 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - debug attribute not set
+[app-1] : 15:10:31,978 |-WARN in ch.qos.logback.core.joran.action.IncludeAction - Could not find resource corresponding to [/org/springframework/boot/logging/logback/base.xml]
+[app-1] : 15:10:31,985 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [io.netty] to INFO
+[app-1] : 15:10:31,985 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [reactor] to INFO
+[app-1] : 15:10:31,985 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+[app-1] : 15:10:31,989 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [CONSOLE]
+[app-1] : 15:10:32,000 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+[app-1] : 15:10:32,073 |-INFO in ch.qos.logback.core.joran.action.TimestampAction - Using current interpretation time, i.e. now, as time reference.
+[app-1] : 15:10:32,074 |-INFO in ch.qos.logback.core.joran.action.TimestampAction - Adding property to the context with key="bySecond" and value="2023-07-31-T15-10-32" to the LOCAL scope
+[app-1] : 15:10:32,075 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.FileAppender]
+[app-1] : 15:10:32,082 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [FILE]
+[app-1] : 15:10:32,084 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+[app-1] : 15:10:32,084 |-INFO in ch.qos.logback.core.FileAppender[FILE] - File property is set to [at-compose-logs/2023-07-31-T15-10-32.log]
+[app-1] : 15:10:32,087 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting additivity of logger [automation-tests] to false
+[app-1] : 15:10:32,087 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [FILE] to Logger[automation-tests]
+[app-1] : 15:10:32,088 |-INFO in ch.qos.logback.classic.joran.action.RootLoggerAction - Setting level of ROOT logger to INFO
+[app-1] : 15:10:32,088 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [CONSOLE] to Logger[ROOT]
+[app-1] : 15:10:32,088 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - End of configuration.
+[app-1] : 15:10:32,089 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@fe18270 - Registering current configuration as safe fallback point
+[app-1] : 
+[app-1] : 
+[app-1] :   .   ____          _            __ _ _
+[app-1] :  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+[app-1] : ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+[app-1] :  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+[app-1] :   '  |____| .__|_| |_|_| |_\__, | / / / /
+[app-1] :  =========|_|==============|___/=/_/_/_/
+[app-1] :  :: Spring Boot ::                (v2.7.3)
+[app-1] : 
+[app-1] : 15:10:32.885 [main] INFO  discord.SpringApp - Starting SpringApp using Java 11.0.16 on d169c701bcf3 with PID 1 (/app/classes started by root in /)
+[app-1] : 15:10:32.888 [main] INFO  discord.SpringApp - No active profile set, falling back to 1 default profile: "default"
+[app-1] : 15:10:34.335 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+[app-1] : 15:10:34.582 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 235 ms. Found 2 JPA repository interfaces.
+[gitea-1] : 2023/07/31 15:10:34 [64c7ceea] router: completed GET /api/healthz for 127.0.0.1:55726, 200 OK in 0.3ms @ healthcheck/check.go:66(healthcheck.Check)
+[gitea-1] : 2023/07/31 15:10:34 ...c/net/http/server.go:2122:ServeHTTP() [I] [64c7ceea] PING DATABASE sqlite3
+[app-1] : 15:10:35.706 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 9015 (http)
+[app-1] : 15:10:35.720 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9015"]
+[app-1] : 15:10:35.723 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+[app-1] : 15:10:35.723 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.65]
+[app-1] : 15:10:35.915 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+[app-1] : 15:10:35.915 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2942 ms
+[app-1] : 15:10:36.497 [main] INFO  o.f.c.i.license.VersionPrinter - Flyway Community Edition 8.5.13 by Redgate
+[app-1] : 15:10:36.497 [main] INFO  o.f.c.i.license.VersionPrinter - See what's new here: https://flywaydb.org/documentation/learnmore/releaseNotes#8.5.13
+[app-1] : 15:10:36.497 [main] INFO  o.f.c.i.license.VersionPrinter - 
+[app-1] : 15:10:36.826 [main] INFO  o.f.c.i.d.base.BaseDatabaseType - Database: jdbc:postgresql://db:5432/discord_help_bot (PostgreSQL 14.8)
+[app-1] : 15:10:36.879 [main] INFO  o.f.core.internal.command.DbValidate - Successfully validated 2 migrations (execution time 00:00.021s)
+[app-1] : 15:10:36.897 [main] INFO  o.f.c.i.s.JdbcTableSchemaHistory - Creating Schema History table "public"."flyway_schema_history" ...
+[app-1] : 15:10:36.942 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema "public": << Empty Schema >>
+[app-1] : 15:10:36.950 [main] INFO  o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "000001 - init privileges"
+[app-1] : 15:10:36.976 [main] INFO  o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "100000 - create tables"
+[app-1] : 15:10:37.001 [main] INFO  o.f.core.internal.command.DbMigrate - Successfully applied 2 migrations to schema "public", now at version v100000 (execution time 00:00.064s)
+[app-1] : 15:10:37.175 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+[app-1] : 15:10:37.248 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+[app-1] : 15:10:37.320 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+[app-1] : 15:10:37.388 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.10.Final
+[app-1] : 15:10:37.619 [main] INFO  o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+[app-1] : 15:10:37.759 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL94Dialect
+[app-1] : 15:10:38.481 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+[app-1] : 15:10:38.496 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+[app-1] : 15:10:39.003 [main] INFO  discord4j.core.DiscordClientBuilder - Discord4J 3.2.3 (https://discord4j.com)
+[gitea-1] : 2023/07/31 15:10:39 ...c/net/http/server.go:2122:ServeHTTP() [I] [64c7ceef] PING DATABASE sqlite3
+[gitea-1] : 2023/07/31 15:10:39 [64c7ceef] router: completed GET /api/healthz for 127.0.0.1:55752, 200 OK in 0.2ms @ healthcheck/check.go:66(healthcheck.Check)
+[app-1] : 15:10:41.668 [reactor-http-epoll-3] INFO  d.gateway.DefaultGatewayClient - [G:2ca84a14, S:0] Connected to Gateway
+[app-1] : 15:10:41.678 [reactor-http-epoll-3] INFO  d.core.shard.LocalShardCoordinator - [G:2ca84a14, S:0] Shard connected
+[gitea-1] : 2023/07/31 15:10:43 [64c7cef3] router: completed POST /user/sign_up for 172.28.0.4:53124, 303 See Other in 82.7ms @ auth/auth.go:406(auth.SignUpPost)
+[app-1] : 15:10:43.140 [main] WARN  o.a.h.c.p.ResponseProcessCookies - Invalid cookie header: "Set-Cookie: _csrf=EHbloo9LQAlKJbe4w3ojjqXijG06MTY5MDgxNjI0MzA0MzY0MTkwMA; Path=/; Expires=Tue, 01 Aug 2023 15:10:43 GMT; HttpOnly; SameSite=Lax". Invalid 'expires' attribute: Tue, 01 Aug 2023 15:10:43 GMT
+[gitea-1] : 2023/07/31 15:10:43 [64c7cef3-2] router: completed GET / for 172.28.0.4:53124, 200 OK in 11.4ms @ web/home.go:32(web.Home)
+[app-1] : 15:10:43.160 [main] WARN  o.a.h.c.p.ResponseProcessCookies - Invalid cookie header: "Set-Cookie: _csrf=jWyQp8Y0JGOq4FFqlHnv-pjHg3I6MTY5MDgxNjI0MzE0NzY1NjMwMA; Path=/; Expires=Tue, 01 Aug 2023 15:10:43 GMT; HttpOnly; SameSite=Lax". Invalid 'expires' attribute: Tue, 01 Aug 2023 15:10:43 GMT
+[gitea-1] : 2023/07/31 15:10:43 [64c7cef3-3] router: completed POST /api/v1/users/d/tokens for 172.28.0.4:53124, 201 Created in 83.0ms @ user/app.go:75(user.CreateAccessToken)
+[gitea-1] : 2023/07/31 15:10:43 [64c7cef3-4] router: completed POST /api/v1/admin/users for 172.28.0.4:53124, 201 Created in 94.6ms @ admin/user.go:55(admin.CreateUser)
+[gitea-1] : 2023/07/31 15:10:43 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:43 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:43 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:43 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:43 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:43 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:43 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:43 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:43 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:43 router: completed POST /api/v1/admin/users/user_lsXF/repos for 172.28.0.4:53124, 201 Created in 61.6ms @ admin/repo.go:14(admin.CreateRepo)
+[gitea-1] : 2023/07/31 15:10:43 [64c7cef3-28] router: completed POST /api/internal/hook/pre-receive/user_lsXF/repo_lsXF for 127.0.0.1:0, 200 OK in 4.4ms @ private/hook_pre_receive.go:107(private.HookPreReceive)
+[gitea-1] : 2023/07/31 15:10:44 router: completed POST /api/internal/hook/post-receive/user_lsXF/repo_lsXF for 127.0.0.1:0, 200 OK in 1.3ms @ private/hook_post_receive.go:27(private.HookPostReceive)
+[gitea-1] : 2023/07/31 15:10:44 [64c7cef3-12] router: completed POST /api/v1/repos/user_lsXF/repo_lsXF/contents/dialog-starter.yaml?ref=main for 172.28.0.4:53124, 201 Created in 489.6ms @ repo/file.go:416(repo.CreateFile)
+[gitea-1] : 2023/07/31 15:10:44 ...les/cache/context.go:62:GetContextData() [W] [64c7cef4-8] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:44 ...les/cache/context.go:62:GetContextData() [W] [64c7cef4-8] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:44 ...les/cache/context.go:62:GetContextData() [W] [64c7cef4-8] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:44 ...les/cache/context.go:62:GetContextData() [W] [64c7cef4-8] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:44 ...les/cache/context.go:62:GetContextData() [W] [64c7cef4-8] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:44 ...les/cache/context.go:62:GetContextData() [W] [64c7cef4-8] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:44 ...les/cache/context.go:62:GetContextData() [W] [64c7cef4-8] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:44 ...les/cache/context.go:62:GetContextData() [W] [64c7cef4-8] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:44 ...les/cache/context.go:62:GetContextData() [W] [64c7cef4-8] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:44 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:44 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:44 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:44 ...c/net/http/server.go:2122:ServeHTTP() [I] [64c7cef4-25] PING DATABASE sqlite3
+[gitea-1] : 2023/07/31 15:10:44 [64c7cef4-25] router: completed GET /api/healthz for 127.0.0.1:55764, 200 OK in 0.2ms @ healthcheck/check.go:66(healthcheck.Check)
+[gitea-1] : 2023/07/31 15:10:45 [64c7cef5] router: completed POST /api/v1/repos/user_lsXF/repo_lsXF/hooks for 172.28.0.4:53124, 201 Created in 23.8ms @ repo/hook.go:200(repo.CreateHook)
+[gitea-1] : 2023/07/31 15:10:45 [64c7cef5-2] router: completed POST /api/v1/admin/users for 172.28.0.4:53124, 201 Created in 106.7ms @ admin/user.go:55(admin.CreateUser)
+[gitea-1] : 2023/07/31 15:10:45 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:45 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:45 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:45 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:45 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:45 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:45 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:45 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:45 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:45 router: completed POST /api/v1/admin/users/user_msXF/repos for 172.28.0.4:53124, 201 Created in 52.2ms @ admin/repo.go:14(admin.CreateRepo)
+[gitea-1] : 2023/07/31 15:10:46 [64c7cef6] router: completed POST /api/internal/hook/pre-receive/user_msXF/repo_msXF for 127.0.0.1:0, 200 OK in 3.7ms @ private/hook_pre_receive.go:107(private.HookPreReceive)
+[gitea-1] : 2023/07/31 15:10:46 router: completed POST /api/internal/hook/post-receive/user_msXF/repo_msXF for 127.0.0.1:0, 200 OK in 2.1ms @ private/hook_post_receive.go:27(private.HookPostReceive)
+[gitea-1] : 2023/07/31 15:10:46 [64c7cef5-10] router: completed POST /api/v1/repos/user_msXF/repo_msXF/contents/dialog-starter.yaml?ref=main for 172.28.0.4:53124, 201 Created in 431.0ms @ repo/file.go:416(repo.CreateFile)
+[gitea-1] : 2023/07/31 15:10:46 ...les/cache/context.go:62:GetContextData() [W] [64c7cef6-12] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:46 ...les/cache/context.go:62:GetContextData() [W] [64c7cef6-12] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:46 ...les/cache/context.go:62:GetContextData() [W] [64c7cef6-12] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:46 ...les/cache/context.go:62:GetContextData() [W] [64c7cef6-12] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:46 ...les/cache/context.go:62:GetContextData() [W] [64c7cef6-12] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:46 ...les/cache/context.go:62:GetContextData() [W] [64c7cef6-12] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:46 ...les/cache/context.go:62:GetContextData() [W] [64c7cef6-12] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:46 ...les/cache/context.go:62:GetContextData() [W] [64c7cef6-12] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:46 ...les/cache/context.go:62:GetContextData() [W] [64c7cef6-12] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:46 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:46 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:46 ...les/cache/context.go:62:GetContextData() [W] cannot get cache context when getting data: &{context.Background.WithCancel.WithCancel.WithValue(type pprof.labelContextKey, val {"graceful-lifecycle":"with-hammer"}) 0xc0027d7680 false}
+[gitea-1] : 2023/07/31 15:10:47 [64c7cef7] router: completed POST /api/v1/repos/user_msXF/repo_msXF/hooks for 172.28.0.4:53124, 201 Created in 19.1ms @ repo/hook.go:200(repo.CreateHook)
+[gitea-1] : 2023/07/31 15:10:47 [64c7cef7-2] router: completed GET /api/v1/repos/user_lsXF/repo_lsXF/commits?sha=main&limit=9 for 172.28.0.4:53124, 200 OK in 44.3ms @ repo/commits.go:81(repo.GetAllCommits)
+[gitea-1] : 2023/07/31 15:10:48 [64c7cef7-13] router: completed GET /api/v1/repos/user_lsXF/repo_lsXF/contents/dialog-starter.yaml?ref=f11abb429257346a47788f52d0d9875ab1a5b9e6 for 172.28.0.4:53124, 200 OK in 34.0ms @ repo/file.go:731(repo.GetContents)
+[app-1] : 15:10:48.068 [main] INFO  discord.services.TreeRootService - Existing dialog root creation succeed with a structure {"id":"0","cn":[{"id":"1","cn":[{"id":"2","cn":[]},{"id":"3","cn":[]}]}]} for guild 448934652992946176
+[gitea-1] : 2023/07/31 15:10:48 [64c7cef8-9] router: completed GET /api/v1/repos/user_msXF/repo_msXF/commits?sha=main&limit=9 for 172.28.0.4:53124, 200 OK in 37.2ms @ repo/commits.go:81(repo.GetAllCommits)
+[gitea-1] : 2023/07/31 15:10:48 [64c7cef8-20] router: completed GET /api/v1/repos/user_msXF/repo_msXF/contents/dialog-starter.yaml?ref=00534fd278150f5c0c23e90fc7ea809a7a741b28 for 172.28.0.4:53124, 200 OK in 36.1ms @ repo/file.go:731(repo.GetContents)
+[app-1] : 15:10:48.151 [main] INFO  discord.services.TreeRootService - Existing dialog root creation succeed with a structure {"id":"4","cn":[{"id":"5","cn":[{"id":"6","cn":[]},{"id":"7","cn":[]}]}]} for guild 837611904267583539
+[app-1] : 15:10:48.360 [main] INFO  o.s.aop.framework.CglibAopProxy - Unable to proxy interface-implementing method [public final org.springframework.boot.actuate.health.Health org.springframework.boot.actuate.health.AbstractHealthIndicator.health()] because it is marked as final: Consider using interface-based JDK proxies instead!
+[app-1] : 15:10:48.379 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+[app-1] : 15:10:49.312 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+[app-1] : 15:10:49.365 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9015"]
+[app-1] : 15:10:49.394 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 9015 (http) with context path ''
+[app-1] : 15:10:49.413 [main] INFO  discord.SpringApp - Started SpringApp in 17.134 seconds (JVM running for 17.845)
+[app-1] : 15:10:49.841 [d4j-events-1] INFO  d.listeners.GuildCreateListener - Existing guild 448934652992946176 was initialised
+[app-1] : 15:10:49.844 [d4j-events-1] INFO  d.listeners.GuildCreateListener - Existing guild 837611904267583539 was initialised
+[gitea-1] : 2023/07/31 15:10:50 ...c/net/http/server.go:2122:ServeHTTP() [I] [64c7cefa] PING DATABASE sqlite3
+[gitea-1] : 2023/07/31 15:10:50 [64c7cefa] router: completed GET /api/healthz for 127.0.0.1:55770, 200 OK in 0.2ms @ healthcheck/check.go:66(healthcheck.Check)
+[app-1] : 15:10:51.899 [http-nio-9015-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+[app-1] : 15:10:51.899 [http-nio-9015-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+[app-1] : 15:10:51.901 [http-nio-9015-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+[gitea-1] : 2023/07/31 15:10:55 ...c/net/http/server.go:2122:ServeHTTP() [I] [64c7ceff] PING DATABASE sqlite3
+[gitea-1] : 2023/07/31 15:10:55 [64c7ceff] router: completed GET /api/healthz for 127.0.0.1:55794, 200 OK in 0.2ms @ healthcheck/check.go:66(healthcheck.Check)

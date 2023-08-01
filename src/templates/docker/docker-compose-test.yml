@@ -1,0 +1,34 @@
+version: '2.4'
+
+services:
+  # APP
+  db:
+    extends:
+      file: docker-compose.yml
+      service: db
+    ports:
+      - 49001:5432
+
+  gitea:
+    extends:
+      file: docker-compose.yml
+      service: gitea
+    ports:
+      - 49002:3001
+
+  app:
+    extends:
+      file: docker-compose.yml
+      service: app
+    ports:
+      - 49003:9015
+      - 49004:5005
+    environment:
+      JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+
+volumes:
+  java-discord-help-bot-volume-db:
+  java-discord-help-bot-volume-db-backup:
+  java-discord-help-bot-volume-gitea:
+  java-discord-help-bot-volume-gitea-backup:
+  java-discord-help-bot-backup-data:
