@@ -25,9 +25,9 @@ pipeline {
 //            }
 //        }
 
-        stage('Run automation tests') {
-            steps {
-                script {
+//        stage('Run automation tests') {
+//            steps {
+//                script {
 
 //                    withCredentials([string(credentialsId: 'javaDiscordHelpBotAutomationTestToken', variable: 'TOKEN')]) {
 //                        sh "mvn -P automation clean install \"-Ddiscord.token=$TOKEN\" -DskipTests=true"
@@ -57,9 +57,9 @@ pipeline {
 //                    docker.withRegistry("", "generalTaoDockerHub") {
 //                        sh "mvn ${mvnCommand} test"
 //                    }
-                }
-            }
-        }
+//                }
+//            }
+//        }
 
         stage("Show compose logs") {
             steps {
