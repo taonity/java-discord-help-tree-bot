@@ -35,7 +35,7 @@ public class GitTestManager {
     @Value("${gitea.branch-name}")
     private String branchName;
 
-    @Value("${gitea.protocol}://${gitea.address}:${gitea.port}/%s/%s.git")
+    @Value("${gitea.private.url}/%s/%s.git")
     private String gitUriFormat;
 
     @Value("${gitea.admin.username}")

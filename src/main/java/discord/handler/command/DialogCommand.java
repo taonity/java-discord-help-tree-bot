@@ -37,10 +37,10 @@ public class DialogCommand extends AbstractSlashCommand {
     private final GiteaUserService giteaUserService;
     private final GuildSettingsRepository guildSettingsRepository;
 
-    @Value("${gitea.protocol}://${gitea.address}:${gitea.port}/user/login")
+    @Value("${gitea.public.url}/user/login")
     private String loginUrl;
 
-    @Value("${gitea.protocol}://${gitea.address}:${gitea.port}/%s/%s/src/branch/main/%s")
+    @Value("${gitea.public.url}/%s/%s/src/branch/main/%s")
     private String dialogUrlFormat;
 
     private String buildDialogUrl(String guildId) {

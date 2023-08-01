@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class GitHubWebHookController {
+public class GiteaWebHookController {
 
     private final TreeRootService treeRootService;
 

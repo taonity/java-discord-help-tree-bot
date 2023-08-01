@@ -53,7 +53,7 @@ public class GiteaApiService {
     @Value("${app-reference.url}")
     private String hookServerUrl;
 
-    @Value("${gitea.url}")
+    @Value("${gitea.private.url}")
     private String giteaBaseUrl;
 
     @Value("${gitea.admin.username}")

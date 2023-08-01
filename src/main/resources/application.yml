@@ -6,35 +6,46 @@ discord:
 server:
   port: 9015
 
+custom-server:
+  address: ${CUSTOM_SERVER_ADDRESS:localhost}
+
 app-reference:
   protocol: http
-  address: host.docker.internal
+  port:
+  address: ${APP_ADDRESS:localhost}
   url: ${app-reference.protocol}://${app-reference.address}:${server.port}
+
+postgres-url: jdbc:postgresql://${POSTGRES_ADDRESS:localhost}:${POSTGRES_PORT:49001}/${POSTGRES_DB:discord_help_bot}
 
 spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
   datasource:
-    username: ${POSTGRES_APP_USER}
-    password: ${POSTGRES_APP_PASSWORD}
-    url: ${POSTGRES_URL}
+    url: ${postgres-url}
+    username: ${POSTGRES_APP_USER:d}
+    password: ${POSTGRES_APP_PASSWORD:d}
   flyway:
-    url: ${POSTGRES_URL}
-    user: ${POSTGRES_FLYWAY_USER}
-    password: ${POSTGRES_FLYWAY_PASSWORD}
+    url: ${postgres-url}
+    user: ${POSTGRES_FLYWAY_USER:flyway}
+    password: ${POSTGRES_FLYWAY_PASSWORD:flyway}
     defaultSchema: public
 
 gitea:
-  token: ${JAVA_DISCORD_HELP_BOT_GITEA_TOKEN}
-  protocol: http
-  address: host.docker.internal
-  port: 3001
-  url: ${gitea.protocol}://${gitea.address}:${gitea.port}
+  public:
+    protocol: http
+    address: ${custom-server.address}
+    port: ${GITEA_PUBLIC_PORT:49002}
+    url: ${gitea.public.protocol}://${gitea.public.address}:${gitea.public.port}
+  private:
+    protocol: http
+    address: ${GITEA_ADDRESS:localhost}
+    port: ${GITEA_PRIVATE_PORT:49002}
+    url: ${gitea.private.protocol}://${gitea.private.address}:${gitea.private.port}
   branch-name: main
   failure-limit: 3
   admin:
-    username: ${GITEA_ADMIN_USER_NAME}
-    password: ${GITEA_ADMIN_USER_PASSWORD}
-    email: ${GITEA_ADMIN_EMAIL}
+    username: ${GITEA_ADMIN_USER_NAME:d}
+    password: ${GITEA_ADMIN_USER_PASSWORD:d12345}
+    email: ${GITEA_ADMIN_EMAIL:d@d.d}
   git:
-    repoPath: /Users/gener/OneDrive/Documents/gitea/
+    repoPath: ${REPO_STORE_PATH:@project.basedir@/repos-storage}

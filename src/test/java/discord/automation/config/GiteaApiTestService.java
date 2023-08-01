@@ -30,7 +30,7 @@ public class GiteaApiTestService {
     private static final String REPO_SEARCH_UID_PATH_FORMAT = "/repos/search?uid=%s";
     private static final String REPO_FILE_PATH_FORMAT = "/repos/%s/%s/contents/%s?ref=%s";
 
-    @Value("${gitea.url}")
+    @Value("${gitea.private.url}")
     private String giteaBaseUrl;
 
     private final RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());

@@ -12,7 +12,7 @@ services:
       - java-discord-help-bot-volume-gitea:/etc/localtime:ro
       - java-discord-help-bot-volume-gitea-backup:/tmp
     ports:
-      - "3001:3001"
+      - 3001:3001
     environment:
       - USER_UID=1000
       - USER_GID=1000

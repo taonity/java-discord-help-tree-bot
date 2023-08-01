@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -23,7 +24,7 @@ import javax.xml.datatype.DatatypeFactory;
 public abstract class AbstractContainerRunner {
 
     private static final DockerComposeContainer<?> environment;
-    static Logger log = LoggerFactory.getLogger("container");
+    static Logger log = LoggerFactory.getLogger("automation-tests");
     static {
         if (IS_OS_WINDOWS) {
             environment = new DockerComposeContainer<>(getComposeFile())
@@ -35,9 +36,9 @@ public abstract class AbstractContainerRunner {
             throw new RuntimeException(String.format("Unknown os encountered: %s", OS_NAME));
         }
         environment
-                .withLogConsumer("app", new Slf4jLogConsumer(log).withPrefix("app-1"))
-                .withLogConsumer("gitea", new Slf4jLogConsumer(log).withPrefix("gitea-1"))
-                .withLogConsumer("db", new Slf4jLogConsumer(log).withPrefix("db-1"))
+                .withLogConsumer("app", new Slf4jLogConsumer(log).withPrefix("app-1").withSeparateOutputStreams())
+                .withLogConsumer("gitea", new Slf4jLogConsumer(log).withPrefix("gitea-1").withSeparateOutputStreams())
+                .withLogConsumer("db", new Slf4jLogConsumer(log).withPrefix("db-1").withSeparateOutputStreams())
                 .waitingFor("app",
                         Wait.forHealthcheck().withStartupTimeout(Duration.ofSeconds(1000))
                 );
@@ -49,7 +50,7 @@ public abstract class AbstractContainerRunner {
     void dummyTest() {}
 
     private static File getComposeFile() {
-        final var file = Paths.get("target/docker/docker-compose.yml").toFile();
+        final var file = Paths.get("target/docker/docker-compose-test.yml").toFile();
         log.info("Trying to open compose file with path: {}", file.getAbsolutePath());
         return file;
     }

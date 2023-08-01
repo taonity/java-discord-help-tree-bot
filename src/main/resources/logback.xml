@@ -1,21 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
-    <!-- You can configure per-logger level at this point -->
-    <!-- This set of preconfigured loggers is good if you want to have a DEBUG level as baseline -->
+    <include resource="/org/springframework/boot/logging/logback/base.xml"/>
+
     <logger name="io.netty" level="INFO"/>
     <logger name="reactor" level="INFO"/>
 
-    <!-- Display the logs in your console with the following format -->
-    <!-- You can learn more about this here: https://logback.qos.ch/manual/layouts.html#ClassicPatternLayout -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
+    <timestamp key="bySecond" datePattern="yyyy-MM-dd-'T'HH-mm-ss"/>
 
-    <!-- Here you can set the base logger level. If DEBUG is too chatty for you, you can use INFO -->
-    <!-- Possible options are: ALL, TRACE, DEBUG, INFO, WARN, ERROR, OFF -->
+    <!--    TODO make it work with logback-test-->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>at-compose-logs/${bySecond}.log</file>
+        <append>true</append>
+        <immediateFlush>true</immediateFlush>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="automation-tests" additivity="false">
+        <appender-ref ref="FILE" />
+    </logger>
+
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
     </root>

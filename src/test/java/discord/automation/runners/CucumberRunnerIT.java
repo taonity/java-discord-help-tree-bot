@@ -27,7 +27,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 // Is crucial for Junit 4 to 5 migration, for testcontainers
 @CucumberContextConfiguration
 @ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
+@ActiveProfiles("at")
 // DB configs
 @EntityScan("discord.model")
 @EnableJpaRepositories(basePackages = {"discord.repository"})

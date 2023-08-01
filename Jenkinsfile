@@ -33,29 +33,60 @@ pipeline {
 //                        sh "mvn -P automation clean install \"-Ddiscord.token=$TOKEN\" -DskipTests=true"
 //                    }
 
-                    // Read the content of a file
-                    def fileContent = readFile "${WORKSPACE}/target/docker/.env"
+//                    // Read the content of a file
+//                    def fileContent = readFile "${WORKSPACE}/target/docker/.env"
+//
+//                    // Split the content into lines
+//                    def lines = fileContent.readLines()
+//
+//                    // Build the string with properties
+//                    def mvnCommand = lines.collect { line ->
+//                        "\"-D${line.split('=')[0]}=${line.split('=')[1]}\""
+//                    }.join(' ')
+//
+//                    // Append additional properties
+//                    mvnCommand += " \"-Dtest=discord.automation.runners.CucumberRunnerIT\""
+//
+//                    withCredentials([usernamePassword(
+//                            credentialsId: 'generalTaoDockerHub',
+//                            usernameVariable: 'USERNAME',
+//                            passwordVariable: 'PASSWORD')]) {
+//                        mvnCommand += " \"-Dregistry.username=$USERNAME\" \"-Dregistry.password=$PASSWORD\""
+//                    }
+//
+//                    docker.withRegistry("", "generalTaoDockerHub") {
+//                        sh "mvn ${mvnCommand} test"
+//                    }
+                }
+            }
+        }
 
-                    // Split the content into lines
-                    def lines = fileContent.readLines()
+        stages {
+            stage("Show compose logs") {
+                steps {
+                    script {
+                        // Define the log folder path
+                        def logFolderPath = "${WORKSPACE}/at-compose-logs"
 
-                    // Build the string with properties
-                    def mvnCommand = lines.collect { line ->
-                        "\"-D${line.split('=')[0]}=${line.split('=')[1]}\""
-                    }.join(' ')
+                        // Get a list of log files in the folder
+                        def logFiles = findFiles(glob: "${logFolderPath}/*.log")
 
-                    // Append additional properties
-                    mvnCommand += " \"-Dtest=discord.automation.runners.CucumberRunnerIT\""
+                        // Sort log files by name (which includes date) in ascending order
+                        logFiles.sort { a, b -> a.name <=> b.name }
 
-                    withCredentials([usernamePassword(
-                            credentialsId: 'generalTaoDockerHub',
-                            usernameVariable: 'USERNAME',
-                            passwordVariable: 'PASSWORD')]) {
-                        mvnCommand += " \"-Dregistry.username=$USERNAME\" \"-Dregistry.password=$PASSWORD\""
-                    }
+                        if (!logFiles.empty) {
+                            // Get the most recent log file
+                            def latestLogFile = logFiles.last()
 
-                    docker.withRegistry("", "generalTaoDockerHub") {
-                        sh "mvn ${mvnCommand} test"
+                            // Read and log content of the file line by line
+                            latestLogFile.withReader { reader ->
+                                reader.eachLine { line ->
+                                    echo line
+                                }
+                            }
+                        } else {
+                            echo "No log files found in ${logFolderPath}."
+                        }
                     }
                 }
             }
