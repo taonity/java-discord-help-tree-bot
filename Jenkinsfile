@@ -68,7 +68,7 @@ pipeline {
                     def logFolderPath = "${WORKSPACE}/at-compose-logs"
 
                     // Get a list of log files in the folder
-                    def logFiles = findFiles(glob: "${logFolderPath}/*.log")
+                    def logFiles = readFiles(glob: "${logFolderPath}/*.log")
 
                     // Sort log files by name (which includes date) in ascending order
                     logFiles.sort { a, b -> a.name <=> b.name }
