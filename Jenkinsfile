@@ -61,32 +61,30 @@ pipeline {
             }
         }
 
-        stages {
-            stage("Show compose logs") {
-                steps {
-                    script {
-                        // Define the log folder path
-                        def logFolderPath = "${WORKSPACE}/at-compose-logs"
+        stage("Show compose logs") {
+            steps {
+                script {
+                    // Define the log folder path
+                    def logFolderPath = "${WORKSPACE}/at-compose-logs"
 
-                        // Get a list of log files in the folder
-                        def logFiles = findFiles(glob: "${logFolderPath}/*.log")
+                    // Get a list of log files in the folder
+                    def logFiles = findFiles(glob: "${logFolderPath}/*.log")
 
-                        // Sort log files by name (which includes date) in ascending order
-                        logFiles.sort { a, b -> a.name <=> b.name }
+                    // Sort log files by name (which includes date) in ascending order
+                    logFiles.sort { a, b -> a.name <=> b.name }
 
-                        if (!logFiles.empty) {
-                            // Get the most recent log file
-                            def latestLogFile = logFiles.last()
+                    if (!logFiles.empty) {
+                        // Get the most recent log file
+                        def latestLogFile = logFiles.last()
 
-                            // Read and log content of the file line by line
-                            latestLogFile.withReader { reader ->
-                                reader.eachLine { line ->
-                                    echo line
-                                }
+                        // Read and log content of the file line by line
+                        latestLogFile.withReader { reader ->
+                            reader.eachLine { line ->
+                                echo line
                             }
-                        } else {
-                            echo "No log files found in ${logFolderPath}."
                         }
+                    } else {
+                        echo "No log files found in ${logFolderPath}."
                     }
                 }
             }
