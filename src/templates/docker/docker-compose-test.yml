@@ -4,27 +4,32 @@ services:
   # APP
   db:
     extends:
-      file: docker-compose.yml
+      file: db/docker-compose.yml
       service: db
     ports:
       - 49001:5432
 
   gitea:
     extends:
-      file: docker-compose.yml
+      file: gitea/docker-compose.yml
       service: gitea
     ports:
       - 49002:3001
 
   app:
     extends:
-      file: docker-compose.yml
+      file: app/docker-compose.yml
       service: app
     ports:
       - 49003:9015
       - 49004:5005
     environment:
       JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+    depends_on:
+      db:
+        condition: service_healthy
+      gitea:
+        condition: service_healthy
 
 volumes:
   java-discord-help-bot-volume-db:

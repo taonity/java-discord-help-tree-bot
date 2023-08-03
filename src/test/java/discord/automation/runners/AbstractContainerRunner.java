@@ -31,7 +31,8 @@ public abstract class AbstractContainerRunner {
                     .withLocalCompose(true)
                     .withOptions("--compatibility");
         } else if (IS_OS_UNIX) {
-            environment = new DockerComposeContainer<>(getComposeFile()).withLocalCompose(true);
+            environment = new DockerComposeContainer<>(getComposeFile())
+                    .withLocalCompose(true);
         } else {
             throw new RuntimeException(String.format("Unknown os encountered: %s", OS_NAME));
         }
