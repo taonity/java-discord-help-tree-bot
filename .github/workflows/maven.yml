@@ -16,6 +16,8 @@ on:
 
 jobs:
   build:
+    environment:
+      name: test-env
 
     runs-on: ubuntu-latest
 
