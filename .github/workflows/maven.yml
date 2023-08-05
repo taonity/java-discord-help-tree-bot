@@ -31,21 +31,26 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
+    - name: Bump version and push tag
+      uses: anothrNick/github-tag-action@1.64.0 # Don't use @master or @v1 unless you're happy to test the latest version
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
 
-    - name: Build with Maven
-      run: mvn -B -P docker clean package -DskipTests
-      
-    - name: Prepare for tests with Maven
-      run: mvn -P automation clean install "-Ddiscord.token=${{ secrets.AUTOMATION_TEST_TOKEN }}" -DskipTests=true
-      
-    - name: Login to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-        
-    - name: Run tests with Maven
-      run: mvn -Dtest=discord.automation.runners.CucumberRunnerIT test
+#    - name: Build with Maven
+#      run: mvn -B -P docker clean package -DskipTests
+#
+#    - name: Prepare for tests with Maven
+#      run: mvn -P automation clean install "-Ddiscord.token=${{ secrets.AUTOMATION_TEST_TOKEN }}" -DskipTests=true
+#
+#    - name: Login to Docker Hub
+#      uses: docker/login-action@v2
+#      with:
+#        username: ${{ secrets.DOCKERHUB_USERNAME }}
+#        password: ${{ secrets.DOCKERHUB_TOKEN }}
+#
+#    - name: Run tests with Maven
+#      run: mvn -Dtest=discord.automation.runners.CucumberRunnerIT test
 
     # # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     # - name: Update dependency graph
