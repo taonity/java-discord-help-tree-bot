@@ -8,8 +8,8 @@
 
     <refs considerTagsOnBranches="true">
         <ref type="TAG">
-            <version>${ref}</version>
-            <pattern>.*</pattern>
+            <version>${ref.version}</version>
+            <pattern><![CDATA[v(?<version>.*)]]></pattern>
         </ref>
         <ref type="BRANCH">
             <version>${ref}-SNAPSHOT</version>
