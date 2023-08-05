@@ -37,7 +37,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         WITH_V: true
 
-
 #    - name: Build with Maven
 #      run: mvn -B -P docker clean package -DskipTests
 #
