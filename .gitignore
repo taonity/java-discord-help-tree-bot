@@ -39,3 +39,4 @@ secret.yaml
 .env
 repos-storage
 #at-compose-logs
+.git-versioned-pom.xml
