@@ -32,26 +32,32 @@ jobs:
         cache: maven
 
     - name: Bump version and push tag
+      id: github_tag_action
       uses: anothrNick/github-tag-action@1.64.0 # Don't use @master or @v1 unless you're happy to test the latest version
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         WITH_V: true
 
+    - name: test
+      run: echo ============== ${{ steps.github_tag_action.new_tag  }}
+
 #    - name: Build with Maven
 #      run: mvn -B -P docker clean package -DskipTests
-#
+
 #    - name: Prepare for tests with Maven
 #      run: mvn -P automation clean install "-Ddiscord.token=${{ secrets.AUTOMATION_TEST_TOKEN }}" -DskipTests=true
-#
+
 #    - name: Login to Docker Hub
 #      uses: docker/login-action@v2
 #      with:
 #        username: ${{ secrets.DOCKERHUB_USERNAME }}
 #        password: ${{ secrets.DOCKERHUB_TOKEN }}
-#
+
 #    - name: Run tests with Maven
 #      run: mvn -Dtest=discord.automation.runners.CucumberRunnerIT test
 
+#    - name: Push
+#      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/microservices-design-patterns:authentication-service
     # # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     # - name: Update dependency graph
     #   uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
