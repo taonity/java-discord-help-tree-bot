@@ -16,8 +16,8 @@ on:
 
 jobs:
   build:
-    environment:
-      name: test-env
+    env:
+      DEPLOYMENT_LOCALHOST_NAME: localhost
 
     runs-on: ubuntu-latest
 
