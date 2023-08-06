@@ -9,11 +9,14 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - develop
+  workflow_run:
+    workflows: ["Test"]
+    branches: [develop]
+    types:
+      - completed
 
 jobs:
+  if: ${{ github.event.workflow_run.conclusion == 'success' }}
   release:
     strategy:
       max-parallel: 1
