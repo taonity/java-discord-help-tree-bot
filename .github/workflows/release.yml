@@ -32,7 +32,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-
 #    - name: Bump version and push tag
 #      id: github_tag_action
 #      uses: anothrNick/github-tag-action@1.64.0
