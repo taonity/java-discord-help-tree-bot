@@ -20,6 +20,7 @@ jobs:
       group: ${{ github.ref }}
       cancel-in-progress: true
 
+
     env:
       DEPLOYMENT_LOCALHOST_NAME: localhost
 
