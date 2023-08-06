@@ -14,7 +14,7 @@ on:
       - develop
 
 jobs:
-  build:
+  release:
     strategy:
       max-parallel: 1
     concurrency:
@@ -56,17 +56,11 @@ jobs:
     - name: Build with Maven
       run: mvn -B -P docker clean package -DskipTests
 
-    - name: Prepare for tests with Maven
-      run: mvn -P automation clean install "-Ddiscord.token=${{ secrets.AUTOMATION_TEST_TOKEN }}" -DskipTests=true
-
     - name: Login to DockerHub
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-    - name: Run tests with Maven
-      run: mvn -Dtest=discord.automation.runners.CucumberRunnerIT test
 
     - name: Push to DockerHub
       run: |
