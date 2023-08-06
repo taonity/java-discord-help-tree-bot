@@ -16,6 +16,7 @@ on:
 
 jobs:
   test:
+    secrets: inherit
     strategy:
       max-parallel: 1
     concurrency:
