@@ -34,25 +34,25 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Bump version and push tag
-      id: github_tag_action
-      uses: anothrNick/github-tag-action@1.64.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        WITH_V: true
-
-    - name: Extract project details
-      id: extract_project_details
-      run: |
-        raw_tag=${{ steps.github_tag_action.outputs.new_tag  }}
-        tag=${raw_tag:1}
-        echo "tag=$tag" >> "$GITHUB_OUTPUT"
-        artifactId=$(mvn help:evaluate "-Dexpression=project.artifactId" -q -DforceStdout)
-        echo "artifactId=$artifactId" >> "$GITHUB_OUTPUT"
-        echo "Successfully extracted artifactId $artifactId and tag $tag"
-
-    - name: Build with Maven
-      run: mvn -B -P docker clean package -DskipTests
+#    - name: Bump version and push tag
+#      id: github_tag_action
+#      uses: anothrNick/github-tag-action@1.64.0
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        WITH_V: true
+#
+#    - name: Extract project details
+#      id: extract_project_details
+#      run: |
+#        raw_tag=${{ steps.github_tag_action.outputs.new_tag  }}
+#        tag=${raw_tag:1}
+#        echo "tag=$tag" >> "$GITHUB_OUTPUT"
+#        artifactId=$(mvn help:evaluate "-Dexpression=project.artifactId" -q -DforceStdout)
+#        echo "artifactId=$artifactId" >> "$GITHUB_OUTPUT"
+#        echo "Successfully extracted artifactId $artifactId and tag $tag"
+#
+#    - name: Build with Maven
+#      run: mvn -B -P docker clean package -DskipTests
 
     - name: Login to DockerHub
       uses: docker/login-action@v2
@@ -60,10 +60,10 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Push to DockerHub
-      run: |
-        username=${{ secrets.DOCKERHUB_USERNAME }}
-        artifactId=${{ steps.extract_project_details.outputs.artifactId }}
-        tag=${{ steps.extract_project_details.outputs.tag }}
-        docker push "$username/$artifactId:$tag"
-        docker push "$username/$artifactId:latest"
+#    - name: Push to DockerHub
+#      run: |
+#        username=${{ secrets.DOCKERHUB_USERNAME }}
+#        artifactId=${{ steps.extract_project_details.outputs.artifactId }}
+#        tag=${{ steps.extract_project_details.outputs.tag }}
+#        docker push "$username/$artifactId:$tag"
+#        docker push "$username/$artifactId:latest"
