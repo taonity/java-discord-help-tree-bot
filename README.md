@@ -1,4 +1,4 @@
-## java-discord-help-tree-bot
+## Тао гей 2
 The bot that answers questions, configured like tree
 
 ## Features
