@@ -13,6 +13,8 @@ on:
     branches:
       - '!develop'
   pull_request_target:
+    paths-ignore:
+      - 'README.md'
 
 jobs:
   test:
@@ -25,9 +27,11 @@ jobs:
       DEPLOYMENT_LOCALHOST_NAME: localhost
 
     runs-on: ubuntu-latest
-
+    environment: E2E
     steps:
     - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
