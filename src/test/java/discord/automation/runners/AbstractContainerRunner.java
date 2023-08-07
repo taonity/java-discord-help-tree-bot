@@ -36,6 +36,7 @@ public abstract class AbstractContainerRunner {
         } else {
             throw new RuntimeException(String.format("Unknown os encountered: %s", OS_NAME));
         }
+        System.out.println("============= it works ==========");
         environment
                 .withLogConsumer("app", new Slf4jLogConsumer(log).withPrefix("app-1").withSeparateOutputStreams())
                 .withLogConsumer("gitea", new Slf4jLogConsumer(log).withPrefix("gitea-1").withSeparateOutputStreams())
