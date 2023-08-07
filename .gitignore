@@ -16,7 +16,7 @@ copybook.txt
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
+### IntelliJ IDEA ### ###
 .idea
 *.iws
 *.iml
