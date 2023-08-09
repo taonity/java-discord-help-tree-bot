@@ -28,7 +28,6 @@ jobs:
     steps:
     - uses: devkeydet/action-environment-queue@v1
       with:
-        delay: 2000
         environment: E2E
     - uses: actions/checkout@v3
       with:
