@@ -26,6 +26,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: E2E
     steps:
+    - uses: devkeydet/action-environment-queue@v1
+      with:
+        environment:
+          delay: 2000
+          environment: E2E
     - uses: actions/checkout@v3
       with:
         ref: ${{ github.event.pull_request.head.sha }}
@@ -35,9 +40,6 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-
-    - name: test
-      run: echo ${{ github.head_ref }} ${{ github.event_name }}
 
     - name: Build with Maven
       run: mvn -B -P docker clean package -DskipTests
