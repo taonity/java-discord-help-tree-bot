@@ -41,6 +41,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         WITH_V: true
 
+    - name: test
+      run: echo ${{ github.ref }}
+
     - name: Extract project details
       id: extract_project_details
       run: |
