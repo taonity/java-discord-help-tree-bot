@@ -18,7 +18,7 @@ jobs:
     strategy:
       max-parallel: 1
     concurrency:
-      group: ${{ github.ref }}
+      group: ${{ github.head_ref }}
       cancel-in-progress: true
     env:
       DEPLOYMENT_LOCALHOST_NAME: localhost
