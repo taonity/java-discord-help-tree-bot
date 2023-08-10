@@ -26,10 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: E2E
     steps:
-    - uses: devkeydet/action-environment-queue@v1
+    - uses: ahmadnassri/action-workflow-queue@v1
       with:
         delay: 60000
-        environment: E2E
+        timeout: 1000000
     - uses: actions/checkout@v3
       with:
         ref: ${{ github.event.pull_request.head.sha }}
