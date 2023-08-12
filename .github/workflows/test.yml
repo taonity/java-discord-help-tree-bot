@@ -22,6 +22,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Get Environment Id
+        id: environment-id
+        shell: pwsh
+        run: |
+          $environmentId = ""
+          $url = "https://api.github.com/repos/${{ github.repository }}/environments"
+          $response = Invoke-RestMethod -Uri $url -Method Get  -Headers @{
+            Authorization = "Bearer ${{ github.token }}"
+          }
+          if ($response){
+          # Find Environment Id...
+            foreach ($environment in $response.environments) {
+             if ($environment.name -eq "E2E"){
+               $environmentId = $environment.id
+               break
+             }
+            }
+          }
+  
+          # Set output
+          echo $environmentId
+          echo "::set-output name=value::$(echo $environmentId)"
+
       - name: Approve a PR
         run: |
           echo test 5841748094
@@ -32,7 +55,7 @@ jobs:
           -H "Authorization: Bearer ${{ github.token }}" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/pending_deployments \
-          -d '{"environment_ids":[1224989304],"state":"approved","comment":"Ship it!"}'
+          -d '{"environment_ids":[${{ steps.environment-id.outputs.value }}],"state":"approved","comment":"Ship it!"}'
         env:
           GH_TOKEN: ${{ github.token }}
 
