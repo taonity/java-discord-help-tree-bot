@@ -17,7 +17,6 @@ on:
 jobs:
   t:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - name: Approve a PR
