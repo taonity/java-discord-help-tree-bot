@@ -12,16 +12,6 @@ jobs:
     steps:
     - name: Approve a PR
       run: |
-#          #Check if the commit was pushed by dependabot
-#          if grep -q "dependabot" "${GITHUB_SHA}"; then
-#
-#          #Get the workflow ID
-#          workflow_id=$(gh workflow list | grep "dependabot" | awk '{print $1}')
-#
-#          #Approve the workflow
-#          gh workflow approve "${workflow_id}"
-#
-#          fi
         echo test
         echo $(gh workflow list)
       env:
