@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 #    if: github.actor == 'dependabot[bot]'
     steps:
+    - uses: actions/checkout@v3
     - name: Approve a PR
       run: |
         echo test
