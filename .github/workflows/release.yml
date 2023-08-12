@@ -9,9 +9,9 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - develop
+#  push:
+#    branches:
+#      - develop
 
 jobs:
   release:

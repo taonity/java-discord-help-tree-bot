@@ -1,4 +1,5 @@
 name: Dependabot auto-approve
+
 on: workflow_call
 
 jobs:
@@ -6,8 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
-      - name: Approve a PR
-        run: |
+    - name: Approve a PR
+      run: |
 #          #Check if the commit was pushed by dependabot
 #          if grep -q "dependabot" "${GITHUB_SHA}"; then
 #
@@ -18,8 +19,8 @@ jobs:
 #          gh workflow approve "${workflow_id}"
 #
 #          fi
-          echo test
-          echo $(gh workflow list)
-        env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        echo test
+        echo $(gh workflow list)
+      env:
+        PR_URL: ${{github.event.pull_request.html_url}}
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

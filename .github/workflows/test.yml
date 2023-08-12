@@ -9,6 +9,9 @@
 name: Test
 
 on:
+  push:
+    branches:
+      - develop
   pull_request_target:
     paths-ignore:
       - 'README.md'
