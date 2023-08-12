@@ -6,6 +6,7 @@ on:
     types:
       - in_progress
 
+
 jobs:
   dependabot:
     runs-on: ubuntu-latest
