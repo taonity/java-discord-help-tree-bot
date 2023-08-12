@@ -8,7 +8,7 @@ workflow_run:
 jobs:
   dependabot:
     runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot[bot]' }}
+    if: github.actor == 'dependabot[bot]'
     steps:
     - name: Approve a PR
       run: |
