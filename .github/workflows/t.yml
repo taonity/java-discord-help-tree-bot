@@ -24,7 +24,7 @@ jobs:
           echo test 5841748094
           echo $(gh run list --status waiting)
           gh api /repos/GeneralTao2/java-discord-help-tree-bot/actions/runs/5841748094/pending_deployments \
-          -F environment_ids='1224989304' \
+          -F environment_ids='[1224989304]' \
           -F state='approved' \
           -F comment='Ship it!' \
         env:
