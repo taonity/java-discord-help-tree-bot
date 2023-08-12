@@ -1,6 +1,9 @@
 name: Dependabot auto-approve
 
-on: workflow_call
+workflow_run:
+  workflows: [Test]
+  types:
+    - requested
 
 jobs:
   dependabot:
