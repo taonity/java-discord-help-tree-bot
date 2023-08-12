@@ -23,6 +23,6 @@ jobs:
       - name: Approve a PR
         run: |
           echo test
-          echo $(gh run list --status queued)
+          echo $(gh run list)
         env:
           GH_TOKEN: ${{ github.token }}
