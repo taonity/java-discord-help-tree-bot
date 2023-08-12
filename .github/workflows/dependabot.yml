@@ -3,7 +3,7 @@ name: Dependabot auto-approve
 workflow_run:
   workflows: [Test]
   types:
-    - requested
+    - in_progress
 
 jobs:
   dependabot:
