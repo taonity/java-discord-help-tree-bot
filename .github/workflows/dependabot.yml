@@ -16,7 +16,7 @@ jobs:
     - name: Approve a PR
       run: |
         echo test
-        echo $(gh workflow list)
+        echo $(gh workflow list -a)
       env:
         PR_URL: ${{github.event.pull_request.html_url}}
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
