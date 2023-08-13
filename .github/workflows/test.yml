@@ -49,7 +49,7 @@ jobs:
             const response = await github.rest.actions.reviewPendingDeploymentsForRun({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              run_id: context.run_id,
+              run_id: context.runId,
               environment_ids: [${{ steps.environment-id.outputs.result }}],
               state: 'approved',
               comment: 'Ship it!',
