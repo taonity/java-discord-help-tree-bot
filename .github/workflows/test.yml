@@ -19,7 +19,7 @@ on:
 jobs:
 
   approve-workflow:
-    if: github.actor == 'renovate' || github.actor == 'GeneralTao2'
+    if: github.actor == 'renovate[bot]' || github.actor == 'GeneralTao2'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

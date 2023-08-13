@@ -3,5 +3,18 @@
   "extends": [
     "config:base"
   ],
-  "schedule": ["before 4am"]
+  "schedule": ["before 4am"],
+  "packageRules": [
+    {
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "all non-major dependencies",
+      "groupSlug": "all-minor-patch"
+    }
+  ]
 }
