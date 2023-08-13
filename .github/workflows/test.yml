@@ -21,8 +21,7 @@ jobs:
   approve-workflow:
     if: github.actor == 'renovate[bott]' || github.actor == 'GeneralTao2'
     runs-on: ubuntu-latest
-    permissions:
-      deployments: write
+    permissions: write-all
     steps:
       - uses: actions/checkout@v3
       - name: Get Environment Id
