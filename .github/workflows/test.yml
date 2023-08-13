@@ -55,7 +55,7 @@ jobs:
               comment: 'Ship it!',
             });
             
-            if (environmentResponse.status != 200) {
+            if (response.status != 200) {
               core.setFailed(response);
             }
 
