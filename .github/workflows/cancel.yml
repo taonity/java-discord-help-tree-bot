@@ -1,5 +1,8 @@
 name: Cancel workflows on PR close
 on:
+  push:
+    branches:
+      - develop
   pull_request:
     types:
       - closed
