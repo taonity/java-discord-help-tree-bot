@@ -25,6 +25,7 @@ jobs:
                 event: 'pull_request',
                 branch: context.payload.pull_request.head.ref,
               });
+              console.log(workflowRuns);
             
               const activeRuns = workflowRuns.data.workflow_runs.filter((workflowRun) => {
                 return workflowRun.status === 'queued' || workflowRun.status === 'in_progress';
