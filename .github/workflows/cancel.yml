@@ -25,7 +25,7 @@ jobs:
                 repo: context.repo.repo,
                 workflow_id: workflowId,
                 per_page: 100,
-                event: 'pull_request',
+                event: 'pull_request_target',
               });
               console.log(workflowRuns);
             
