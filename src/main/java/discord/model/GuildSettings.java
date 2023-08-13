@@ -1,7 +1,7 @@
 package discord.model;
 
 import discord.structure.ChannelRole;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity

@@ -23,7 +23,8 @@ import discord4j.core.spec.EmbedCreateSpec;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.StreamSupport;
-import javax.annotation.PostConstruct;
+
+import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
