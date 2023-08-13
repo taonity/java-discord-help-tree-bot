@@ -33,7 +33,7 @@ jobs:
               repo: context.repo.repo,
               environment_name: 'E2E'
             });
-            console.log("Env:", environment.id);
+            console.log("Env:", environment);
             return environment.id;
 
       - name: Approve a PR
