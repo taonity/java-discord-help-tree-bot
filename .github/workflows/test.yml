@@ -46,8 +46,7 @@ jobs:
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/pending_deployments \
           -d '{"environment_ids":[${{ steps.environment-id.outputs.result }}],"state":"approved","comment":"Ship it!"}'
-        env:
-          GH_TOKEN: ${{ github.token }}
+
   test:
     strategy:
       max-parallel: 1
