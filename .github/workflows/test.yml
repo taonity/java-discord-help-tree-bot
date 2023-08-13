@@ -29,12 +29,12 @@ jobs:
         with:
           script: |
             const environment = await github.getEnvironment({
-              context.repo.owner,
-              context.repo.repo,
-              'E2E'
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              environment_name: 'E2E'
             });
-            console.log("Env:", environment)
-            return environment;
+            console.log("Env:", environment.id);
+            return environment.id;
 
       - name: Approve a PR
         run: |
