@@ -28,7 +28,7 @@ jobs:
         id: environment-id
         with:
           script: |
-            const environment = await github.getEnvironment({
+            const environment = await github.rest.repos.getEnvironment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               environment_name: 'E2E'
