@@ -28,13 +28,19 @@ jobs:
         id: environment-id
         with:
           script: |
-            const environment = await github.rest.repos.getEnvironment({
+            const environmentResponse = await github.rest.repos.getEnvironment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               environment_name: 'E2E'
             });
-            console.log("Env:", environment);
-            return environment.id;
+            if (environmentResponse.status == 200) {
+              const environmentId = environmentResponse.data.id;
+              console.log("Env:", environmentId);
+              return environmentId;
+            } else {
+              core.setFailed(environmentResponse);
+            }
+            
 
       - name: Approve a PR
         run: |
