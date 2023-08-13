@@ -1,8 +1,5 @@
 name: Cancel workflows on PR close
 on:
-  push:
-    branches:
-      - develop
   pull_request:
     types:
       - closed
@@ -26,12 +23,12 @@ jobs:
                 workflow_id: workflowId,
                 per_page: 100,
                 event: 'pull_request_target',
+                branch: context.payload.pull_request.head.ref,
               });
               console.log(workflowRuns);
             
               const activeRuns = workflowRuns.data.workflow_runs.filter((workflowRun) => {
-                console.log(workflowRun);
-                return workflowRun.status === 'queued' || workflowRun.status === 'in_progress';
+                return workflowRun.status === 'queued' || workflowRun.status === 'in_progress' || workflowRun.status === 'waiting';
               });
             
               for (const activeRun of activeRuns) {
