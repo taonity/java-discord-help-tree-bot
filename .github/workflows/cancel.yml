@@ -13,8 +13,7 @@ jobs:
         with:
           script: |
             const workflowIds = [
-              '.github/workflows/deploy_review.yaml',
-              '.github/workflows/packages.yaml',
+              '.github/workflows/test.yml'
             ];
 
             for (const workflowId of workflowIds) {
