@@ -31,7 +31,7 @@ jobs:
             const environment = await github.getEnvironment({
               context.repo.owner,
               context.repo.repo,
-              'E2E',
+              'E2E'
             });
             console.log("Env:", environment)
             return environment;
