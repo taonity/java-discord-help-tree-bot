@@ -9,7 +9,7 @@
 name: Test
 
 on:
-#  push:
+  push:
 #    branches:
 #      - develop
   pull_request_target:
@@ -17,6 +17,42 @@ on:
       - 'README.md'
 
 jobs:
+
+  approve-workflow:
+    if: github.actor == 'renovate[bott]' || github.actor == 'GeneralTao2'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Get environment id
+      uses: actions/github-script@v6
+      id: environment-id
+      with:
+        script: |
+          const environmentResponse = await github.rest.repos.getEnvironment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            environment_name: 'E2E'
+          });
+          const environmentId = environmentResponse.data.id;
+          console.log("Env:", environmentId);
+          return environmentId;
+
+    - name: Approve workflow
+      uses: actions/github-script@v6
+      env:
+        GH_TOKEN: ${{ github.token }}
+      with:
+        github-token: ${{ secrets.MY_SECRET }}
+        script: |
+          await github.rest.actions.reviewPendingDeploymentsForRun({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            run_id: context.runId,
+            environment_ids: [${{ steps.environment-id.outputs.result }}],
+            state: 'approved',
+            comment: 'Ship it!',
+          });
+
   test:
     strategy:
       max-parallel: 1
