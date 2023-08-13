@@ -33,6 +33,7 @@ jobs:
               repo: context.repo.repo,
               environment_name: 'E2E'
             });
+            const environmentId = environmentResponse.data.id;
             console.log("Env:", environmentId);
             return environmentId;
 
