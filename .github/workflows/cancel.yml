@@ -27,7 +27,7 @@ jobs:
               });
             
               const activeRuns = workflowRuns.data.workflow_runs.filter((workflowRun) => {
-                return workflowRun.status === 'queued' || workflowRun.status === 'in_progress' || workflowRun.status === 'waiting';
+                return workflowRun.status === 'queued' || workflowRun.status === 'in_progress';
               });
             
               for (const activeRun of activeRuns) {
