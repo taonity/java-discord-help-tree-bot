@@ -8,5 +8,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CreateAccessTokenOption {
     private final String name;
-    private final List<String> scopes = List.of("all", "sudo");
+    private final List<String> scopes = List.of("all");
 }
