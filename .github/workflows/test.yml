@@ -47,8 +47,6 @@ jobs:
 
       - name: Approve a PR
         run: |
-          echo test 5841748094
-          echo $(gh run list --status waiting)
           curl -L \
           -X POST \
           -H "Accept: application/vnd.github+json" \
