@@ -7,7 +7,7 @@ import discord.utils.SelectMenuManager;
 import discord4j.common.util.Snowflake;
 import java.util.*;
 import java.util.stream.StreamSupport;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

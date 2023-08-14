@@ -1,7 +1,6 @@
 package discord.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity

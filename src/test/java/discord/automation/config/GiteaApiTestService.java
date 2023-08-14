@@ -8,7 +8,7 @@ import discord.dto.gitea.api.SearchResult;
 import discord.model.AppSettings;
 import discord.repository.AppSettingsRepository;
 import java.util.Collections;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

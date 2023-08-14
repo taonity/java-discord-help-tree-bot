@@ -19,7 +19,7 @@ postgres-url: jdbc:postgresql://${POSTGRES_ADDRESS:localhost}:${POSTGRES_PORT:49
 
 spring:
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     url: ${postgres-url}
     username: ${POSTGRES_APP_USER:d}

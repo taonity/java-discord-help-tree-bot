@@ -10,7 +10,7 @@ import discord.logging.LogMessage;
 import discord.model.AppSettings;
 import discord.repository.AppSettingsRepository;
 import java.util.*;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
