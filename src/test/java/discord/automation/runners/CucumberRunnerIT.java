@@ -39,4 +39,4 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
             JdbcTemplateAutoConfiguration.class,
             DbTablePrinter.class
         })
-public class CucumberRunnerIT {}
+public class CucumberRunnerIT extends AbstractContainerRunner {}

@@ -13,7 +13,6 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.lifecycle.Startables;
 
-// @Slf4j
 public abstract class AbstractContainerRunner {
 
     private static final DockerComposeContainer<?> environment;
