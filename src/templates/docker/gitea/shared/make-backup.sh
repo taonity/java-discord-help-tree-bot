@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: is it safe to dump online?
+
 mkdir -p /tmp/current
 
 cd /tmp/current

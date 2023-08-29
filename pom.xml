@@ -13,10 +13,6 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <at.db.port>49001</at.db.port>
-        <at.gitea.port>49002</at.gitea.port>
-        <at.app.main-port>49003</at.app.main-port>
-        <at.app.debug-port>49004</at.app.debug-port>
     </properties>
 
     <parent>
@@ -157,6 +153,11 @@
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <testResources>
@@ -216,6 +217,13 @@
     <profiles>
         <profile>
             <id>automation</id>
+            <properties>
+                <docker-compose.path>target/docker/test</docker-compose.path>
+                <docker-compose.file>docker-compose-test.yml</docker-compose.file>
+                <docker-compose.full-path>
+                    ${docker-compose.path}/${docker-compose.file}
+                </docker-compose.full-path>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -223,13 +231,13 @@
                         <artifactId>maven-resources-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>docker-files</id>
+                                <id>test-docker-files</id>
                                 <phase>process-resources</phase>
                                 <goals>
                                     <goal>copy-resources</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${project.basedir}/target/docker</outputDirectory>
+                                    <outputDirectory>${project.basedir}/target/docker/test</outputDirectory>
                                     <delimiters>
                                         <delimiter>%{*}</delimiter>
                                     </delimiters>
@@ -259,8 +267,8 @@
                                     <goal>rename</goal>
                                 </goals>
                                 <configuration>
-                                    <sourceFile>${project.basedir}/target/docker/.test-env</sourceFile>
-                                    <destinationFile>${project.basedir}/target/docker/.env</destinationFile>
+                                    <sourceFile>${project.basedir}/target/docker/test/.test-env</sourceFile>
+                                    <destinationFile>${project.basedir}/target/docker/test/.env</destinationFile>
                                 </configuration>
                             </execution>
                         </executions>
@@ -271,8 +279,45 @@
 
         <profile>
             <id>docker</id>
+            <properties>
+                <docker-compose.path>target/docker</docker-compose.path>
+                <docker-compose.file>docker-compose.yml</docker-compose.file>
+                <docker-compose.full-path>
+                    ${docker-compose.path}/${docker-compose.file}
+                </docker-compose.full-path>
+            </properties>
             <build>
                 <plugins>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>prod-docker-files</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.basedir}/target/docker/prod</outputDirectory>
+                                    <delimiters>
+                                        <delimiter>%{*}</delimiter>
+                                    </delimiters>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.basedir}/src/templates/docker</directory>
+                                            <excludes>
+                                                <exclude>.env</exclude>
+                                            </excludes>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
                     <plugin>
                         <groupId>com.google.cloud.tools</groupId>
                         <artifactId>jib-maven-plugin</artifactId>
@@ -296,7 +341,7 @@
                             <extraDirectories>
                                 <paths>
                                     <path>
-                                        <from>${project.basedir}/src/templates/docker</from>
+                                        <from>${project.basedir}/target/docker/prod</from>
                                         <into>/docker</into>
                                         <excludes>
                                             <exclude>.env</exclude>
