@@ -24,7 +24,6 @@ spring:
     url: ${postgres-url}
     username: ${POSTGRES_APP_USER:d}
     password: ${POSTGRES_APP_PASSWORD:d}
-    driver-class-name: org.hibernate.dialect.PostgreSQLDialect
 
   flyway:
     url: ${postgres-url}

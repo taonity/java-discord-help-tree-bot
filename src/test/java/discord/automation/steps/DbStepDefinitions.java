@@ -15,6 +15,20 @@ public class DbStepDefinitions {
     private final JdbcTemplate jdbcTemplate;
     private final DbTablePrinter dbTablePrinter;
 
+    @Then("Guild id is present in DB")
+    public void guildIdPresentInDb(DataTable table) {
+        final var rows = table.asMaps(String.class, String.class);
+        rows.forEach(this::guildIdPresentInDb);
+    }
+
+    private void guildIdPresentInDb(Map<String, String> map) {
+        final var quantityOfUserData = jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM guild_settings WHERE guild_id = ?", Integer.class, map.get("guildId"));
+        assertThat(quantityOfUserData)
+                .overridingErrorMessage(makeErrorMessage("guild_settings", 1))
+                .isEqualTo(1);
+    }
+
     @Then("User gitea data is present in DB")
     public void userGiteaDataPresentInDb(DataTable table) {
         final var rows = table.asMaps(String.class, String.class);
@@ -23,11 +37,8 @@ public class DbStepDefinitions {
 
     private void userGiteaDataPresentInDb(Map<String, String> map) {
         final var quantityOfUserData = jdbcTemplate.queryForObject(
-                "SELECT count(*) FROM guild_settings " + "WHERE guild_id = ? "
-                        + "AND gitea_user_id = ? "
-                        + "AND gitea_user_alphanumeric = ?",
+                "SELECT count(*) FROM guild_settings " + "WHERE gitea_user_id = ? " + "AND gitea_user_alphanumeric = ?",
                 Integer.class,
-                map.get("guildId"),
                 Integer.valueOf(map.get("giteaUserId")),
                 map.get("giteaUserAlphaNumeric"));
         assertThat(quantityOfUserData)
