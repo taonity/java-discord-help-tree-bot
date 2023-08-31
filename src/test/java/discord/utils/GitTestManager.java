@@ -99,7 +99,7 @@ public class GitTestManager {
                         fileName = "dialog-starter.yaml";
                         break;
                     case INVALID:
-                        fileName = "dialog-starter-failed.yaml";
+                        fileName = "dialogs/dialog-starter-failed.yaml";
                         break;
                 }
                 final InputStream inputStream;

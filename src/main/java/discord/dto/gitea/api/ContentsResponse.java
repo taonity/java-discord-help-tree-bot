@@ -9,6 +9,8 @@ public class ContentsResponse {
 
     private String encoding;
 
+    private String sha;
+
     public String getContentAsString() {
         return new String(content, StandardCharsets.UTF_8);
     }

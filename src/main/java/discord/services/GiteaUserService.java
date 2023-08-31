@@ -52,7 +52,7 @@ public class GiteaUserService {
         createFile(userName, repoName, fileContent);
 
         try {
-            // TODO: For some reason giteaApiService.createFile is synchronous, so a delay needed before applying
+            // TODO: For some reason giteaApiService.createFile is asynchronous, so a delay needed before applying
             // webhook
             Thread.sleep(1500);
         } catch (InterruptedException e) {

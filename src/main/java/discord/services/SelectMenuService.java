@@ -5,9 +5,9 @@ import discord.repository.GuildSettingsRepository;
 import discord.structure.UserStatus;
 import discord.utils.SelectMenuManager;
 import discord4j.common.util.Snowflake;
+import jakarta.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.StreamSupport;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -1,13 +1,24 @@
 ---
-deployment-localhost-name: ${DEPLOYMENT_LOCALHOST_NAME:prodenv-jenkins-dind}
-
 spring:
   flyway:
     enabled: false
   datasource:
-    url: jdbc:postgresql://${deployment-localhost-name}:49001/discord_help_bot
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:49001/discord_help_bot
+    username: d
+    password: d
 
 gitea:
-  address: ${deployment-localhost-name}
-
+  protocol: http
+  address: localhost
+  port: 49002
+  url: ${gitea.private.protocol}://${gitea.private.address}:${gitea.private.port}
+  branch-name: main
+  failure-limit: 3
+  admin:
+    username: d
+    password: d12345
+    email: d@d.d
+  git:
+    repoPath: @project.basedir@/repos-storage
 

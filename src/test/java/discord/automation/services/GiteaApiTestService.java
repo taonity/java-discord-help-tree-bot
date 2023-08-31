@@ -1,14 +1,13 @@
-package discord.automation.config;
+package discord.automation.services;
 
+import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 
+import discord.automation.services.dto.UpdateFileOption;
 import discord.dto.gitea.api.ContentsResponse;
 import discord.dto.gitea.api.Repo;
 import discord.dto.gitea.api.SearchResult;
-import discord.model.AppSettings;
-import discord.repository.AppSettingsRepository;
 import java.util.Collections;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -30,24 +30,31 @@ public class GiteaApiTestService {
     private static final String REPO_SEARCH_UID_PATH_FORMAT = "/repos/search?uid=%s";
     private static final String REPO_FILE_PATH_FORMAT = "/repos/%s/%s/contents/%s?ref=%s";
 
-    @Value("${gitea.private.url}")
+    @Value("${gitea.branch-name}")
+    private String branchName;
+
+    @Value("${gitea.url}")
     private String giteaBaseUrl;
 
     private final RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
     private final HttpHeaders headers = new HttpHeaders();
 
-    private final AppSettingsRepository appSettingsRepository;
+    private final JdbcTemplate jdbcTemplate;
+    ;
 
-    @PostConstruct
-    private void postConstruct() {
+    private HttpHeaders getHeaders() {
+        if (!isNull(headers.get("Authorization"))) {
+            return headers;
+        }
+        final var token = jdbcTemplate.queryForObject("SELECT gitea_token FROM app_settings ", String.class);
+
+        if (isNull(token)) {
+            throw new RuntimeException("Failed to retrieve gitea token");
+        }
+
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
-        final var token = appSettingsRepository
-                .findOne()
-                .map(AppSettings::getGiteaToken)
-                .orElseThrow(() -> new RuntimeException("Failed to retrieve gitea token"));
-
         headers.add("Authorization", "token " + token);
+        return headers;
     }
 
     private Object sendApiRequest(
@@ -61,9 +68,18 @@ public class GiteaApiTestService {
         }
     }
 
+    private void sendApiRequest(HttpEntity<?> httpEntity, String path, HttpMethod httpMethod) {
+        final String fullPath = String.format(API_PATH_FORMAT, giteaBaseUrl, path);
+        try {
+            restTemplate.exchange(fullPath, httpMethod, httpEntity, Void.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public SearchResult<Repo> getReposByUid(int userId) {
-        final var entity = new HttpEntity<String>(headers);
+        final var entity = new HttpEntity<String>(getHeaders());
         final var path = String.format(REPO_SEARCH_UID_PATH_FORMAT, userId);
         return (SearchResult<Repo>)
                 sendApiRequest(entity, path, new ParameterizedTypeReference<SearchResult<Repo>>() {});
@@ -71,7 +87,13 @@ public class GiteaApiTestService {
 
     public ContentsResponse getFile(String owner, String repo, String filepath, String ref) {
         final var path = String.format(REPO_FILE_PATH_FORMAT, owner, repo, filepath, ref);
-        final var entity = new HttpEntity<String>(headers);
+        final var entity = new HttpEntity<String>(getHeaders());
         return (ContentsResponse) sendApiRequest(entity, path, new ParameterizedTypeReference<ContentsResponse>() {});
+    }
+
+    public void updateFile(String owner, String repo, String filepath, UpdateFileOption updateFileOption) {
+        final var path = String.format(REPO_FILE_PATH_FORMAT, owner, repo, filepath, branchName);
+        final var entity = new HttpEntity<>(updateFileOption, getHeaders());
+        sendApiRequest(entity, path, HttpMethod.PUT);
     }
 }

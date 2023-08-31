@@ -1,19 +1,7 @@
----
-#at:
-#  db:
-#    port: '@at.db.port@'
-#  gitea:
-#    port: '@at.gitea.port@'
-#
-#postgres-url: jdbc:postgresql://localhost:49001/discord_help_bot
-#
 spring:
   flyway:
     enabled: false
-#
-#gitea:
-#  address: localhost
-#  port: '@at.gitea.port@'
-
-test1: test2
-test3: ${test5:${test6:${test7:${test8:${test9:bruh}}}}}
+  datasource:
+    url: jdbc:postgresql://localhost:49001/discord_help_bot
+    username: d
+    password: d

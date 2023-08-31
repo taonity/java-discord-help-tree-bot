@@ -20,11 +20,10 @@ import discord.tree.Node;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.spec.EmbedCreateSpec;
+import jakarta.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.StreamSupport;
-
-import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -114,7 +113,9 @@ public class TreeRootService {
         }
 
         if (isNull(lastCommitsCorruptErrorMessage)) {
-            sendSuccessMessage(guildSettings);
+            if (!isNull(guildSettings.getLogChannelId())) {
+                sendSuccessMessage(guildSettings);
+            }
 
             log.info(
                     "Dialog root update succeed with a structure {} for guild {}",

@@ -3,47 +3,42 @@ package discord.automation.runners;
 import static org.testcontainers.shaded.org.apache.commons.lang3.SystemUtils.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.Duration;
-
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.testcontainers.containers.Container;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.lifecycle.Startables;
 
-import javax.xml.datatype.DatatypeFactory;
-
-//@Slf4j
-@Testcontainers
 public abstract class AbstractContainerRunner {
 
-    private static final DockerComposeContainer<?> environment;
+    private static final DockerComposeContainer<?> ENVIRONMENT;
     static Logger log = LoggerFactory.getLogger("automation-tests");
+
     static {
         if (IS_OS_WINDOWS) {
-            environment = new DockerComposeContainer<>(getComposeFile())
+            ENVIRONMENT = new DockerComposeContainer<>(getComposeFile())
                     .withLocalCompose(true)
                     .withOptions("--compatibility");
         } else if (IS_OS_UNIX) {
-            environment = new DockerComposeContainer<>(getComposeFile())
-                    .withLocalCompose(true);
+            ENVIRONMENT = new DockerComposeContainer<>(getComposeFile()).withLocalCompose(true);
         } else {
             throw new RuntimeException(String.format("Unknown os encountered: %s", OS_NAME));
         }
-        environment
-                .withLogConsumer("app", new Slf4jLogConsumer(log).withPrefix("app-1").withSeparateOutputStreams())
-                .withLogConsumer("gitea", new Slf4jLogConsumer(log).withPrefix("gitea-1").withSeparateOutputStreams())
-                .withLogConsumer("db", new Slf4jLogConsumer(log).withPrefix("db-1").withSeparateOutputStreams())
-                .waitingFor("app",
-                        Wait.forHealthcheck().withStartupTimeout(Duration.ofSeconds(1000))
-                );
-        Startables.deepStart(environment).join();
+        ENVIRONMENT
+                .withLogConsumer(
+                        "app", new Slf4jLogConsumer(log).withPrefix("app-1").withSeparateOutputStreams())
+                .withLogConsumer(
+                        "gitea", new Slf4jLogConsumer(log).withPrefix("gitea-1").withSeparateOutputStreams())
+                .withLogConsumer(
+                        "db", new Slf4jLogConsumer(log).withPrefix("db-1").withSeparateOutputStreams())
+                .waitingFor("app", Wait.forHealthcheck().withStartupTimeout(Duration.ofSeconds(1000)));
+        Startables.deepStart(ENVIRONMENT).join();
     }
 
     // TODO: Without this test db beans are being created without container being riced
@@ -51,8 +46,20 @@ public abstract class AbstractContainerRunner {
     void dummyTest() {}
 
     private static File getComposeFile() {
-        final var file = Paths.get("target/docker/docker-compose-test.yml").toFile();
+        final var file = Paths.get("target/docker/test/docker-compose-test.yml").toFile();
         log.info("Trying to open compose file with path: {}", file.getAbsolutePath());
         return file;
+    }
+
+    public static Container.ExecResult execCommandOnService(String service, String... command) {
+        try {
+            return ENVIRONMENT
+                    .getContainerByServiceName(service)
+                    .orElseThrow(() -> new RuntimeException(
+                            String.format("Failed to retrieve container by service name %s", service)))
+                    .execInContainer(command);
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
