@@ -294,7 +294,6 @@
                                     <outputDirectory>${project.basedir}/target/docker/prod</outputDirectory>
                                     <delimiters>
                                         <delimiter>%{*}</delimiter>
-                                        <delimiter>{{ * }}</delimiter>
                                     </delimiters>
                                     <resources>
                                         <resource>
