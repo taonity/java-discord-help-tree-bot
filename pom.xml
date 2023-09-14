@@ -74,10 +74,6 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
             <artifactId>httpclient5</artifactId>
             <version>5.2.1</version>
@@ -298,6 +294,7 @@
                                     <outputDirectory>${project.basedir}/target/docker/prod</outputDirectory>
                                     <delimiters>
                                         <delimiter>%{*}</delimiter>
+                                        <delimiter>{{ * }}</delimiter>
                                     </delimiters>
                                     <resources>
                                         <resource>

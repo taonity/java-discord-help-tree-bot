@@ -25,12 +25,6 @@ spring:
     username: ${POSTGRES_APP_USER:d}
     password: ${POSTGRES_APP_PASSWORD:d}
 
-  flyway:
-    url: ${postgres-url}
-    user: ${POSTGRES_FLYWAY_USER:flyway}
-    password: ${POSTGRES_FLYWAY_PASSWORD:flyway}
-    defaultSchema: public
-
 gitea:
   public:
     protocol: http

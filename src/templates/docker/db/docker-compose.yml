@@ -6,7 +6,6 @@ services:
     volumes:
       - java-discord-help-bot-volume-db:/var/lib/postgresql/data
       - java-discord-help-bot-volume-db-backup:/backup
-      - ./docker-entrypoint-initdb:/docker-entrypoint-initdb.d
       - ./shared:/shared
     env_file:
       - ../.env
