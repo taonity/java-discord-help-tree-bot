@@ -9,6 +9,14 @@ services:
     ports:
       - 49001:5432
 
+  flyway:
+    extends:
+      file: flyway/docker-compose.yml
+      service: flyway
+    depends_on:
+      db:
+        condition: service_healthy
+
   gitea:
     extends:
       file: gitea/docker-compose.yml
@@ -26,17 +34,9 @@ services:
     environment:
       JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     depends_on:
-      db:
+      flyway:
         condition: service_healthy
       gitea:
-        condition: service_healthy
-
-  flyway:
-    extends:
-      file: flyway/docker-compose.yml
-      service: flyway
-    depends_on:
-      db:
         condition: service_healthy
 
   # BACKUP

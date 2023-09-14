@@ -7,6 +7,14 @@ services:
       file: db/docker-compose.yml
       service: db
 
+  flyway:
+    extends:
+      file: flyway/docker-compose.yml
+      service: flyway
+    depends_on:
+      db:
+        condition: service_healthy
+
   gitea:
     extends:
       file: gitea/docker-compose.yml
@@ -17,7 +25,7 @@ services:
       file: app/docker-compose.yml
       service: app
     depends_on:
-      db:
+      flyway:
         condition: service_healthy
       gitea:
         condition: service_healthy
@@ -41,14 +49,6 @@ services:
       db:
         condition: service_healthy
       gitea:
-        condition: service_healthy
-
-  flyway:
-    extends:
-      file: flyway/docker-compose.yml
-      service: flyway
-    depends_on:
-      db:
         condition: service_healthy
 
 volumes:
