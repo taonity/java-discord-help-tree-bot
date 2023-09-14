@@ -42,7 +42,7 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
       with:
-        github-token: ${{ secrets.MY_SECRET }}
+        github-token: ${{ secrets.APPROVE_WORKFLOW_GITHUB_TOKEN }}
         script: |
           await github.rest.actions.reviewPendingDeploymentsForRun({
             owner: context.repo.owner,
@@ -61,8 +61,6 @@ jobs:
 #      group: ${{ github.ref }}
       group: ${{ github.head_ref }}
       cancel-in-progress: true
-    env:
-      DEPLOYMENT_LOCALHOST_NAME: localhost
 
     runs-on: ubuntu-latest
     environment: E2E
@@ -85,7 +83,7 @@ jobs:
       run: mvn -B -P docker clean package -DskipTests
 
     - name: Prepare for tests with Maven
-      run: mvn -P automation clean install "-Ddiscord.token=${{ secrets.AUTOMATION_TEST_TOKEN }}" -DskipTests=true
+      run: mvn -P automation clean install "-Ddiscord.token=${{ secrets.JDHB_AUTOMATION_TEST_TOKEN }}" -DskipTests=true
 
     - name: Run tests with Maven
       run: mvn -Dtest=discord.automation.runners.CucumberRunnerIT test
