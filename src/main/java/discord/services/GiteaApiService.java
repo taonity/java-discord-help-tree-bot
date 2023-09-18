@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -65,7 +64,7 @@ public class GiteaApiService {
     @Value("${gitea.admin.email}")
     private String adminEmail;
 
-    private final RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+    private final RestTemplate restTemplate;
     private final HttpHeaders tokenHeaders = new HttpHeaders();
 
     private final AppSettingsRepository appSettingsRepository;

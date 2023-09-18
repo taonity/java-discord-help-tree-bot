@@ -1,0 +1,4 @@
+---
+logging:
+  level:
+    discord.http.LoggingInterceptor: DEBUG
