@@ -6,9 +6,6 @@ discord:
 server:
   port: 9015
 
-custom-server:
-  address: ${CUSTOM_SERVER_ADDRESS:localhost}
-
 app-reference:
   protocol: http
   port:
@@ -27,13 +24,13 @@ spring:
 
 gitea:
   public:
-    protocol: http
-    address: ${custom-server.address}
+    protocol: ${GITEA_PUBLIC_PROTOCOL:http}
+    address: ${GITEA_PUBLIC_ADDRESS:localhost}
     port: ${GITEA_PUBLIC_PORT:49002}
     url: ${gitea.public.protocol}://${gitea.public.address}:${gitea.public.port}
   private:
-    protocol: http
-    address: ${GITEA_ADDRESS:localhost}
+    protocol: ${GITEA_PRIVATE_PROTOCOL:http}
+    address: ${GITEA_PRIVATE_ADDRESS:localhost}
     port: ${GITEA_PRIVATE_PORT:49002}
     url: ${gitea.private.protocol}://${gitea.private.address}:${gitea.private.port}
   branch-name: main
