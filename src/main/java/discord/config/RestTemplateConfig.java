@@ -16,7 +16,7 @@ public class RestTemplateConfig {
         final var loggingInterceptorLogger = LoggerFactory.getLogger(LoggingInterceptor.class);
         final RestTemplate restTemplate;
         if (loggingInterceptorLogger.isDebugEnabled()) {
-            final var factory = new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory());
+            final var factory = new BufferingClientHttpRequestFactory(new HttpComponentsClientHttpRequestFactory());
             restTemplate = new RestTemplate(factory);
             var interceptors = restTemplate.getInterceptors();
             if (CollectionUtils.isEmpty(interceptors)) {
@@ -25,7 +25,7 @@ public class RestTemplateConfig {
             interceptors.add(new LoggingInterceptor());
             restTemplate.setInterceptors(interceptors);
         } else {
-            restTemplate = new RestTemplate();
+            restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
         }
 
         return restTemplate;

@@ -41,3 +41,7 @@ gitea:
     email: ${GITEA_ADMIN_EMAIL:d@d.d}
   git:
     repoPath: ${REPO_STORE_PATH:@project.basedir@/repos-storage}
+
+#logging:
+#  level:
+#    discord.http.LoggingInterceptor: DEBUG
