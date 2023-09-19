@@ -86,5 +86,7 @@ jobs:
       run: mvn -P automation clean install "-Ddiscord.token=${{ secrets.JDHB_AUTOMATION_TEST_TOKEN }}" -DskipTests=true
 
     - name: Run tests with Maven
-      run: mvn -Dtest=discord.automation.runners.CucumberRunnerIT test
+      run: |
+        echo 172.17.0.1 host.docker.internal >> /etc/hosts
+        mvn -Dtest=discord.automation.runners.CucumberRunnerIT test
 
