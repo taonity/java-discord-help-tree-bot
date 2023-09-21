@@ -1,20 +1,29 @@
 ## java-discord-help-tree-bot
-The bot that answers questions, configured like tree
+A bot that answers questions, configured like a tree
 
 ## Features
-- Works with multiple userrs in the same time
-- Multilanguage for question and answers
-- Easy confirable questions and answers in YAML format
-- Two type of answers for different scenarios 
+- Can be invited to any guild
+- Support two languages: English and Russian
+- Easy configurable questions and answers in YAML format
+- YAML file management using Gitea 
 - Online question tree configuration file updating
-- Basic verifying of configuration file before update for bot
-- Easy to build, host and run
-- Run only for one guild 
-- Extern settings configuration file
+- Error logging
+- Supports backups
+- Supports CI
 
 ## Commands
-- `/question` - start question asking session
-- `/update` - verify if question tree configuration file is correct and if it is - update it for bot
+- `/question` - start question asking session using SelectMenu elements
+- `/channelrole` - give a logging or helping role to the current channel
+- `/config` - get credentials to access question tree configuration file
+
+## Docker compose project
+The application can be deployed as a docker-compose project. It consists of following services:
+- `app` - the java application that runs the discord bot
+- `gitea` - Gitea service that plays a UI role to provide access to configuration file
+- `db` - postgres database that holds guild settings
+- `flyway` - a tool that runs migrations on the database
+- `make-backup` - [offen/docker-volume-backup](https://github.com/offen/docker-volume-backup) tool to make backups
+- `restore-backup` - [generaltao725/command-runner](https://github.com/taonity/command-runner) tool to run backup restoring scripts
 
 ## Build
 Projecte wrote on Java 11.
