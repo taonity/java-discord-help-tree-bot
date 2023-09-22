@@ -52,7 +52,7 @@ and the app apart, using IntelliJ. Don't forget to load env var JAVA_DISCORD_HEL
 docker compose -f target/docker/test/docker-compose-test.yml up -d
 ```
 
-# Test
+### Test
 The test is basic and checks if the application starts properly and backup works as expected. It uses testcontainers. To run a test run:
 ```bash
 mvn -Dtest=discord.automation.runners.CucumberRunnerIT test
