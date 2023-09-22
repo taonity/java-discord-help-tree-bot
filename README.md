@@ -38,7 +38,7 @@ After that, you have to build the docker-compose project that will be placed in 
 ```bash
 mvn -P automation clean package "-Ddiscord.token=<token>" -DskipTests=true
 ```
-###Run
+### Run
 You can run the app both on Linux and Windows
 #### Using IntelliJ IDEA (fast)
 You can run all depending services in the docker compose project:
