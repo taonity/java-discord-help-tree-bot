@@ -1,6 +1,6 @@
 package discord.handler.command;
 
-import static discord.structure.CommandName.DIALOG;
+import static discord.structure.CommandName.CONFIG;
 
 import discord.exception.client.ModeratorRoleNotFoundException;
 import discord.exception.main.EmptyOptionalException;
@@ -30,7 +30,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class IsNotModeratorHandler extends AbstractSlashCommand {
     @Getter
-    private final CommandName command = DIALOG;
+    private final CommandName command = CONFIG;
 
     private final EventPredicates eventPredicates;
 

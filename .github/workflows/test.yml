@@ -84,7 +84,7 @@ jobs:
       run: mvn -B -P docker clean package -DskipTests
 
     - name: Prepare for tests with Maven
-      run: mvn -P automation clean install "-Ddiscord.token=${{ secrets.JDHB_AUTOMATION_TEST_TOKEN }}" -DskipTests=true
+      run: mvn -B -P automation clean package "-Ddiscord.token=${{ secrets.JDHB_AUTOMATION_TEST_TOKEN }}" -DskipTests=true
 
     - name: Run tests with Maven
       run: |

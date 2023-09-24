@@ -1,6 +1,6 @@
 {
   "name": "channelrole",
-  "description": "Give the role to ve channel",
+  "description": "Give the role to the channel",
   "options": [
     {
       "name": "role",
