@@ -9,6 +9,7 @@
 name: Test
 
 on:
+  workflow_dispatch:
 #  push:
 #    branches:
 #      - develop
@@ -59,8 +60,7 @@ jobs:
     strategy:
       max-parallel: 1
     concurrency:
-#      group: ${{ github.ref }}
-      group: ${{ github.head_ref }}
+      group: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
       cancel-in-progress: true
 
     runs-on: ubuntu-latest
@@ -88,6 +88,5 @@ jobs:
 
     - name: Run tests with Maven
       run: |
-        echo 172.17.0.1 host.docker.internal >> /etc/hosts
         mvn -Dtest=discord.automation.runners.CucumberRunnerIT test
 
