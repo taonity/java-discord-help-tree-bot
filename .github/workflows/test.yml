@@ -89,6 +89,5 @@ jobs:
 
     - name: Run tests with Maven
       run: |
-        echo 172.17.0.1 host.docker.internal >> /etc/hosts
         mvn -Dtest=discord.automation.runners.CucumberRunnerIT test
 
