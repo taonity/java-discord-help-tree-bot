@@ -1,6 +1,6 @@
 package discord.handler.command;
 
-import static discord.structure.CommandName.DIALOG;
+import static discord.structure.CommandName.CONFIG;
 
 import discord.dto.gitea.api.EditUserOption;
 import discord.exception.GiteaApiException;
@@ -29,9 +29,9 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DialogCommand extends AbstractSlashCommand {
+public class ConfigCommand extends AbstractSlashCommand {
     @Getter
-    private final CommandName command = DIALOG;
+    private final CommandName command = CONFIG;
 
     private final EventPredicates eventPredicates;
     private final GiteaUserService giteaUserService;

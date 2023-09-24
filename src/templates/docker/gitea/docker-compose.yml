@@ -7,6 +7,7 @@ services:
       - ./conf:/data/gitea/conf
       - ./shared:/shared
       - java-discord-help-bot-volume-gitea:/data
+      - ./templates:/data/gitea/templates
 #      - java-discord-help-bot-volume-gitea:/var/lib/gitea
       - java-discord-help-bot-volume-gitea:/etc/timezone:ro
       - java-discord-help-bot-volume-gitea:/etc/localtime:ro
