@@ -60,8 +60,7 @@ jobs:
     strategy:
       max-parallel: 1
     concurrency:
-#      group: ${{ github.ref }}
-      group: ${{ github.head_ref }}
+      group: ${{ github.event_name == 'pull_request' ? github.head_ref : github.ref }}
       cancel-in-progress: true
 
     runs-on: ubuntu-latest
