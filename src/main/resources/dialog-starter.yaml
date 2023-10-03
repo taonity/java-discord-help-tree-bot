@@ -2,18 +2,30 @@
 text:
 childText:
   - text:
-      ru: "Как мне задать вопрос боту?"
-      en: "How can I ask a bot a question?"
+      ru: "У меня вопрос по поводу функционала бота"
+      en: "I have a question regarding bot functionality?"
     childText:
       - text:
-          ru: "Просто набери команду /question в этом канале"
-          en: "Just inter /question command in thes channel"
-        func: return_text
+          ru: "Как мне задать вопрос боту?"
+          en: "How can I ask the bot a question?"
+        childText:
+          - text:
+              ru: "Просто набери команду /question в этом канале"
+              en: "Just inter /question command in this channel"
+            func: return_text
+      - text:
+          ru: "Как мне добавить вопросы боту?"
+          en: "How can add questions to bot?"
+        childText:
+          - text:
+              ru: "Набери команду /config и следуй инструкциям"
+              en: "Enter /config command and follow instructions"
+            func: return_text
   - text:
-      ru: "Как мне добавить вопросы боту?"
-      en: "How can add questions to bot?"
+      ru: "Как этот бот будет полезен сообществу?"
+      en: "How the bot will be useful for my community?"
     childText:
       - text:
-          ru: "Набери команду /config и следуй инструкциям"
-          en: "Enter /config command and follow instructions"
+          ru: "Бот поможет автоматизировать помощь членам сообщества. Он также помогает интегрировать как англоязычных, так и русскоязычных пользователей"
+          en: "The bot can automate support for community members. It also helps with integration of both english-speaking and russion-speaking пользователей"
         func: return_text
