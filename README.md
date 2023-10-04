@@ -16,6 +16,38 @@ A bot that answers questions using discord SelectMenu
 - `/channelrole` - give a logging or helping role to the current channel
 - `/config` - get credentials to access the question tree configuration file
 
+### Question tree configuration file
+After you join a guild, you can access the question configuration file in Gtiea by admin account or as a user.
+One node represents a question or answer. All leaves of the tree are answers. All other nodes are questions.
+A question has the following format:
+```
+text:
+  en: "question in english1"
+  ru: "question in russian1"
+childText:
+  - text:
+      en: "question in english2"
+      ru: "question in russian2"
+  - text:
+      en: "question in english3"
+      ru: "question in russian3"
+   ...
+```
+An answer:
+```
+text:
+  en: "answer in english1"
+  ru: "answer in russian1"
+func: "function"
+targetId: "idOfdiscordUser"
+```
+An answer has two functions:
+- `return_text` - just return the answer text
+- `ask_question` - wait for the user message, then reply to it attaching mention with `idOfdiscordUser`.
+
+### Demo
+See an example of usage in the demonstration [video](https://www.youtube.com/watch?v=DZdLhIy2Ng4).
+
 ### Docker compose project
 The application can be deployed as a docker-compose project. It consists of the following services:
 - `app` - the java application that runs the discord bot
@@ -66,37 +98,4 @@ The backup can be scheduled using docker-volume-backup configurations. There are
  - `target/docker/test/backup/make/scripts/make.sh` - make a backup manually
  - `target/docker/test/backup/restore/scripts/ls.sh` - list all backups
  - `target/docker/test/backup/restore/scripts/restore.sh <backup_name>` - restore a backup
-
-### Question tree configuration file
-After you join a first guild you will be able to access the question configuration file in Gtiea by admin account or as a user.
-One node represents a question or answer. All leaves of the tree are answers. All other nodes are questions.
-A question has the following format:
-```
-text:
-  en: "question in english1"
-  ru: "question in russian1"
-childText:
-  - text:
-      en: "question in english2"
-      ru: "question in russian2"
-  - text:
-      en: "question in english3"
-      ru: "question in russian3"
-   ...
-```
-An answer:
-```
-text:
-  en: "answer in english1"
-  ru: "answer in russian1"
-func: "function"
-targetId: "idOfdiscordUser"
-```
-An answer has two functions:
-- `return_text` - just return the answer text
-- `ask_question` - wait for the user message, then reply to it attaching mention with `idOfdiscordUser`.
-
-
-### Example of usage
-https://user-images.githubusercontent.com/42372666/152680156-ac49522a-1a7c-4c7d-882b-5bcff5bb71a6.mp4
 
