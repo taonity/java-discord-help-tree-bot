@@ -13,17 +13,17 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class GuildRoleService {
 
-    public static final String ROLE_NAME = "helpbot-moderator";
+    public static final String MODERATOR_ROLE_NAME = "questiontree-moderator";
 
     public void createModeratorRole(Guild guild) {
         final var roleList = guild.getRoles()
-                .filter(role -> role.getName().equals(ROLE_NAME))
+                .filter(role -> role.getName().equals(MODERATOR_ROLE_NAME))
                 .collectList()
                 .blockOptional()
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20052));
 
         if (roleList.isEmpty()) {
-            guild.createRole(RoleCreateSpec.builder().name(ROLE_NAME).build()).subscribe();
+            guild.createRole(RoleCreateSpec.builder().name(MODERATOR_ROLE_NAME).build()).subscribe();
         }
     }
 }

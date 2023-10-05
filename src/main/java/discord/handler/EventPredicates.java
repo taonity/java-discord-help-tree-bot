@@ -21,6 +21,8 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import static java.util.Objects.isNull;
+
 @Component
 @RequiredArgsConstructor
 public class EventPredicates {
@@ -105,6 +107,10 @@ public class EventPredicates {
         return filterIfChannelExistsInSettings(event.getInteraction().getGuild(), channelRole);
     }
 
+    public boolean filterIfIsGuildChannel(MessageCreateEvent event) {
+        return !isNull(event.getMessage().getGuild().block());
+    }
+
     public boolean filterIfChannelExistsInSettings(MessageCreateEvent event, ChannelRole channelRole) {
         return filterIfChannelExistsInSettings(event.getMessage().getGuild(), channelRole);
     }
@@ -122,6 +128,6 @@ public class EventPredicates {
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20066))
                 .map(Role::getName)
                 .collect(Collectors.toList())
-                .contains(GuildRoleService.ROLE_NAME);
+                .contains(GuildRoleService.MODERATOR_ROLE_NAME);
     }
 }

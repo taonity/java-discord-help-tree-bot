@@ -4,6 +4,9 @@ import discord.structure.CommandName;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import static discord.services.GuildRoleService.MODERATOR_ROLE_NAME;
+import static discord.structure.CommandName.CHANNELROLE;
+
 @RequiredArgsConstructor
 public enum SimpleMessage {
     TIP_FOOTER_MESSAGE("This tip is triggered by random message every 1 hour"),
@@ -16,13 +19,13 @@ public enum SimpleMessage {
     SUCCESS_DIALOG_UPDATE_MESSAGE("Dialog was successfully updated"),
     FAIL_DIALOG_UPDATE_MESSAGE("Failed to update dialog on last changes. Last successful version will be used"),
     NO_CHANNEL_MESSAGE(String.format(
-            "There is no `help` or/and `log` channel or you don't have the moderator role. Please, write `/%s` in desired channel to make it `log` or `help` channel and check the role",
-            CommandName.CHANNELROLE.getCommandName())),
+            "There is no `help` or/and `log` channel or you don't have the moderator role. Please, make sure you have the `%s` role and write `/%s` in desired channels to configure `log` and `help` channels",
+            MODERATOR_ROLE_NAME, CHANNELROLE.getCommandName())),
     COMMAND_IN_WRONG_CHANNEL_MESSAGE_FORMAT("Please, write the command in %s channel"),
     MUST_BE_MODERATOR_MESSAGE_FORMAT("You must have %s role to run this command"),
     GITEA_USER_CREDS_MESSAGE_FORMAT(
-            "To update dialog settings you have to [login](%s) into our dialog editor service and edit file by [link](%s).\nUse the credentials to login:\nUsername: **%s**\nPassword: **%s**");
-
+            "To update dialog settings you have to [login](%s) into our dialog editor service and edit file by [link](%s).\nUse the credentials to login:\nUsername: **%s**\nPassword: **%s**"),
+    ON_GUILD_JOIN_INSTRUCTIONS(String.format("Hi, it seems like you just added me into a guild. Make sure you configure me! \n\nFirst thing apply the `%s` role on yourself so you can configure me. After that you have to give the `help` channel where I will work on and the `log` channel where I will be logging important information - use `/%s` command. \n\nAnd after all you will be able to use the rest my commands! See you in your guild! \n\n[Here](https://www.youtube.com/watch?v=DZdLhIy2Ng4) you can see how I work.", MODERATOR_ROLE_NAME, CHANNELROLE.getCommandName()));
     @Getter
     private final String message;
 

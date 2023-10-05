@@ -60,7 +60,7 @@ public class IsNotModeratorHandler extends AbstractSlashCommand {
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20067))
                 .map(Collection::stream)
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20068))
-                .filter(role -> role.getName().equals(GuildRoleService.ROLE_NAME))
+                .filter(role -> role.getName().equals(GuildRoleService.MODERATOR_ROLE_NAME))
                 .findFirst()
                 .map(Role::getMention)
                 .map(mention -> String.format(SimpleMessage.MUST_BE_MODERATOR_MESSAGE_FORMAT.getMessage(), mention))

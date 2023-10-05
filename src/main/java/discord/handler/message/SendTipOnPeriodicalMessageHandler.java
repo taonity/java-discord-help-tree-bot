@@ -25,6 +25,7 @@ public class SendTipOnPeriodicalMessageHandler implements MessageHandler {
     @Override
     public boolean filter(MessageCreateEvent event) {
         return Stream.of(event)
+                        .filter(eventPredicates::filterIfIsGuildChannel)
                         .filter(e -> eventPredicates.filterIfChannelExistsInSettings(e, ChannelRole.HELP))
                         .filter(eventPredicates::filterEmptyAuthor)
                         .filter(eventPredicates::filterBot)
