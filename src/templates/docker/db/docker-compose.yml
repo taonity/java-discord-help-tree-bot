@@ -2,7 +2,7 @@ version: '2.4'
 
 services:
   db:
-    image: postgres:16
+    image: postgres:14
     volumes:
       - java-discord-help-bot-volume-db:/var/lib/postgresql/data
       - java-discord-help-bot-volume-db-backup:/backup
