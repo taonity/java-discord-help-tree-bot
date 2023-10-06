@@ -1,5 +1,5 @@
 ## java-discord-help-tree-bot
-A bot that answers questions using discord SelectMenu
+A bot that answers questions using discord SelectMenu. [Add it to my guild!](https://discord.com/api/oauth2/authorize?client_id=935566371599826995&permissions=11005979776&scope=bot)
 
 ### Features
 - Can be invited to any guild
