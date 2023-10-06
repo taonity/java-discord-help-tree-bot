@@ -24,7 +24,7 @@ jobs:
     if: github.actor == 'renovate[bot]' || github.actor == 'GeneralTao2'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Get environment id
       uses: actions/github-script@v6
       id: environment-id
@@ -70,7 +70,7 @@ jobs:
       with:
         delay: 60000
         timeout: 1000000
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: ${{ github.event.pull_request.head.sha }}
     - name: Set up JDK 17
