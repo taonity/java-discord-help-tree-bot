@@ -2,8 +2,8 @@
 A bot that answers questions using discord SelectMenu
 
 ### Features
-- Can be invited to any guild
-- Support two languages: English and Russian
+- Can be invited in any guild
+- Supports two languages: English and Russian
 - Easy configurable questions and answers in YAML format
 - YAML file management using Gitea 
 - Online question tree configuration file updating
