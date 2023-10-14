@@ -88,5 +88,5 @@ jobs:
 
     - name: Run tests with Maven
       run: |
-        mvn -Dtest=discord.automation.runners.CucumberRunnerIT test
+        mvn -Dtest=automation.runners.CucumberRunnerIT test
 
