@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>tao.workshop</groupId>
+    <groupId>org.taonity.helpbot</groupId>
     <artifactId>java-discord-help-bot</artifactId>
     <version>0.0.0</version>
 
@@ -175,7 +175,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>discord.SpringApp</mainClass>
+                    <mainClass>org.taonity.helpbot.SpringApp</mainClass>
                 </configuration>
                 <executions>
                     <execution>
