@@ -87,7 +87,7 @@ docker compose -f target/docker/test/docker-compose-test.yml up -d
 ### Test
 The test is basic and checks if the application starts properly and backup works as expected. It uses testcontainers. To run a test run:
 ```bash
-mvn -Dtest=discord.automation.runners.CucumberRunnerIT test
+mvn -Dtest=automation.runners.CucumberRunnerIT test
 ```
 
 ### Deploy
