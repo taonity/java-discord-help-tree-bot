@@ -1,4 +1,4 @@
-package org.taonity.helpbot.discord.logging.exception.handling;
+package org.taonity.helpbot.discord.logging;
 
 import static org.taonity.helpbot.discord.embed.EmbedBuilder.LOG_ATTACHMENT_FILE_NAME;
 
