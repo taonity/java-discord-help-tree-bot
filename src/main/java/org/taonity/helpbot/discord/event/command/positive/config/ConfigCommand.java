@@ -4,7 +4,6 @@ import static org.taonity.helpbot.discord.CommandName.CONFIG;
 
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
-import discord4j.core.object.entity.Member;
 import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,7 @@ import org.taonity.helpbot.discord.GuildSettings;
 import org.taonity.helpbot.discord.GuildSettingsRepository;
 import org.taonity.helpbot.discord.embed.EmbedBuilder;
 import org.taonity.helpbot.discord.embed.EmbedType;
-import org.taonity.helpbot.discord.event.command.AbstractSlashCommand;
+import org.taonity.helpbot.discord.event.command.AbstractPositiveSlashCommand;
 import org.taonity.helpbot.discord.event.command.AlphaNumericGenerator;
 import org.taonity.helpbot.discord.event.command.EventPredicates;
 import org.taonity.helpbot.discord.event.command.gitea.api.EditUserOption;
@@ -30,7 +29,7 @@ import org.taonity.helpbot.discord.logging.exception.main.EmptyOptionalException
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ConfigCommand extends AbstractSlashCommand {
+public class ConfigCommand extends AbstractPositiveSlashCommand {
     @Getter
     private final CommandName command = CONFIG;
 
@@ -92,14 +91,6 @@ public class ConfigCommand extends AbstractSlashCommand {
                 .withEphemeral(true)
                 .subscribe();
 
-        log.info(
-                "Command {} successfully executed by user {} in guild {}",
-                command.getCommandName(),
-                event.getInteraction()
-                        .getMember()
-                        .map(Member::getId)
-                        .map(Snowflake::asString)
-                        .orElse("NULL"),
-                event.getInteraction().getGuildId().map(Snowflake::asString).orElse("NULL"));
+        log.info("Command successfully executed");
     }
 }

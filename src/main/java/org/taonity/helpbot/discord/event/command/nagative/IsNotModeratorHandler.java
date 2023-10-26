@@ -3,9 +3,10 @@ package org.taonity.helpbot.discord.event.command.nagative;
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.entity.Guild;
-import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Role;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component;
 import org.taonity.helpbot.discord.CommandName;
 import org.taonity.helpbot.discord.embed.EmbedBuilder;
 import org.taonity.helpbot.discord.embed.EmbedType;
-import org.taonity.helpbot.discord.event.command.AbstractSlashCommand;
+import org.taonity.helpbot.discord.event.command.AbstractNegativeSlashCommand;
 import org.taonity.helpbot.discord.event.command.EventPredicates;
 import org.taonity.helpbot.discord.event.joinleave.service.GuildRoleService;
 import org.taonity.helpbot.discord.localisation.SimpleMessage;
@@ -27,9 +28,10 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class IsNotModeratorHandler extends AbstractSlashCommand {
+public class IsNotModeratorHandler extends AbstractNegativeSlashCommand {
+
     @Getter
-    private final CommandName command = CommandName.CONFIG;
+    private final List<CommandName> commands = Arrays.asList(CommandName.CONFIG, CommandName.CHANNELROLE);
 
     private final EventPredicates eventPredicates;
 
@@ -37,7 +39,7 @@ public class IsNotModeratorHandler extends AbstractSlashCommand {
     public boolean filter(ChatInputInteractionEvent event) {
         return Stream.of(event)
                         .filter(eventPredicates::filterBot)
-                        .filter(this::filterByCommand)
+                        .filter(this::filterByCommands)
                         .filter(e -> !eventPredicates.filterByModeratorRole(e))
                         .count()
                 == 1;
@@ -70,14 +72,6 @@ public class IsNotModeratorHandler extends AbstractSlashCommand {
                 .withEphemeral(true)
                 .subscribe();
 
-        log.info(
-                "Command {} failed to execute by non-moderator user {} in guild {}",
-                command.getCommandName(),
-                event.getInteraction()
-                        .getMember()
-                        .map(Member::getId)
-                        .map(Snowflake::asString)
-                        .orElse("NULL"),
-                event.getInteraction().getGuildId().map(Snowflake::asString).orElse("NULL"));
+        log.info("Command failed to execute by non-moderator user");
     }
 }

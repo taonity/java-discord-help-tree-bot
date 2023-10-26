@@ -67,11 +67,7 @@ public class TreeSelectMenuHandler extends AbstractSelectMenuHandler {
 
         final var guildIdLogValue =
                 event.getInteraction().getGuildId().map(Snowflake::asString).orElse("NULL");
-        log.info(
-                "Select menu was selected with node {} by user {} in guild {}",
-                optionValue,
-                smManager.getUserId().asString(),
-                guildIdLogValue);
+        log.info("Select menu was selected with node {}", optionValue);
 
         if (smManager.atLastQuestionInBranch()) {
             selectMenuService.configureSmManagerAnswerStage(smManager, guildId);
@@ -79,11 +75,9 @@ public class TreeSelectMenuHandler extends AbstractSelectMenuHandler {
             helpChannel.createMessage(smManager.getTranslatedAnswerText()).subscribe();
 
             log.info(
-                    "Select menu answer {} entered in {} stage by user {} in guild {}",
+                    "Select menu answer {} entered in {} stage",
                     smManager.getAnswerNode().getId(),
-                    smManager.getAnswerNode().getNodeFunction().name(),
-                    smManager.getUserId().asString(),
-                    guildIdLogValue);
+                    smManager.getAnswerNode().getNodeFunction().name());
         } else {
             smManager.updateLastUpdateTime();
 
@@ -92,10 +86,7 @@ public class TreeSelectMenuHandler extends AbstractSelectMenuHandler {
                     .withComponents(ActionRow.of(selectMenu))
                     .subscribe();
 
-            log.info(
-                    "Next select menu was sent for user {} in guild {}",
-                    smManager.getUserId().asString(),
-                    guildIdLogValue);
+            log.info("Next select menu was sent");
         }
 
         disableAndEditCurrentSelectMenu(event, optionValue);

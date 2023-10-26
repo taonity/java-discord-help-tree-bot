@@ -21,6 +21,7 @@ import org.taonity.helpbot.discord.GuildSettings;
 import org.taonity.helpbot.discord.GuildSettingsRepository;
 import org.taonity.helpbot.discord.MessageChannelService;
 import org.taonity.helpbot.discord.embed.EmbedBuilder;
+import org.taonity.helpbot.discord.event.MdcAwareThreadPoolExecutor;
 import org.taonity.helpbot.discord.event.command.gitea.services.GiteaUserService;
 import org.taonity.helpbot.discord.event.command.positive.config.WebhookEvent;
 import org.taonity.helpbot.discord.event.command.tree.model.Node;
@@ -44,15 +45,22 @@ public class TreeRootService {
     private final GuildSettingsRepository guildSettingsRepository;
     private final GatewayDiscordClient gatewayDiscordClient;
     private final MessageChannelService messageChannelService;
+    MdcAwareThreadPoolExecutor threadPoolExecutor = new MdcAwareThreadPoolExecutor(1, 1);
 
     private static boolean created = false;
 
     @PostConstruct
     private void postConstruct() {
-        // TODO: A good way to use parallel true?
+        // TODO Maybe it is worth to wait for threads to finish
         StreamSupport.stream(guildSettingsRepository.findAll().spliterator(), false)
-                .forEach(this::createExistingRoot);
+                .forEach(this::createExistingRootWithMdc);
         created = true;
+    }
+
+    private void createExistingRootWithMdc(GuildSettings guildSettings) {
+        final Slf4jGuildSettingsRunnable runnable =
+                new Slf4jGuildSettingsRunnable(guildSettings, this::createExistingRoot);
+        threadPoolExecutor.submit(runnable);
     }
 
     private void createExistingRoot(GuildSettings guildSettings) {
@@ -81,6 +89,10 @@ public class TreeRootService {
         }
     }
 
+    private String getTreeStructure(GuildSettings guildSettings) {
+        return rootMap.get(guildSettings.getGuildId()).asIdJsonString();
+    }
+
     public void createNewRoot(GuildSettings guildSettings) {
         final String lastCommitsCorruptErrorMessage;
         try {
@@ -90,15 +102,9 @@ public class TreeRootService {
         }
 
         if (isNull(lastCommitsCorruptErrorMessage)) {
-            log.info(
-                    "New dialog root creation succeed with a structure {} for guild {}",
-                    rootMap.get(guildSettings.getGuildId()).asIdJsonString(),
-                    guildSettings.getGuildId());
+            log.info("New dialog root creation succeed with a structure {}", getTreeStructure(guildSettings));
         } else {
-            log.error(
-                    "New dialog root creation on last commit with message [{}] for guild {}",
-                    lastCommitsCorruptErrorMessage,
-                    guildSettings.getGuildId());
+            log.error("New dialog root creation on last commit with message [{}]", lastCommitsCorruptErrorMessage);
             throw new FailedToCreateNewRootException(LogMessage.ALERT_20005);
         }
     }
@@ -119,17 +125,11 @@ public class TreeRootService {
                 sendSuccessMessage(guildSettings);
             }
 
-            log.info(
-                    "Dialog root update succeed with a structure {} for guild {}",
-                    rootMap.get(guildSettings.getGuildId()).asIdJsonString(),
-                    guildSettings.getGuildId());
+            log.info("Dialog root update succeed with a structure {}", getTreeStructure(guildSettings));
         } else {
             sendFailedOnLastCommitsMessage(guildSettings, lastCommitsCorruptErrorMessage);
 
-            log.info(
-                    "Dialog update on last commit with message [{}] for guild {}",
-                    lastCommitsCorruptErrorMessage,
-                    guildSettings.getGuildId());
+            log.info("Dialog update on last commit with message [{}]", lastCommitsCorruptErrorMessage);
         }
     }
 

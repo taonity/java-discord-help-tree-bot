@@ -6,13 +6,14 @@ import static org.taonity.helpbot.discord.localisation.SimpleMessage.ON_GUILD_JO
 import discord4j.core.event.domain.guild.GuildCreateEvent;
 import discord4j.core.object.audit.ActionType;
 import discord4j.core.spec.AuditLogQuerySpec;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.taonity.helpbot.discord.GuildSettingsRepository;
-import org.taonity.helpbot.discord.MessageChannelService;
 import org.taonity.helpbot.discord.event.DiscordEventListener;
+import org.taonity.helpbot.discord.event.MdcAwareThreadPoolExecutor;
 import org.taonity.helpbot.discord.event.joinleave.service.GuildDataService;
 import org.taonity.helpbot.discord.logging.LogMessage;
 import org.taonity.helpbot.discord.logging.exception.main.EmptyOptionalException;
@@ -24,7 +25,14 @@ public class GuildCreateListener implements DiscordEventListener<GuildCreateEven
 
     private final GuildSettingsRepository guildSettingsRepository;
     private final GuildDataService guildDataService;
-    private final MessageChannelService messageChannelService;
+
+    @Getter
+    private final MdcAwareThreadPoolExecutor mdcAwareThreadPoolExecutor;
+
+    @Override
+    public Runnable createSlf4jRunnable(GuildCreateEvent event) {
+        return new Slf4jGuildCreateEventRunnable(event, this::handle);
+    }
 
     @Override
     @Transactional
@@ -38,10 +46,10 @@ public class GuildCreateListener implements DiscordEventListener<GuildCreateEven
             guildDataService.create(guildId);
             sendInstructionMessage(event, guildId);
 
-            log.info("New guild {} was initialised", guildId);
+            log.info("New guild was initialised");
         } else {
             // means that bot didn't really join the guild
-            log.info("Existing guild {} was initialised", guildId);
+            log.info("Existing guild was initialised");
         }
     }
 
@@ -72,7 +80,7 @@ public class GuildCreateListener implements DiscordEventListener<GuildCreateEven
                         .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20088))
                         .createMessage(ON_GUILD_JOIN_INSTRUCTIONS.getMessage())
                         .subscribe();
-                log.info("Instructions for new guild {} was sent", guildId);
+                log.info("Instructions for new guild was sent");
             }
         }
     }

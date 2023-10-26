@@ -11,9 +11,17 @@ public interface DiscordEventListener<E extends Event> {
     }
 
     default Mono<Void> reactiveHandle(E event) {
-        handle(event);
+        handleWithMdc(event);
         return Mono.empty();
     }
+
+    default void handleWithMdc(E event) {
+        getMdcAwareThreadPoolExecutor().submit(createSlf4jRunnable(event));
+    }
+
+    Runnable createSlf4jRunnable(E event);
+
+    MdcAwareThreadPoolExecutor getMdcAwareThreadPoolExecutor();
 
     void handle(E event);
 }

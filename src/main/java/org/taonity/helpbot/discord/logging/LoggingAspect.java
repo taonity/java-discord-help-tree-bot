@@ -21,7 +21,6 @@ import org.taonity.helpbot.discord.GuildSettingsRepository;
 import org.taonity.helpbot.discord.MessageChannelService;
 import org.taonity.helpbot.discord.embed.EmbedBuilder;
 import org.taonity.helpbot.discord.embed.EmbedType;
-import org.taonity.helpbot.discord.logging.LogMessage;
 import org.taonity.helpbot.discord.logging.exception.AspectEmptyOptionalException;
 import org.taonity.helpbot.discord.logging.exception.LogMessageException;
 import org.taonity.helpbot.discord.logging.exception.client.ClientGuildAwareException;

@@ -75,11 +75,7 @@ public class LanguageSelectMenuHandler extends AbstractSelectMenuHandler {
 
         disableAndEditCurrentSelectMenu(event, optionValue);
 
-        log.info(
-                "Language select menu was set to {} by user {} in guild {}",
-                optionValue,
-                smManager.getUserId().asString(),
-                event.getInteraction().getGuildId().map(Snowflake::asString).orElse("NULL"));
+        log.info("Language select menu was set to {}", optionValue);
     }
 
     private Optional<SelectMenuManager> getSmManager(SelectMenuInteractionEvent event, String guildId) {

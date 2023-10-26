@@ -1,8 +1,7 @@
 package org.taonity.helpbot.discord.event.command.nagative;
 
-import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
-import discord4j.core.object.entity.Member;
+import java.util.List;
 import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,24 +10,24 @@ import org.springframework.stereotype.Component;
 import org.taonity.helpbot.discord.CommandName;
 import org.taonity.helpbot.discord.embed.EmbedBuilder;
 import org.taonity.helpbot.discord.embed.EmbedType;
-import org.taonity.helpbot.discord.event.command.AbstractSlashCommand;
+import org.taonity.helpbot.discord.event.command.AbstractNegativeSlashCommand;
 import org.taonity.helpbot.discord.event.command.EventPredicates;
 import org.taonity.helpbot.discord.localisation.SimpleMessage;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class NoChannelHandler extends AbstractSlashCommand {
+public class NoChannelHandler extends AbstractNegativeSlashCommand {
 
     @Getter
-    private final CommandName command = CommandName.ANY;
+    private final List<CommandName> commands = List.of(CommandName.QUESTION, CommandName.CONFIG);
 
     private final EventPredicates eventPredicates;
 
     @Override
     public boolean filter(ChatInputInteractionEvent event) {
         return Stream.of(event)
-                        .filter(this::filterByCommand)
+                        .filter(this::filterByCommands)
                         .filter(eventPredicates::filterBot)
                         .filter(e -> !eventPredicates.filterIfChannelsExistInSettings(e))
                         .count()
@@ -45,14 +44,6 @@ public class NoChannelHandler extends AbstractSlashCommand {
                 .withEphemeral(true)
                 .subscribe();
 
-        log.info(
-                "Command {} failed with not configured channel by user {} in guild {}",
-                event.getCommandName(),
-                event.getInteraction()
-                        .getMember()
-                        .map(Member::getId)
-                        .map(Snowflake::asString)
-                        .orElse("NULL"),
-                event.getInteraction().getGuildId().map(Snowflake::asString).orElse("NULL"));
+        log.info("Command failed with non-configured channels");
     }
 }

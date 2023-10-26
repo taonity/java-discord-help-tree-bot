@@ -1,15 +1,14 @@
-package org.taonity.helpbot.discord.config;
+package org.taonity.helpbot.discord.event;
 
 import discord4j.core.GatewayDiscordClient;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
-import org.taonity.helpbot.discord.event.DiscordEventListener;
 
 @Configuration
 @RequiredArgsConstructor
-public class ListenerConfig implements CommandLineRunner {
+public class ListenerRunner implements CommandLineRunner {
     private final Collection<DiscordEventListener> eventListeners;
     private final GatewayDiscordClient client;
 

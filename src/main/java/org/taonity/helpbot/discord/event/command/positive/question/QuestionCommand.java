@@ -5,7 +5,6 @@ import static org.taonity.helpbot.discord.localisation.LocalizedMessage.CHOOSE_L
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.component.ActionRow;
-import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.User;
 import java.util.stream.Stream;
 import lombok.Getter;
@@ -14,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.taonity.helpbot.discord.ChannelRole;
 import org.taonity.helpbot.discord.CommandName;
-import org.taonity.helpbot.discord.event.command.AbstractSlashCommand;
+import org.taonity.helpbot.discord.event.command.AbstractPositiveSlashCommand;
 import org.taonity.helpbot.discord.event.command.EventPredicates;
 import org.taonity.helpbot.discord.event.command.positive.question.selectmenu.SelectMenuService;
 import org.taonity.helpbot.discord.logging.LogMessage;
@@ -23,7 +22,7 @@ import org.taonity.helpbot.discord.logging.exception.main.EmptyOptionalException
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class QuestionCommand extends AbstractSlashCommand {
+public class QuestionCommand extends AbstractPositiveSlashCommand {
     @Getter
     private final CommandName command = CommandName.QUESTION;
 
@@ -58,14 +57,6 @@ public class QuestionCommand extends AbstractSlashCommand {
                 .withComponents(ActionRow.of(selectMenuManager.createLanguageSelectMenu()))
                 .subscribe();
 
-        log.info(
-                "Command {} successfully created first select menu from user {} in guild {}",
-                command.getCommandName(),
-                event.getInteraction()
-                        .getMember()
-                        .map(Member::getId)
-                        .map(Snowflake::asString)
-                        .orElse("NULL"),
-                event.getInteraction().getGuildId().map(Snowflake::asString).orElse("NULL"));
+        log.info("Command successfully created first select menu");
     }
 }
