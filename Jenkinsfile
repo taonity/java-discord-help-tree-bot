@@ -11,6 +11,7 @@ pipeline {
         maven 'maven-3.8.6'
     }
 
+
     parameters {
         string(name: "image_name", defaultValue: 'java-discord-help-bot')
         string(name: "image_tag", defaultValue: 'latest')
