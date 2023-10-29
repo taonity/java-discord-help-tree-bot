@@ -4,7 +4,11 @@ import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
 import discord4j.core.spec.EmbedCreateSpec;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -32,17 +36,16 @@ public class ChannelRoleCommand extends AbstractPositiveSlashCommand {
     @Getter
     private final CommandName command = CommandName.CHANNELROLE;
 
-    public final MessageChannelService channelService;
+    private final MessageChannelService channelService;
     private final EventPredicates eventPredicates;
 
     @Override
-    public boolean filter(ChatInputInteractionEvent event) {
-        return Stream.of(event)
-                        .filter(eventPredicates::filterBot)
-                        .filter(this::filterByCommand)
-                        .filter(eventPredicates::filterByModeratorRole)
-                        .count()
-                == 1;
+    public final List<Predicate<ChatInputInteractionEvent>> getFilterPredicates() {
+        return Arrays.asList(
+                eventPredicates::filterBot,
+                this::filterByCommand,
+                eventPredicates::filterByModeratorRole
+        );
     }
 
     @Override

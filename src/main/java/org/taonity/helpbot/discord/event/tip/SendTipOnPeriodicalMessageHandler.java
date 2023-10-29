@@ -1,6 +1,10 @@
 package org.taonity.helpbot.discord.event.tip;
 
 import discord4j.core.event.domain.message.MessageCreateEvent;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -23,17 +27,16 @@ public class SendTipOnPeriodicalMessageHandler implements MessageHandler {
     private final EventPredicates eventPredicates;
 
     @Override
-    public boolean filter(MessageCreateEvent event) {
-        return Stream.of(event)
-                        .filter(eventPredicates::filterIfIsGuildChannel)
-                        .filter(e -> eventPredicates.filterIfChannelExistsInSettings(e, ChannelRole.HELP))
-                        .filter(eventPredicates::filterEmptyAuthor)
-                        .filter(eventPredicates::filterBot)
-                        .filter(this::messageIsEnoughLarge)
-                        .filter(e -> notificator.isTime())
-                        .filter(e -> eventPredicates.filterByChannelRole(event, ChannelRole.HELP))
-                        .count()
-                == 1;
+    public final List<Predicate<MessageCreateEvent>> getFilterPredicates() {
+        return Arrays.asList(
+                eventPredicates::filterBot,
+                eventPredicates::filterIfIsGuildChannel,
+                e -> eventPredicates.filterIfChannelExistsInSettings(e, ChannelRole.HELP),
+                eventPredicates::filterEmptyAuthor,
+                this::messageIsEnoughLarge,
+                e -> notificator.isTime(),
+                e -> eventPredicates.filterByChannelRole(e, ChannelRole.HELP)
+        );
     }
 
     private boolean messageIsEnoughLarge(MessageCreateEvent event) {

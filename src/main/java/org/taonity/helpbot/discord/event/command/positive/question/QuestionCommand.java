@@ -6,6 +6,10 @@ import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.entity.User;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -30,14 +34,13 @@ public class QuestionCommand extends AbstractPositiveSlashCommand {
     private final EventPredicates eventPredicates;
 
     @Override
-    public boolean filter(ChatInputInteractionEvent event) {
-        return Stream.of(event)
-                        .filter(eventPredicates::filterBot)
-                        .filter(this::filterByCommand)
-                        .filter(eventPredicates::filterIfChannelsExistInSettings)
-                        .filter(e -> eventPredicates.filterByChannelRole(e, ChannelRole.HELP))
-                        .count()
-                == 1;
+    public final List<Predicate<ChatInputInteractionEvent>> getFilterPredicates() {
+        return Arrays.asList(
+                eventPredicates::filterBot,
+                this::filterByCommand,
+                eventPredicates::filterIfChannelsExistInSettings,
+                e -> eventPredicates.filterByChannelRole(e, ChannelRole.HELP)
+        );
     }
 
     @Override

@@ -2,11 +2,16 @@ package org.taonity.helpbot.discord.event.command.positive.question;
 
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
+import discord4j.core.event.domain.interaction.SelectMenuInteractionEvent;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.User;
 import discord4j.core.spec.MessageCreateSpec;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,16 +35,15 @@ public class RespondOnQuestionHandler implements MessageHandler {
     private final EventPredicates eventPredicates;
 
     @Override
-    public boolean filter(MessageCreateEvent event) {
-        return Stream.of(event)
-                        .filter(eventPredicates::filterIfIsGuildChannel)
-                        .filter(e -> eventPredicates.filterIfChannelExistsInSettings(e, ChannelRole.HELP))
-                        .filter(eventPredicates::filterEmptyAuthor)
-                        .filter(eventPredicates::filterBot)
-                        .filter(e -> eventPredicates.filterByChannelRole(e, ChannelRole.HELP))
-                        .filter(e -> this.getSmManager(event).isPresent())
-                        .count()
-                == 1;
+    public final List<Predicate<MessageCreateEvent>> getFilterPredicates() {
+        return Arrays.asList(
+                eventPredicates::filterBot,
+                eventPredicates::filterIfIsGuildChannel,
+                e -> eventPredicates.filterIfChannelExistsInSettings(e, ChannelRole.HELP),
+                eventPredicates::filterEmptyAuthor,
+                e -> eventPredicates.filterByChannelRole(e, ChannelRole.HELP),
+                e -> this.getSmManager(e).isPresent()
+        );
     }
 
     @Override

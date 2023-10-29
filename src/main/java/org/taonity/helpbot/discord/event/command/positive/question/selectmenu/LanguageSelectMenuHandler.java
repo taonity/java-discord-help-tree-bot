@@ -1,11 +1,18 @@
 package org.taonity.helpbot.discord.event.command.positive.question.selectmenu;
 
 import discord4j.common.util.Snowflake;
+import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.event.domain.interaction.SelectMenuInteractionEvent;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.entity.Member;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,22 +34,12 @@ public class LanguageSelectMenuHandler extends AbstractSelectMenuHandler {
     private final EventPredicates eventPredicates;
 
     @Override
-    public boolean filter(SelectMenuInteractionEvent event) {
-        final var guildId = event.getInteraction()
-                .getGuildId()
-                .map(Snowflake::asString)
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20038));
-
-        final var smManagerOpt = getSmManager(event, guildId);
-
-        return smManagerOpt
-                .filter(selectMenuManager -> Stream.of(event)
-                                .filter(eventPredicates::filterBot)
-                                .filter(e -> eventPredicates.filterByChannelRole(event, ChannelRole.HELP))
-                                .filter(e -> isLanguageSelectMenu(selectMenuManager, e))
-                                .count()
-                        == 1)
-                .isPresent();
+    public final List<Predicate<SelectMenuInteractionEvent>> getFilterPredicates() {
+        return Arrays.asList(
+                eventPredicates::filterBot,
+                e -> eventPredicates.filterByChannelRole(e, ChannelRole.HELP),
+                this::isRelatedToLanguageSelectMenu
+        );
     }
 
     @Override
@@ -86,7 +83,19 @@ public class LanguageSelectMenuHandler extends AbstractSelectMenuHandler {
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20051));
     }
 
-    private boolean isLanguageSelectMenu(SelectMenuManager smManager, SelectMenuInteractionEvent event) {
+    private boolean isRelatedToLanguageSmManager(SelectMenuManager smManager, SelectMenuInteractionEvent event) {
         return event.getCustomId().equals(smManager.getLanguageSelectMenuCustomId());
+    }
+
+    private boolean isRelatedToLanguageSelectMenu(SelectMenuInteractionEvent event) {
+        final var guildId = event.getInteraction()
+                .getGuildId()
+                .map(Snowflake::asString)
+                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20038));
+
+        final var smManagerOpt = getSmManager(event, guildId);
+        return smManagerOpt
+                .filter(selectMenuManager -> isRelatedToLanguageSmManager(selectMenuManager, event))
+                .isPresent();
     }
 }

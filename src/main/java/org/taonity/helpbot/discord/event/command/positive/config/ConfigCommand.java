@@ -4,6 +4,10 @@ import static org.taonity.helpbot.discord.CommandName.CONFIG;
 
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -43,27 +47,14 @@ public class ConfigCommand extends AbstractPositiveSlashCommand {
     @Value("${gitea.public.url}/%s/%s/src/branch/main/%s")
     private String dialogUrlFormat;
 
-    private String buildDialogUrl(String guildId) {
-        final var giteaUserAlphaNumeric = guildSettingsRepository
-                .findGuildSettingByGuildId(guildId)
-                .map(GuildSettings::getId)
-                .map(AlphaNumericGenerator::generateFourCharFromNumber)
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20070));
-
-        final var userName = String.format(GiteaUserService.USER_NAME_FORMAT, giteaUserAlphaNumeric);
-        final var repoName = String.format(GiteaUserService.REPO_NAME_FORMAT, giteaUserAlphaNumeric);
-        return String.format(dialogUrlFormat, userName, repoName, GiteaUserService.FILE_NAME);
-    }
-
     @Override
-    public boolean filter(ChatInputInteractionEvent event) {
-        return Stream.of(event)
-                        .filter(eventPredicates::filterBot)
-                        .filter(this::filterByCommand)
-                        .filter(eventPredicates::filterIfChannelsExistInSettings)
-                        .filter(eventPredicates::filterByModeratorRole)
-                        .count()
-                == 1;
+    public final List<Predicate<ChatInputInteractionEvent>> getFilterPredicates() {
+        return Arrays.asList(
+                eventPredicates::filterBot,
+                this::filterByCommand,
+                eventPredicates::filterIfChannelsExistInSettings,
+                eventPredicates::filterByModeratorRole
+        );
     }
 
     @Override
@@ -92,5 +83,17 @@ public class ConfigCommand extends AbstractPositiveSlashCommand {
                 .subscribe();
 
         log.info("Command successfully executed");
+    }
+
+    private String buildDialogUrl(String guildId) {
+        final var giteaUserAlphaNumeric = guildSettingsRepository
+                .findGuildSettingByGuildId(guildId)
+                .map(GuildSettings::getId)
+                .map(AlphaNumericGenerator::generateFourCharFromNumber)
+                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20070));
+
+        final var userName = String.format(GiteaUserService.USER_NAME_FORMAT, giteaUserAlphaNumeric);
+        final var repoName = String.format(GiteaUserService.REPO_NAME_FORMAT, giteaUserAlphaNumeric);
+        return String.format(dialogUrlFormat, userName, repoName, GiteaUserService.FILE_NAME);
     }
 }

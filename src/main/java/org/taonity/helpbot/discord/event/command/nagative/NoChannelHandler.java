@@ -1,12 +1,16 @@
 package org.taonity.helpbot.discord.event.command.nagative;
 
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
+
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.taonity.helpbot.discord.ChannelRole;
 import org.taonity.helpbot.discord.CommandName;
 import org.taonity.helpbot.discord.embed.EmbedBuilder;
 import org.taonity.helpbot.discord.embed.EmbedType;
@@ -25,13 +29,12 @@ public class NoChannelHandler extends AbstractNegativeSlashCommand {
     private final EventPredicates eventPredicates;
 
     @Override
-    public boolean filter(ChatInputInteractionEvent event) {
-        return Stream.of(event)
-                        .filter(this::filterByCommands)
-                        .filter(eventPredicates::filterBot)
-                        .filter(e -> !eventPredicates.filterIfChannelsExistInSettings(e))
-                        .count()
-                == 1;
+    public final List<Predicate<ChatInputInteractionEvent>> getFilterPredicates() {
+        return Arrays.asList(
+                eventPredicates::filterBot,
+                this::filterByCommands,
+                e -> !eventPredicates.filterIfChannelsExistInSettings(e)
+        );
     }
 
     @Override

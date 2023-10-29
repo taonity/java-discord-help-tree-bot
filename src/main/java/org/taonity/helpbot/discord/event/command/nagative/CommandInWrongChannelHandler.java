@@ -2,8 +2,11 @@ package org.taonity.helpbot.discord.event.command.nagative;
 
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.entity.channel.Channel;
+
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +35,13 @@ public class CommandInWrongChannelHandler extends AbstractNegativeSlashCommand {
     private final MessageChannelService messageChannelService;
 
     @Override
-    public boolean filter(ChatInputInteractionEvent event) {
-        return Stream.of(event)
-                        .filter(this::filterByCommands)
-                        .filter(eventPredicates::filterBot)
-                        .filter(e -> eventPredicates.filterIfChannelExistsInSettings(e, ChannelRole.HELP))
-                        .filter(e -> !eventPredicates.filterByChannelRole(e, ChannelRole.HELP))
-                        .count()
-                == 1;
+    public final List<Predicate<ChatInputInteractionEvent>> getFilterPredicates() {
+        return Arrays.asList(
+                eventPredicates::filterBot,
+                this::filterByCommands,
+                e -> eventPredicates.filterIfChannelExistsInSettings(e, ChannelRole.HELP),
+                e -> !eventPredicates.filterByChannelRole(e, ChannelRole.HELP)
+        );
     }
 
     @Override
