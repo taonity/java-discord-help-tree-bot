@@ -11,33 +11,29 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.taonity.helpbot.discord.event.DiscordEventListener;
+import org.taonity.helpbot.discord.event.ExtendedDiscordEventListener;
 import org.taonity.helpbot.discord.event.MdcAwareThreadPoolExecutor;
+import org.taonity.helpbot.discord.event.Slf4jRunnable;
 import reactor.core.publisher.Flux;
 
+@Getter
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SlashCommandListener implements DiscordEventListener<ChatInputInteractionEvent> {
+public class SlashCommandListener implements ExtendedDiscordEventListener<ChatInputInteractionEvent> {
 
-    private final Collection<SlashCommand> commands;
+    private final Collection<SlashCommand> handlers;
 
-    @Getter
     private final MdcAwareThreadPoolExecutor mdcAwareThreadPoolExecutor;
 
     @Override
-    public Runnable createSlf4jRunnable(ChatInputInteractionEvent event) {
-        return new Slf4jChatImputInteractionEventRunnable(event, this::handle);
+    public Slf4jRunnable<ChatInputInteractionEvent> createSlf4jRunnable(ChatInputInteractionEvent event) {
+        return new Slf4jChatInputInteractionEventRunnable(event);
     }
 
     @Override
     public void handle(ChatInputInteractionEvent event) {
         log.info("Command received with parameters [{}]", getCommandParameters(event));
-
-        Flux.fromIterable(commands)
-                .filter(commands -> commands.filter(event))
-                .next()
-                .flatMap(command -> command.reactiveHandle(event))
-                .subscribe();
     }
 
     private static String getCommandParameters(ChatInputInteractionEvent event) {

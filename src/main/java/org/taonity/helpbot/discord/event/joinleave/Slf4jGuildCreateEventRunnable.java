@@ -4,19 +4,19 @@ import discord4j.core.event.domain.guild.GuildCreateEvent;
 import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.MDC;
+import org.taonity.helpbot.discord.event.Slf4jRunnable;
 
-@RequiredArgsConstructor
-public class Slf4jGuildCreateEventRunnable implements Runnable {
-    private final GuildCreateEvent guildCreateEvent;
-    private final Consumer<GuildCreateEvent> eventConsumer;
+public class Slf4jGuildCreateEventRunnable extends Slf4jRunnable<GuildCreateEvent> {
+    public Slf4jGuildCreateEventRunnable(GuildCreateEvent object) {
+        super(object);
+    }
 
     @Override
-    public void run() {
+    public void setMdcParams() {
         MDC.put("guildId", getGuildId());
-        eventConsumer.accept(guildCreateEvent);
     }
 
     private String getGuildId() {
-        return guildCreateEvent.getGuild().getId().asString();
+        return object.getGuild().getId().asString();
     }
 }

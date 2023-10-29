@@ -10,23 +10,15 @@ import reactor.core.publisher.Flux;
 
 @Component
 @RequiredArgsConstructor
-public class MessageCreateListener implements DiscordEventListener<MessageCreateEvent> {
+@Getter
+public class MessageCreateListener implements ExtendedDiscordEventListener<MessageCreateEvent> {
 
-    private final Collection<MessageHandler> messageHandler;
+    private final Collection<MessageHandler> handlers;
 
-    @Getter
     private final MdcAwareThreadPoolExecutor mdcAwareThreadPoolExecutor;
 
     @Override
-    public Runnable createSlf4jRunnable(MessageCreateEvent event) {
-        return new Slf4jMessageCreateEventRunnable(event, this::handle);
-    }
-
-    public void handle(MessageCreateEvent event) {
-        Flux.fromIterable(messageHandler)
-                .filter(handler -> handler.filter(event))
-                .next()
-                .flatMap(handler -> handler.reactiveHandle(event))
-                .subscribe();
+    public Slf4jRunnable<MessageCreateEvent> createSlf4jRunnable(MessageCreateEvent event) {
+        return new Slf4jMessageCreateEventRunnable(event);
     }
 }

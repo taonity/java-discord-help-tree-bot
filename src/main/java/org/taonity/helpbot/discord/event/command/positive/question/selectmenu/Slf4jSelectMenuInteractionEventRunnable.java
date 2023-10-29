@@ -6,25 +6,25 @@ import discord4j.core.object.entity.Member;
 import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.MDC;
+import org.taonity.helpbot.discord.event.Slf4jRunnable;
 
-@RequiredArgsConstructor
-public class Slf4jSelectMenuInteractionEventRunnable implements Runnable {
-    private final SelectMenuInteractionEvent event;
-    private final Consumer<SelectMenuInteractionEvent> eventConsumer;
+public class Slf4jSelectMenuInteractionEventRunnable extends Slf4jRunnable<SelectMenuInteractionEvent> {
+    public Slf4jSelectMenuInteractionEventRunnable(SelectMenuInteractionEvent object) {
+        super(object);
+    }
 
     @Override
-    public void run() {
+    public void setMdcParams() {
         MDC.put("guildId", getGuildId());
         MDC.put("userId", getMemberId());
-        eventConsumer.accept(event);
     }
 
     private String getGuildId() {
-        return event.getInteraction().getGuildId().map(Snowflake::asString).orElse("NULL");
+        return object.getInteraction().getGuildId().map(Snowflake::asString).orElse("NULL");
     }
 
     private String getMemberId() {
-        return event.getInteraction()
+        return object.getInteraction()
                 .getMember()
                 .map(Member::getId)
                 .map(Snowflake::asString)

@@ -26,10 +26,9 @@ public class GiteaWebHookController {
         final var guildSettings = guildSettingsRepository
                 .findGuildSettingByGiteaUserId(event.getPusher().getId())
                 .orElseThrow(() -> new EmptyOptionalException(ALERT_20089));
+
         final var runnable = new Slf4jWebhookEventRunnable(event, guildSettings, this::webHookWithMdc);
         threadPoolExecutor.submit(runnable);
-
-        webHookWithMdc(event);
     }
 
     private void webHookWithMdc(WebhookEvent event) {

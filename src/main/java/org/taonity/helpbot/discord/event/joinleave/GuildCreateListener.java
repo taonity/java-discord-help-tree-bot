@@ -4,6 +4,7 @@ import static java.util.Objects.isNull;
 import static org.taonity.helpbot.discord.localisation.SimpleMessage.ON_GUILD_JOIN_INSTRUCTIONS;
 
 import discord4j.core.event.domain.guild.GuildCreateEvent;
+import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.audit.ActionType;
 import discord4j.core.spec.AuditLogQuerySpec;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.taonity.helpbot.discord.GuildSettingsRepository;
 import org.taonity.helpbot.discord.event.DiscordEventListener;
 import org.taonity.helpbot.discord.event.MdcAwareThreadPoolExecutor;
+import org.taonity.helpbot.discord.event.Slf4jRunnable;
 import org.taonity.helpbot.discord.event.joinleave.service.GuildDataService;
 import org.taonity.helpbot.discord.logging.LogMessage;
 import org.taonity.helpbot.discord.logging.exception.main.EmptyOptionalException;
@@ -30,8 +32,8 @@ public class GuildCreateListener implements DiscordEventListener<GuildCreateEven
     private final MdcAwareThreadPoolExecutor mdcAwareThreadPoolExecutor;
 
     @Override
-    public Runnable createSlf4jRunnable(GuildCreateEvent event) {
-        return new Slf4jGuildCreateEventRunnable(event, this::handle);
+    public Slf4jRunnable<GuildCreateEvent> createSlf4jRunnable(GuildCreateEvent event) {
+        return new Slf4jGuildCreateEventRunnable(event);
     }
 
     @Override

@@ -4,23 +4,25 @@ import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.User;
 import java.util.function.Consumer;
+
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.slf4j.MDC;
 
-@RequiredArgsConstructor
-public class Slf4jMessageCreateEventRunnable implements Runnable {
-    private final MessageCreateEvent messageCreateEvent;
-    private final Consumer<MessageCreateEvent> eventConsumer;
+public class Slf4jMessageCreateEventRunnable extends Slf4jRunnable<MessageCreateEvent> {
+    public Slf4jMessageCreateEventRunnable(MessageCreateEvent object) {
+        super(object);
+    }
 
     @Override
-    public void run() {
+    public void setMdcParams() {
         MDC.put("guildId", getGuildId());
         MDC.put("userId", getUserId());
-        eventConsumer.accept(messageCreateEvent);
     }
 
     private String getUserId() {
-        return messageCreateEvent
+        return object
                 .getMember()
                 .map(User::getId)
                 .map(Snowflake::asString)
@@ -28,6 +30,8 @@ public class Slf4jMessageCreateEventRunnable implements Runnable {
     }
 
     private String getGuildId() {
-        return messageCreateEvent.getGuildId().map(Snowflake::asString).orElse("NULL");
+        return object.getGuildId()
+                .map(Snowflake::asString)
+                .orElse("NULL");
     }
 }

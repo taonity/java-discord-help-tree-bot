@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.taonity.helpbot.discord.event.DiscordEventListener;
 import org.taonity.helpbot.discord.event.MdcAwareThreadPoolExecutor;
+import org.taonity.helpbot.discord.event.Slf4jRunnable;
 import org.taonity.helpbot.discord.event.joinleave.service.GuildDataService;
 
 @Slf4j
@@ -21,8 +22,8 @@ public class GuildDeleteListener implements DiscordEventListener<GuildDeleteEven
     private final MdcAwareThreadPoolExecutor mdcAwareThreadPoolExecutor;
 
     @Override
-    public Runnable createSlf4jRunnable(GuildDeleteEvent event) {
-        return new Slf4jGuildDeleteEventRunnable(event, this::handle);
+    public Slf4jRunnable<GuildDeleteEvent> createSlf4jRunnable(GuildDeleteEvent event) {
+        return new Slf4jGuildDeleteEventRunnable(event);
     }
 
     @Override
