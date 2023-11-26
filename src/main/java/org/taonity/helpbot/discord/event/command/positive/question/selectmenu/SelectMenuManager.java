@@ -33,12 +33,7 @@ public class SelectMenuManager {
 
     public SelectMenuManager(Snowflake userId, Node root) {
         this.userId = userId;
-
         treeWalker = new TreeWalker(root);
-        postConstruct();
-    }
-
-    private void postConstruct() {
 
         updateLastUpdateTime();
     }

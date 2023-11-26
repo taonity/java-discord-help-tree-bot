@@ -24,6 +24,6 @@ class AppSettingsRepositoryTest {
     @Test
     @Disabled
     void findFirst() {
-        System.out.println(appSettingsRepository.findOne().get());
+        System.out.println(appSettingsRepository.findOne().block());
     }
 }

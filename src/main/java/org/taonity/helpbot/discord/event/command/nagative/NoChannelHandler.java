@@ -1,9 +1,9 @@
 package org.taonity.helpbot.discord.event.command.nagative;
 
-import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
-import discord4j.core.object.entity.Member;
-import java.util.stream.Stream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,48 +11,35 @@ import org.springframework.stereotype.Component;
 import org.taonity.helpbot.discord.CommandName;
 import org.taonity.helpbot.discord.embed.EmbedBuilder;
 import org.taonity.helpbot.discord.embed.EmbedType;
-import org.taonity.helpbot.discord.event.command.AbstractSlashCommand;
+import org.taonity.helpbot.discord.event.command.AbstractNegativeSlashCommand;
 import org.taonity.helpbot.discord.event.command.EventPredicates;
 import org.taonity.helpbot.discord.localisation.SimpleMessage;
+import org.taonity.helpbot.discord.mdc.OnCompleteSignalListenerBuilder;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class NoChannelHandler extends AbstractSlashCommand {
+public class NoChannelHandler extends AbstractNegativeSlashCommand {
 
     @Getter
-    private final CommandName command = CommandName.ANY;
+    private final List<CommandName> commands = List.of(CommandName.QUESTION, CommandName.CONFIG);
 
     private final EventPredicates eventPredicates;
 
     @Override
-    public boolean filter(ChatInputInteractionEvent event) {
-        return Stream.of(event)
-                        .filter(this::filterByCommand)
-                        .filter(eventPredicates::filterBot)
-                        .filter(e -> !eventPredicates.filterIfChannelsExistInSettings(e))
-                        .count()
-                == 1;
+    public final List<Function<ChatInputInteractionEvent, Mono<Boolean>>> getFilterPredicates() {
+        return Arrays.asList(eventPredicates::filterBot, this::filterByCommands, e -> eventPredicates
+                .filterIfChannelsExistInSettings(e)
+                .map(pass -> !pass));
     }
 
     @Override
-    public void handle(ChatInputInteractionEvent event) {
-
-        event.reply()
+    public Mono<Void> handle(ChatInputInteractionEvent event) {
+        return event.reply()
                 .withEmbeds(EmbedBuilder.buildSimpleMessage(
                         SimpleMessage.NO_CHANNEL_MESSAGE.getMessage(), EmbedType.SIMPLE_MESSAGE_EMBED_TYPE))
                 .withEphemeral(true)
-                .withEphemeral(true)
-                .subscribe();
-
-        log.info(
-                "Command {} failed with not configured channel by user {} in guild {}",
-                event.getCommandName(),
-                event.getInteraction()
-                        .getMember()
-                        .map(Member::getId)
-                        .map(Snowflake::asString)
-                        .orElse("NULL"),
-                event.getInteraction().getGuildId().map(Snowflake::asString).orElse("NULL"));
+                .tap(OnCompleteSignalListenerBuilder.of(() -> log.info("Command failed with non-configured channels")));
     }
 }

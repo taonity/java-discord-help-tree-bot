@@ -1,24 +1,24 @@
 package org.taonity.helpbot.discord;
 
-import java.util.Optional;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.r2dbc.repository.Modifying;
+import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import reactor.core.publisher.Mono;
 
-public interface GuildSettingsRepository extends CrudRepository<GuildSettings, String> {
+public interface GuildSettingsRepository extends R2dbcRepository<GuildSettings, String> {
     @Modifying
-    @Query("update GuildSettings g set g.logChannelId = ?2 where g.guildId = ?1")
-    void updateLogChannelId(String guildId, String logChannelId);
-
-    @Modifying
-    @Query("update GuildSettings g set g.helpChannelId = ?2 where g.guildId = ?1")
-    void updateHelpChannelId(String guildId, String helpChannelId);
+    @Query("UPDATE guild_settings SET log_channel_id = $2 WHERE guild_id = $1")
+    Mono<Void> updateLogChannelId(String guildId, String logChannelId);
 
     @Modifying
-    @Query("update GuildSettings g set g.giteaUserId = ?2, g.giteaUserAlphanumeric = ?3 where g.id = ?1")
-    void updateGiteaUser(int id, int giteaUserId, String giteaUserAlphanumeric);
+    @Query("UPDATE guild_settings SET help_channel_id = $2 WHERE guild_id = $1")
+    Mono<Void> updateHelpChannelId(String guildId, String helpChannelId);
 
-    Optional<GuildSettings> findGuildSettingByGuildId(String guildId);
+    @Modifying
+    @Query("UPDATE guild_settings SET gitea_user_id = $2, gitea_user_alphanumeric = $3 WHERE id = $1")
+    Mono<Void> updateGiteaUser(int id, int giteaUserId, String giteaUserAlphanumeric);
 
-    Optional<GuildSettings> findGuildSettingByGiteaUserId(int giteaUserId);
+    Mono<GuildSettings> findGuildSettingByGuildId(String guildId);
+
+    Mono<GuildSettings> findGuildSettingByGiteaUserId(int giteaUserId);
 }

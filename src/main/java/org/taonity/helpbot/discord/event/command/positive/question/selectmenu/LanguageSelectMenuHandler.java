@@ -4,8 +4,10 @@ import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.SelectMenuInteractionEvent;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.entity.Member;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,8 @@ import org.taonity.helpbot.discord.localisation.Language;
 import org.taonity.helpbot.discord.localisation.LocalizedMessage;
 import org.taonity.helpbot.discord.logging.LogMessage;
 import org.taonity.helpbot.discord.logging.exception.main.EmptyOptionalException;
+import org.taonity.helpbot.discord.mdc.OnCompleteSignalListenerBuilder;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
@@ -27,59 +31,43 @@ public class LanguageSelectMenuHandler extends AbstractSelectMenuHandler {
     private final EventPredicates eventPredicates;
 
     @Override
-    public boolean filter(SelectMenuInteractionEvent event) {
-        final var guildId = event.getInteraction()
-                .getGuildId()
-                .map(Snowflake::asString)
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20038));
-
-        final var smManagerOpt = getSmManager(event, guildId);
-
-        return smManagerOpt
-                .filter(selectMenuManager -> Stream.of(event)
-                                .filter(eventPredicates::filterBot)
-                                .filter(e -> eventPredicates.filterByChannelRole(event, ChannelRole.HELP))
-                                .filter(e -> isLanguageSelectMenu(selectMenuManager, e))
-                                .count()
-                        == 1)
-                .isPresent();
+    public final List<Function<SelectMenuInteractionEvent, Mono<Boolean>>> getFilterPredicates() {
+        return Arrays.asList(
+                eventPredicates::filterBot,
+                e -> eventPredicates.filterByChannelRole(e, ChannelRole.HELP),
+                this::isRelatedToLanguageSelectMenu);
     }
 
     @Override
-    public void handle(SelectMenuInteractionEvent event) {
-        final var guild = event.getInteraction()
+    public Mono<Void> handle(SelectMenuInteractionEvent event) {
+        return event.getInteraction()
                 .getGuild()
-                .blockOptional()
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20073));
+                .switchIfEmpty(Mono.error(new EmptyOptionalException(LogMessage.ALERT_20073)))
+                .flatMap(guild -> {
+                    final var smManagerOpt = getSmManager(event, guild.getId().asString());
+                    if (smManagerOpt.isEmpty()) {
+                        return Mono.empty();
+                    }
+                    final var smManager = smManagerOpt.get();
 
-        final var smManagerOpt = getSmManager(event, guild.getId().asString());
-        if (smManagerOpt.isEmpty()) {
-            return;
-        }
-        final var smManager = smManagerOpt.get();
+                    return channelService.getChannel(guild, ChannelRole.HELP).flatMap(messageChannel -> {
+                        final String optionValue = getOptionValueFromEvent(event);
 
-        final String optionValue = getOptionValueFromEvent(event);
+                        final var language = Language.valueOfLanguage(optionValue);
+                        smManager.setLanguage(language);
+                        smManager.updateLastUpdateTime();
+                        final var selectMenu = smManager.createFirstTreeSelectMenu();
+                        final var localizedMessage = LocalizedMessage.GREETING_MESSAGE.translate(language);
 
-        final var helpChannel = channelService.getChannel(guild, ChannelRole.HELP);
-
-        final var language = Language.valueOfLanguage(optionValue);
-        smManager.setLanguage(language);
-        smManager.updateLastUpdateTime();
-        final var selectMenu = smManager.createFirstTreeSelectMenu();
-        final var localizedMessage = LocalizedMessage.GREETING_MESSAGE.translate(language);
-
-        helpChannel
-                .createMessage(localizedMessage)
-                .withComponents(ActionRow.of(selectMenu))
-                .subscribe();
-
-        disableAndEditCurrentSelectMenu(event, optionValue);
-
-        log.info(
-                "Language select menu was set to {} by user {} in guild {}",
-                optionValue,
-                smManager.getUserId().asString(),
-                event.getInteraction().getGuildId().map(Snowflake::asString).orElse("NULL"));
+                        return Mono.when(
+                                        messageChannel
+                                                .createMessage(localizedMessage)
+                                                .withComponents(ActionRow.of(selectMenu)),
+                                        disableAndEditCurrentSelectMenu(event, optionValue))
+                                .tap(OnCompleteSignalListenerBuilder.of(
+                                        () -> log.info("Language select menu was set to {}", optionValue)));
+                    });
+                });
     }
 
     private Optional<SelectMenuManager> getSmManager(SelectMenuInteractionEvent event, String guildId) {
@@ -90,7 +78,18 @@ public class LanguageSelectMenuHandler extends AbstractSelectMenuHandler {
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20051));
     }
 
-    private boolean isLanguageSelectMenu(SelectMenuManager smManager, SelectMenuInteractionEvent event) {
+    private boolean isRelatedToLanguageSmManager(SelectMenuManager smManager, SelectMenuInteractionEvent event) {
         return event.getCustomId().equals(smManager.getLanguageSelectMenuCustomId());
+    }
+
+    private Mono<Boolean> isRelatedToLanguageSelectMenu(SelectMenuInteractionEvent event) {
+        final var guildId = event.getInteraction()
+                .getGuildId()
+                .map(Snowflake::asString)
+                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20038));
+
+        return Mono.just(getSmManager(event, guildId)
+                .filter(selectMenuManager -> isRelatedToLanguageSmManager(selectMenuManager, event))
+                .isPresent());
     }
 }

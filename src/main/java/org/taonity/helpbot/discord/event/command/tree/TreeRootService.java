@@ -3,39 +3,37 @@ package org.taonity.helpbot.discord.event.command.tree;
 import static java.util.Objects.isNull;
 import static org.taonity.helpbot.discord.embed.EmbedType.SUCCESS_DIALOG_EMBED_TYPE;
 import static org.taonity.helpbot.discord.embed.EmbedType.WRONG_DIALOG_EMBED_TYPE;
+import static org.taonity.helpbot.discord.mdc.ContextRegistryMdcKeyRegister.GUILD_ID_MDC_KEY;
 
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.spec.EmbedCreateSpec;
-import jakarta.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.StreamSupport;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
-import org.taonity.helpbot.discord.ChannelRole;
-import org.taonity.helpbot.discord.GuildSettings;
-import org.taonity.helpbot.discord.GuildSettingsRepository;
-import org.taonity.helpbot.discord.MessageChannelService;
+import org.taonity.helpbot.discord.*;
 import org.taonity.helpbot.discord.embed.EmbedBuilder;
 import org.taonity.helpbot.discord.event.command.gitea.services.GiteaUserService;
 import org.taonity.helpbot.discord.event.command.positive.config.WebhookEvent;
 import org.taonity.helpbot.discord.event.command.tree.model.Node;
 import org.taonity.helpbot.discord.logging.LogMessage;
 import org.taonity.helpbot.discord.logging.exception.GiteaApiException;
-import org.taonity.helpbot.discord.logging.exception.NoCommitsException;
 import org.taonity.helpbot.discord.logging.exception.client.CorruptGiteaUserException;
 import org.taonity.helpbot.discord.logging.exception.main.EmptyOptionalException;
 import org.taonity.helpbot.discord.logging.exception.main.FailedToCreateNewRootException;
 import org.taonity.helpbot.discord.logging.exception.main.UnexpectedGiteaApiException;
+import org.taonity.helpbot.discord.mdc.OnCompleteSignalListenerBuilder;
+import org.taonity.helpbot.discord.mdc.OnErrorSignalListenerBuilder;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.util.context.Context;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@DependsOn("updatePersistableData")
 public class TreeRootService {
     @Getter
     private final Map<String, Node> rootMap = new HashMap<>();
@@ -47,125 +45,134 @@ public class TreeRootService {
 
     private static boolean created = false;
 
-    @PostConstruct
-    private void postConstruct() {
-        // TODO: A good way to use parallel true?
-        StreamSupport.stream(guildSettingsRepository.findAll().spliterator(), false)
-                .forEach(this::createExistingRoot);
-        created = true;
+    public Mono<Void> init() {
+        return guildSettingsRepository
+                .findAll()
+                .collectList()
+                .doOnSuccess(guildSettings -> {
+                    if (guildSettings.isEmpty()) {
+                        log.warn("There is no guild in DB for TreeRootService!");
+                    }
+                })
+                .flatMapMany(Flux::fromIterable)
+                .concatMap(guildSettings -> createExistingRoot(guildSettings)
+                        .contextWrite(Context.of(GUILD_ID_MDC_KEY, guildSettings.getGuildId())))
+                .doOnComplete(() -> created = true)
+                .then();
     }
 
-    private void createExistingRoot(GuildSettings guildSettings) {
-        final String lastCommitsCorruptErrorMessage;
-        try {
-            lastCommitsCorruptErrorMessage = makeAndSetRoot(guildSettings);
-        } catch (GiteaApiException e) {
-            log.error(
-                    "Unexpected gitea API exception on existing root creation with alert {}, guild {} gitea user {}",
-                    LogMessage.ALERT_20004.name(),
-                    guildSettings.getGuildId(),
-                    guildSettings.getGiteaUserId());
-            return;
-        }
-
-        if (isNull(lastCommitsCorruptErrorMessage)) {
-            log.info(
-                    "Existing dialog root creation succeed with a structure {} for guild {}",
-                    rootMap.get(guildSettings.getGuildId()).asIdJsonString(),
-                    guildSettings.getGuildId());
-        } else {
-            log.error(
-                    "Existing dialog update on last commit with message [{}] for guild {}",
-                    lastCommitsCorruptErrorMessage,
-                    guildSettings.getGuildId());
-        }
+    private Mono<Void> createExistingRoot(GuildSettings guildSettings) {
+        return makeAndSetRoot(guildSettings)
+                .tap(OnErrorSignalListenerBuilder.of(e -> log.error(
+                        "Unexpected gitea API exception on existing root creation with alert {}, guild {} gitea user {}",
+                        LogMessage.ALERT_20004.name(),
+                        guildSettings.getGuildId(),
+                        guildSettings.getGiteaUserId())))
+                .switchIfEmpty(Mono.<String>empty()
+                        .tap(OnCompleteSignalListenerBuilder.of(() -> logSuccessfulRootCreation(guildSettings))))
+                .flatMap(lastCommitsCorruptErrorMessage -> Mono.<Void>empty()
+                        .tap(OnCompleteSignalListenerBuilder.of(() -> {
+                            log.info(
+                                    "Existing dialog update on last commit with message [{}] for guild {}",
+                                    lastCommitsCorruptErrorMessage,
+                                    guildSettings.getGuildId());
+                            logSuccessfulRootCreation(guildSettings);
+                        })))
+                .then();
     }
 
-    public void createNewRoot(GuildSettings guildSettings) {
-        final String lastCommitsCorruptErrorMessage;
-        try {
-            lastCommitsCorruptErrorMessage = makeAndSetRoot(guildSettings);
-        } catch (GiteaApiException e) {
-            throw new UnexpectedGiteaApiException(LogMessage.ALERT_20004, e);
-        }
-
-        if (isNull(lastCommitsCorruptErrorMessage)) {
-            log.info(
-                    "New dialog root creation succeed with a structure {} for guild {}",
-                    rootMap.get(guildSettings.getGuildId()).asIdJsonString(),
-                    guildSettings.getGuildId());
-        } else {
-            log.error(
-                    "New dialog root creation on last commit with message [{}] for guild {}",
-                    lastCommitsCorruptErrorMessage,
-                    guildSettings.getGuildId());
-            throw new FailedToCreateNewRootException(LogMessage.ALERT_20005);
-        }
+    private void logSuccessfulRootCreation(GuildSettings guildSettings) {
+        log.info(
+                "Existing dialog root creation succeed with a structure {} for guild {}",
+                rootMap.get(guildSettings.getGuildId()).asIdJsonString(),
+                guildSettings.getGuildId());
     }
 
-    public void updateRoot(WebhookEvent event) {
+    private String getTreeStructure(GuildSettings guildSettings) {
+        return rootMap.get(guildSettings.getGuildId()).asIdJsonString();
+    }
+
+    public Mono<Void> createNewRoot(GuildSettings guildSettings) {
+        return makeAndSetRoot(guildSettings)
+                .onErrorResume(
+                        GiteaApiException.class,
+                        e -> Mono.error(new UnexpectedGiteaApiException(LogMessage.ALERT_20004, e)))
+                .flatMap(lastCommitsCorruptErrorMessage -> {
+                    if (isNull(lastCommitsCorruptErrorMessage)) {
+                        return Mono.<Void>empty()
+                                .tap(OnCompleteSignalListenerBuilder.of(() -> log.info(
+                                        "New dialog root creation succeed with a structure {}",
+                                        getTreeStructure(guildSettings))));
+                    } else {
+                        return Mono.<Void>empty()
+                                .tap(OnCompleteSignalListenerBuilder.of(() -> log.error(
+                                        "New dialog root creation on last commit with message [{}]",
+                                        lastCommitsCorruptErrorMessage)))
+                                .then(Mono.error(new FailedToCreateNewRootException(LogMessage.ALERT_20005)));
+                    }
+                });
+    }
+
+    public Mono<Void> updateRoot(WebhookEvent event) {
         final var giteaRepoUserId = event.getRepository().getOwner().getId();
-        final GuildSettings guildSettings = getGuildSettings(giteaRepoUserId);
-
-        final String lastCommitsCorruptErrorMessage;
-        try {
-            lastCommitsCorruptErrorMessage = makeAndSetRoot(guildSettings);
-        } catch (GiteaApiException e) {
-            throw new CorruptGiteaUserException(LogMessage.ALERT_20002, guildSettings.getGuildId(), e);
-        }
-
-        if (isNull(lastCommitsCorruptErrorMessage)) {
-            if (!isNull(guildSettings.getLogChannelId())) {
-                sendSuccessMessage(guildSettings);
-            }
-
-            log.info(
-                    "Dialog root update succeed with a structure {} for guild {}",
-                    rootMap.get(guildSettings.getGuildId()).asIdJsonString(),
-                    guildSettings.getGuildId());
-        } else {
-            sendFailedOnLastCommitsMessage(guildSettings, lastCommitsCorruptErrorMessage);
-
-            log.info(
-                    "Dialog update on last commit with message [{}] for guild {}",
-                    lastCommitsCorruptErrorMessage,
-                    guildSettings.getGuildId());
-        }
+        return getGuildSettings(giteaRepoUserId)
+                .flatMap(guildSettings -> makeAndSetRoot(guildSettings)
+                        .onErrorResume(
+                                CorruptGiteaUserException.class,
+                                e -> Mono.error(new CorruptGiteaUserException(
+                                        LogMessage.ALERT_20002, guildSettings.getGuildId(), e)))
+                        .flatMap(lastCommitsCorruptErrorMessage -> {
+                            if (isNull(lastCommitsCorruptErrorMessage)) {
+                                if (!isNull(guildSettings.getLogChannelId())) {
+                                    return sendSuccessMessage(guildSettings);
+                                }
+                                return Mono.empty()
+                                        .tap(OnCompleteSignalListenerBuilder.of(() -> log.info(
+                                                "Dialog root update succeed with a structure {}",
+                                                getTreeStructure(guildSettings))));
+                            } else {
+                                return sendFailedOnLastCommitsMessage(guildSettings, lastCommitsCorruptErrorMessage)
+                                        .tap(OnCompleteSignalListenerBuilder.of(() -> log.info(
+                                                "Dialog update on last commit with message [{}]",
+                                                lastCommitsCorruptErrorMessage)));
+                            }
+                        }))
+                .then();
     }
 
-    private GuildSettings getGuildSettings(int giteaRepoUserId) {
+    private Mono<GuildSettings> getGuildSettings(int giteaRepoUserId) {
         return guildSettingsRepository
                 .findGuildSettingByGiteaUserId(giteaRepoUserId)
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20050));
+                .switchIfEmpty(Mono.error(new EmptyOptionalException(LogMessage.ALERT_20050)));
     }
 
-    private void sendFailedOnLastCommitsMessage(GuildSettings guildSettings, String message) {
+    private Mono<Void> sendFailedOnLastCommitsMessage(GuildSettings guildSettings, String message) {
         final var embed = EmbedBuilder.buildMessageEmbed(message, WRONG_DIALOG_EMBED_TYPE);
-        sendEmbedLog(guildSettings, embed);
+        return sendEmbedLog(guildSettings, embed);
     }
 
-    private void sendSuccessMessage(GuildSettings guildSettings) {
+    private Mono<Void> sendSuccessMessage(GuildSettings guildSettings) {
         final var embed = EmbedBuilder.buildMessageEmbed("", SUCCESS_DIALOG_EMBED_TYPE);
-        sendEmbedLog(guildSettings, embed);
+        return sendEmbedLog(guildSettings, embed);
     }
 
-    private void sendEmbedLog(GuildSettings guildSettings, EmbedCreateSpec embedCreateSpec) {
-        gatewayDiscordClient
+    private Mono<Void> sendEmbedLog(GuildSettings guildSettings, EmbedCreateSpec embedCreateSpec) {
+        return gatewayDiscordClient
                 .getGuildById(Snowflake.of(guildSettings.getGuildId()))
-                .blockOptional()
-                .map(guild -> messageChannelService.getChannel(guild, ChannelRole.LOG))
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20017))
-                .createMessage(embedCreateSpec)
-                .subscribe();
+                .switchIfEmpty(Mono.error(new EmptyOptionalException(LogMessage.ALERT_20017)))
+                .flatMap(guild -> messageChannelService.getChannel(guild, ChannelRole.LOG))
+                .flatMap(messageChannel -> messageChannel.createMessage(embedCreateSpec))
+                .then();
     }
 
-    private String makeAndSetRoot(GuildSettings guildSettings) throws NoCommitsException, GiteaApiException {
-        final var dialogRootAndError = giteaUserService.getDialogRoot(guildSettings);
-        final var root = dialogRootAndError.getNode();
+    private Mono<String> makeAndSetRoot(GuildSettings guildSettings) {
+        return giteaUserService.getDialogRoot(guildSettings).flatMap(nodeAndError -> {
+            final var root = nodeAndError.getNode();
 
-        root.identifyNodes();
-        rootMap.put(guildSettings.getGuildId(), root);
-        return dialogRootAndError.getErrorMessage();
+            root.identifyNodes();
+            rootMap.put(guildSettings.getGuildId(), root);
+            return isNull(nodeAndError.getErrorMessage()) ? Mono.empty() : Mono.just(nodeAndError.getErrorMessage());
+        });
     }
 
     public Node getRootByGuildId(String guildId) {

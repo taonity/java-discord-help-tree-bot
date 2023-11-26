@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -23,7 +22,6 @@ import org.taonity.helpbot.discord.logging.exception.GiteaApiException;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @EntityScan("discord.model")
-@EnableJpaRepositories(basePackages = {"discord.repository"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
 @ContextConfiguration(
@@ -50,6 +48,7 @@ public class GiteaApiServiceTest {
         Thread.sleep(500);
         assertThat(giteaApiService
                         .getFile(username, repo, filepath, branch_name)
+                        .block()
                         .getContentAsString())
                 .isEqualTo(fileContent);
     }

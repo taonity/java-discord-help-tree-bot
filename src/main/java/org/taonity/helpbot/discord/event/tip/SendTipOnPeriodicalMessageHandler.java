@@ -1,7 +1,9 @@
 package org.taonity.helpbot.discord.event.tip;
 
 import discord4j.core.event.domain.message.MessageCreateEvent;
-import java.util.stream.Stream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.taonity.helpbot.discord.ChannelRole;
@@ -9,8 +11,7 @@ import org.taonity.helpbot.discord.MessageChannelService;
 import org.taonity.helpbot.discord.MessageHandler;
 import org.taonity.helpbot.discord.embed.EmbedBuilder;
 import org.taonity.helpbot.discord.event.command.EventPredicates;
-import org.taonity.helpbot.discord.logging.LogMessage;
-import org.taonity.helpbot.discord.logging.exception.main.EmptyOptionalException;
+import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
@@ -23,30 +24,27 @@ public class SendTipOnPeriodicalMessageHandler implements MessageHandler {
     private final EventPredicates eventPredicates;
 
     @Override
-    public boolean filter(MessageCreateEvent event) {
-        return Stream.of(event)
-                        .filter(eventPredicates::filterIfIsGuildChannel)
-                        .filter(e -> eventPredicates.filterIfChannelExistsInSettings(e, ChannelRole.HELP))
-                        .filter(eventPredicates::filterEmptyAuthor)
-                        .filter(eventPredicates::filterBot)
-                        .filter(this::messageIsEnoughLarge)
-                        .filter(e -> notificator.isTime())
-                        .filter(e -> eventPredicates.filterByChannelRole(event, ChannelRole.HELP))
-                        .count()
-                == 1;
+    public final List<Function<MessageCreateEvent, Mono<Boolean>>> getFilterPredicates() {
+        return Arrays.asList(
+                eventPredicates::filterBot,
+                eventPredicates::filterIfIsGuildChannel,
+                e -> eventPredicates.filterIfChannelExistsInSettings(e, ChannelRole.HELP),
+                eventPredicates::filterEmptyAuthor,
+                this::messageIsEnoughLarge,
+                e -> notificator.isTime(),
+                e -> eventPredicates.filterByChannelRole(e, ChannelRole.HELP));
     }
 
-    private boolean messageIsEnoughLarge(MessageCreateEvent event) {
-        return event.getMessage().getContent().length() > MIN_MESSAGE_LENGTH;
+    private Mono<Boolean> messageIsEnoughLarge(MessageCreateEvent event) {
+        return Mono.just(event.getMessage().getContent().length() > MIN_MESSAGE_LENGTH);
     }
 
     @Override
-    public void handle(MessageCreateEvent event) {
+    public Mono<Void> handle(MessageCreateEvent event) {
         final var embed = EmbedBuilder.buildTipEmbed(notificator.getNotificationText());
-        final var guild =
-                event.getGuild().blockOptional().orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20072));
-        final var helpChannel = channelService.getChannel(guild, ChannelRole.HELP);
-
-        helpChannel.createMessage(embed).subscribe();
+        return event.getGuild()
+                .flatMap(guild -> channelService.getChannel(guild, ChannelRole.HELP))
+                .flatMap(helpChannel -> helpChannel.createMessage(embed))
+                .then();
     }
 }

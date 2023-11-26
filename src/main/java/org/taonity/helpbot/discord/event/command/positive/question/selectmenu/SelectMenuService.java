@@ -1,15 +1,14 @@
 package org.taonity.helpbot.discord.event.command.positive.question.selectmenu;
 
 import discord4j.common.util.Snowflake;
-import jakarta.annotation.PostConstruct;
 import java.util.*;
-import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.taonity.helpbot.discord.GuildSettings;
 import org.taonity.helpbot.discord.GuildSettingsRepository;
 import org.taonity.helpbot.discord.event.command.positive.question.UserStatus;
 import org.taonity.helpbot.discord.event.command.tree.TreeRootService;
+import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
@@ -18,12 +17,14 @@ public class SelectMenuService {
     private final TreeRootService treeRootService;
     private final GuildSettingsRepository guildSettingsRepository;
 
-    // TODO: maybe it is worth to ban @PostConstruct?
-    @PostConstruct
-    private void postConstruct() {
-        StreamSupport.stream(guildSettingsRepository.findAll().spliterator(), true)
-                .map(GuildSettings::getGuildId)
-                .forEach(guildId -> selectMenuManagersMap.put(guildId, new ArrayList<>()));
+    public Mono<Void> init() {
+        return guildSettingsRepository
+                .findAll()
+                .collectList()
+                .doOnSuccess(guildSettings -> guildSettings.stream()
+                        .map(GuildSettings::getGuildId)
+                        .forEach(guildId -> selectMenuManagersMap.put(guildId, new ArrayList<>())))
+                .then();
     }
 
     public Optional<SelectMenuManager> getSmManager(Snowflake userId, String guildId) {

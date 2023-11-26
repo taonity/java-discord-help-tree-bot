@@ -21,6 +21,8 @@ public class GitApiServiceTest {
     @Test
     @Disabled
     public void squashCommits() {
-        gitApiService.squashCommits("user_lsXF", "repo_lsXF", 1, "448934652992946176");
+        gitApiService
+                .reactiveSquashCommit("user_lsXF", "repo_lsXF", 1, "448934652992946176")
+                .block();
     }
 }

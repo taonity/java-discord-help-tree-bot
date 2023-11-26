@@ -3,18 +3,17 @@ package org.taonity.helpbot.discord.event.command.positive.config;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.Guild;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.taonity.helpbot.discord.GuildSettings;
 import org.taonity.helpbot.discord.GuildSettingsRepository;
 import org.taonity.helpbot.discord.event.joinleave.service.GuildPersistableDataService;
-import org.taonity.helpbot.discord.logging.LogMessage;
-import org.taonity.helpbot.discord.logging.exception.main.EmptyOptionalException;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-@Configuration
+@Component
 @RequiredArgsConstructor
 public class GuildPersistableDataStartupService {
 
@@ -22,33 +21,37 @@ public class GuildPersistableDataStartupService {
     private final GuildPersistableDataService guildPersistableDataService;
     private final GuildSettingsRepository guildSettingsRepository;
 
-    // TODO: is there a way to do it with proper way?
-    @Bean
-    public void updatePersistableData() {
-        final var discordGuildIdList = gatewayDiscordClient
-                .getGuilds()
-                .cache()
-                .collectList()
-                .blockOptional()
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20039))
-                .stream()
+    public Mono<Void> updatePersistableData() {
+        return Flux.zip(getDiscordsGuildIds(), guildSettingsRepository.findAll().collectList())
+                .next()
+                .flatMap(t -> {
+                    final var discordGuildIds = t.getT1();
+                    final var guildSettings = t.getT2();
+                    return Flux.just(guildSettings.stream()
+                                    .filter(guildSetting -> !discordGuildIds.contains(guildSetting.getGuildId()))
+                                    .collect(Collectors.toList()))
+                            .flatMapIterable(guildIdsToRemove -> guildIdsToRemove)
+                            .flatMap(guildPersistableDataService::remove)
+                            .then()
+                            .then(Mono.defer(() -> {
+                                final var guildSettingsIds = guildSettings.stream()
+                                        .map(GuildSettings::getGuildId)
+                                        .toList();
+                                final var discordGuildsToCreate = discordGuildIds.stream()
+                                        .filter(discordGuildId -> !guildSettingsIds.contains(discordGuildId))
+                                        .toList();
+                                return Flux.fromIterable(discordGuildsToCreate)
+                                        .concatMap(guildPersistableDataService::create)
+                                        .then();
+                            }));
+                })
+                .then();
+    }
+
+    private Mono<List<String>> getDiscordsGuildIds() {
+        return gatewayDiscordClient.getGuilds().cache().collectList().map(guilds -> guilds.stream()
                 .map(Guild::getId)
                 .map(Snowflake::asString)
-                .collect(Collectors.toList());
-
-        final var guildSettingsList = StreamSupport.stream(
-                        guildSettingsRepository.findAll().spliterator(), true)
-                .collect(Collectors.toList());
-
-        guildSettingsList.stream()
-                .filter(guildSettings -> !discordGuildIdList.contains(guildSettings.getGuildId()))
-                .forEach(guildPersistableDataService::remove);
-
-        final var guildSettingsIdList =
-                guildSettingsList.stream().map(GuildSettings::getGuildId).collect(Collectors.toList());
-
-        discordGuildIdList.stream()
-                .filter(discordGuildId -> !guildSettingsIdList.contains(discordGuildId))
-                .forEach(guildPersistableDataService::create);
+                .collect(Collectors.toList()));
     }
 }

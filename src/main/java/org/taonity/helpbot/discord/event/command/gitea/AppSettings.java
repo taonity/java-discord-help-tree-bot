@@ -1,16 +1,15 @@
 package org.taonity.helpbot.discord.event.command.gitea;
 
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.Id;
 
-@Entity
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
 public class AppSettings {
     @Id
-    private final int id = 0;
+    private int id;
 
     private String giteaToken;
 

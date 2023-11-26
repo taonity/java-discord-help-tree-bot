@@ -5,9 +5,27 @@
     <logger name="io.netty" level="INFO"/>
     <logger name="reactor" level="INFO"/>
 
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="CONSOLE_DEFAULT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="CONSOLE_COMMANDS" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - guildId=%X{guildId} userId=%X{userId} commandName=%X{commandName} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="CONSOLE_USER" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - guildId=%X{guildId} userId=%X{userId} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="CONSOLE_GUILD" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - guildId=%X{guildId} - %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -28,12 +46,51 @@
         </encoder>
     </appender>
 
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{HH:mm:ss.SSS} [%thread] [key=%X{guildId}] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+    <logger name="reactor1" additivity="false">
+        <appender-ref ref="stdout" />
+    </logger>
+
     <logger name="automation-tests" additivity="false">
 <!--        <appender-ref ref="FILE" />-->
         <appender-ref ref="COMPOSE" />
     </logger>
 
+    <logger name="org.taonity.helpbot.discord.event.command" additivity="false">
+        <appender-ref ref="CONSOLE_COMMANDS" />
+    </logger>
+
+    <logger name="org.taonity.helpbot.discord.event.command.positive.question.selectmenu" additivity="false">
+        <appender-ref ref="CONSOLE_USER" />
+    </logger>
+
+    <logger name="org.taonity.helpbot.discord.event.command.positive.question.RespondOnQuestionHandler" additivity="false">
+        <appender-ref ref="CONSOLE_USER" />
+    </logger>
+
+    <logger name="org.taonity.helpbot.discord.event.tip" additivity="false">
+        <appender-ref ref="CONSOLE_USER" />
+    </logger>
+
+    <logger name="org.taonity.helpbot.discord.event.command.tree.TreeRootService" additivity="false">
+        <appender-ref ref="CONSOLE_GUILD" />
+    </logger>
+
+    <logger name="org.taonity.helpbot.discord.event.command.positive.config.GiteaWebHookController" additivity="false">
+        <appender-ref ref="CONSOLE_GUILD" />
+    </logger>
+
+    <logger name="org.taonity.helpbot.discord.event.joinleave" additivity="false">
+        <appender-ref ref="CONSOLE_GUILD" />
+    </logger>
+
     <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="CONSOLE_DEFAULT"/>
     </root>
 </configuration>

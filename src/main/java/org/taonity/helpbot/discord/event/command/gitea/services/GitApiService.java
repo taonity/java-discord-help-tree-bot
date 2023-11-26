@@ -19,6 +19,8 @@ import org.taonity.helpbot.discord.logging.LogMessage;
 import org.taonity.helpbot.discord.logging.exception.NoCommitsException;
 import org.taonity.helpbot.discord.logging.exception.client.FailedToSquashCommitsException;
 import org.taonity.helpbot.discord.logging.exception.main.FailedToRemoveGitApiWorkingDirException;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Component
 public class GitApiService {
@@ -45,7 +47,16 @@ public class GitApiService {
     @Value("${gitea.git.repo-path}")
     private String reposPath;
 
-    public void squashCommits(String userName, String repoName, int commitQuantity, String guildId)
+    public Mono<Void> reactiveSquashCommit(String userName, String repoName, int commitQuantity, String guildId) {
+        return Mono.fromCallable(() -> {
+                    squashCommits(userName, repoName, commitQuantity, guildId);
+                    return null;
+                })
+                .subscribeOn(Schedulers.parallel())
+                .then();
+    }
+
+    private void squashCommits(String userName, String repoName, int commitQuantity, String guildId)
             throws NoCommitsException {
         final var repoDir = String.format(REPO_FOLDER_FORMAT, reposPath, repoName);
         final var repoUri = String.format(gitUriFormat, userName, repoName);

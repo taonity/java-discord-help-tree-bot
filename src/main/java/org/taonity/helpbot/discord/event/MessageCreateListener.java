@@ -1,23 +1,38 @@
 package org.taonity.helpbot.discord.event;
 
+import static org.taonity.helpbot.discord.mdc.ContextRegistryMdcKeyRegister.GUILD_ID_MDC_KEY;
+import static org.taonity.helpbot.discord.mdc.ContextRegistryMdcKeyRegister.USER_ID_MDC_KEY;
+
+import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.object.entity.User;
 import java.util.Collection;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.taonity.helpbot.discord.MessageHandler;
-import reactor.core.publisher.Flux;
+import reactor.util.context.Context;
+import reactor.util.context.ContextView;
 
 @Component
 @RequiredArgsConstructor
-public class MessageCreateListener implements DiscordEventListener<MessageCreateEvent> {
+@Getter
+public class MessageCreateListener implements ExtendedDiscordEventListener<MessageCreateEvent> {
 
-    private final Collection<MessageHandler> messageHandler;
+    private final Collection<MessageHandler> handlers;
 
-    public void handle(MessageCreateEvent event) {
-        Flux.fromIterable(messageHandler)
-                .filter(handler -> handler.filter(event))
-                .next()
-                .flatMap(handler -> handler.reactiveHandle(event))
-                .subscribe();
+    @Override
+    public ContextView getContextView(MessageCreateEvent event) {
+        return Context.of(
+                GUILD_ID_MDC_KEY, getGuildId(event),
+                USER_ID_MDC_KEY, getUserId(event));
+    }
+
+    private String getUserId(MessageCreateEvent event) {
+        return event.getMember().map(User::getId).map(Snowflake::asString).orElse("NULL");
+    }
+
+    private String getGuildId(MessageCreateEvent event) {
+        return event.getGuildId().map(Snowflake::asString).orElse("NULL");
     }
 }

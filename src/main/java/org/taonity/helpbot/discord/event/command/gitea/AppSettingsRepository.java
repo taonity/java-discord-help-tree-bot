@@ -1,10 +1,10 @@
 package org.taonity.helpbot.discord.event.command.gitea;
 
-import java.util.Optional;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import reactor.core.publisher.Mono;
 
-public interface AppSettingsRepository extends CrudRepository<AppSettings, Integer> {
-    @Query("select a from AppSettings a")
-    Optional<AppSettings> findOne();
+public interface AppSettingsRepository extends R2dbcRepository<AppSettings, Integer> {
+    @Query("SELECT * FROM app_settings a")
+    Mono<AppSettings> findOne();
 }

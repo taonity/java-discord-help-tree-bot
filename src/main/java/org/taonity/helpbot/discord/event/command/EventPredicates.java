@@ -10,9 +10,6 @@ import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.PartialMember;
 import discord4j.core.object.entity.Role;
 import discord4j.core.object.entity.channel.MessageChannel;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.taonity.helpbot.discord.ChannelRole;
@@ -29,105 +26,87 @@ public class EventPredicates {
 
     private final GuildSettingsRepository guildSettingsRepository;
 
-    private boolean filterByChannelRole(
+    private Mono<Boolean> filterByChannelRole(
             Mono<MessageChannel> messageChannelMono, Mono<Guild> guildMono, ChannelRole channelRole) {
-        final var currentChannelId = messageChannelMono
-                .blockOptional()
-                .map(Entity::getId)
-                .map(Snowflake::asString)
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20007));
-
-        return guildMono
-                .blockOptional()
+        final var messageChannelIdMono = messageChannelMono.map(Entity::getId).map(Snowflake::asString);
+        final var guildSettingRoleChannelIdMono = guildMono
                 .map(Guild::getId)
                 .map(Snowflake::asString)
-                .map(guildSettingsRepository::findGuildSettingByGuildId)
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20042))
-                .map(guildSettings -> guildSettings.getChannelId(channelRole))
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20044))
-                .equals(currentChannelId);
+                .flatMap(guildSettingsRepository::findGuildSettingByGuildId)
+                .switchIfEmpty(Mono.error(new EmptyOptionalException(LogMessage.ALERT_20042)))
+                .map(guildSettings -> guildSettings.getChannelId(channelRole));
+
+        return Flux.zip(messageChannelIdMono, guildSettingRoleChannelIdMono, String::equals)
+                .single();
     }
 
-    public boolean filterByChannelRole(InteractionCreateEvent event, ChannelRole channelRole) {
+    public Mono<Boolean> filterByChannelRole(InteractionCreateEvent event, ChannelRole channelRole) {
         return filterByChannelRole(
                 event.getInteraction().getChannel(), event.getInteraction().getGuild(), channelRole);
     }
 
-    public boolean filterByChannelRole(MessageCreateEvent event, ChannelRole channelRole) {
+    public Mono<Boolean> filterByChannelRole(MessageCreateEvent event, ChannelRole channelRole) {
         return filterByChannelRole(
                 event.getMessage().getChannel(), event.getMessage().getGuild(), channelRole);
     }
 
-    public boolean filterByAuthorId(InteractionCreateEvent event, List<String> userWhiteList) {
-        var member = event.getInteraction()
-                .getMember()
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20009));
-
-        final String authorId = member.getId().asString();
-        return userWhiteList.contains(authorId);
+    public Mono<Boolean> filterEmptyAuthor(MessageCreateEvent event) {
+        return Mono.just(event.getMessage().getAuthor().isPresent());
     }
 
-    public boolean filterEmptyAuthor(MessageCreateEvent event) {
-        return event.getMessage().getAuthor().isPresent();
-    }
-
-    public boolean filterBot(MessageCreateEvent event) {
+    public Mono<Boolean> filterBot(MessageCreateEvent event) {
         final var messageAuthor =
                 event.getMessage().getAuthor().orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20003));
 
-        return !messageAuthor.isBot();
+        return Mono.just(!messageAuthor.isBot());
     }
 
-    public boolean filterBot(InteractionCreateEvent event) {
+    public Mono<Boolean> filterBot(InteractionCreateEvent event) {
         final var messageAuthor = event.getInteraction()
                 .getMember()
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20003));
 
-        return !messageAuthor.isBot();
+        return Mono.just(!messageAuthor.isBot());
     }
 
-    private boolean filterIfChannelExistsInSettings(Mono<Guild> guildMono, ChannelRole channelRole) {
+    private Mono<Boolean> filterIfChannelExistsInSettings(Mono<Guild> guildMono, ChannelRole channelRole) {
         return guildMono
-                .blockOptional()
                 .map(Guild::getId)
                 .map(Snowflake::asString)
-                .map(guildSettingsRepository::findGuildSettingByGuildId)
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20056))
-                .map(guildSettings -> guildSettings.getChannelId(channelRole))
-                .isPresent();
+                .flatMap(guildSettingsRepository::findGuildSettingByGuildId)
+                .switchIfEmpty(Mono.error(new EmptyOptionalException(LogMessage.ALERT_20056)))
+                .map(guildSettings -> !isNull(guildSettings.getChannelId(channelRole)));
     }
 
-    public boolean filterIfChannelsExistInSettings(InteractionCreateEvent event) {
-        final var helpChannelExists = filterIfChannelExistsInSettings(event, ChannelRole.HELP);
-        final var logChannelExists = filterIfChannelExistsInSettings(event, ChannelRole.LOG);
-        return helpChannelExists && logChannelExists;
+    public Mono<Boolean> filterIfChannelsExistInSettings(InteractionCreateEvent event) {
+        return Flux.zip(
+                        filterIfChannelExistsInSettings(event, ChannelRole.HELP),
+                        filterIfChannelExistsInSettings(event, ChannelRole.LOG),
+                        (helpChannelExists, logChannelExists) -> helpChannelExists && logChannelExists)
+                .single();
     }
 
-    public boolean filterIfChannelExistsInSettings(InteractionCreateEvent event, ChannelRole channelRole) {
+    public Mono<Boolean> filterIfChannelExistsInSettings(InteractionCreateEvent event, ChannelRole channelRole) {
         return filterIfChannelExistsInSettings(event.getInteraction().getGuild(), channelRole);
     }
 
-    public boolean filterIfIsGuildChannel(MessageCreateEvent event) {
-        return !isNull(event.getMessage().getGuild().block());
+    public Mono<Boolean> filterIfIsGuildChannel(MessageCreateEvent event) {
+        return event.getMessage().getGuild().flatMap(guild -> Mono.fromCallable(() -> !isNull(guild)));
     }
 
-    public boolean filterIfChannelExistsInSettings(MessageCreateEvent event, ChannelRole channelRole) {
+    public Mono<Boolean> filterIfChannelExistsInSettings(MessageCreateEvent event, ChannelRole channelRole) {
         return filterIfChannelExistsInSettings(event.getMessage().getGuild(), channelRole);
     }
 
-    public boolean filterByModeratorRole(InteractionCreateEvent event) {
+    public Mono<Boolean> filterByModeratorRole(InteractionCreateEvent event) {
         return event.getInteraction()
                 .getMember()
                 .map(PartialMember::getRoles)
                 // TODO: Why doesn't works?
                 // .map(roles -> roles.collectSortedList(role -> role.getName().equals(GuildRoleService.ROLE_NAME)))
                 .map(Flux::collectList)
-                .map(Mono::blockOptional)
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20065))
-                .map(Collection::stream)
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20066))
-                .map(Role::getName)
-                .collect(Collectors.toList())
-                .contains(GuildRoleService.MODERATOR_ROLE_NAME);
+                .map(roles ->
+                        roles.stream().map(Role::getName).toList().contains(GuildRoleService.MODERATOR_ROLE_NAME));
     }
 }
