@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.taonity.helpbot.discord.event.command.DiscordEventHandler;
 import org.taonity.helpbot.discord.logging.LogMessage;
 import org.taonity.helpbot.discord.logging.exception.main.EmptyOptionalException;
+import reactor.core.publisher.Mono;
 
 public abstract class AbstractSelectMenuHandler implements DiscordEventHandler<SelectMenuInteractionEvent> {
 
@@ -30,10 +31,11 @@ public abstract class AbstractSelectMenuHandler implements DiscordEventHandler<S
         return Optional.of(actionRow);
     }
 
-    public void disableAndEditCurrentSelectMenu(SelectMenuInteractionEvent event, String value) {
-        disableEventSelectMenuWithDefaultValue(event, value)
-                .ifPresent(disabledSelectMenu ->
-                        event.edit().withComponents(disabledSelectMenu).subscribe());
+    public Mono<Void> disableAndEditCurrentSelectMenu(SelectMenuInteractionEvent event, String value) {
+        return disableEventSelectMenuWithDefaultValue(event, value)
+                .map(disabledSelectMenu ->
+                        event.edit().withComponents(disabledSelectMenu).then())
+                .orElseGet(Mono::empty);
     }
 
     String getOptionValueFromEvent(SelectMenuInteractionEvent event) {

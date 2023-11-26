@@ -12,6 +12,7 @@ import org.taonity.helpbot.discord.logging.LogMessage;
 import org.taonity.helpbot.discord.logging.exception.GiteaApiException;
 import org.taonity.helpbot.discord.logging.exception.client.CorruptGiteaUserException;
 import org.taonity.helpbot.discord.logging.exception.main.EmptyOptionalException;
+import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
@@ -23,29 +24,30 @@ public class GuildPersistableDataService {
     private final GatewayDiscordClient gatewayDiscordClient;
 
     @Transactional
-    public void remove(GuildSettings guildSettings) {
-        try {
-            giteaUserService.deleteUser(guildSettings.getGuildId());
-        } catch (GiteaApiException e) {
-            throw new CorruptGiteaUserException(LogMessage.ALERT_20001, guildSettings.getGuildId(), e);
-        }
-        guildSettingsRepository.delete(guildSettings);
+    public Mono<Void> remove(GuildSettings guildSettings) {
+        // TODO: Check
+        return giteaUserService
+                .deleteUser(guildSettings.getGuildId())
+                .onErrorResume(
+                        GiteaApiException.class,
+                        e -> Mono.error(
+                                new CorruptGiteaUserException(LogMessage.ALERT_20001, guildSettings.getGuildId(), e)))
+                .then(guildSettingsRepository.delete(guildSettings));
     }
 
     @Transactional
-    public void create(String guildId) {
+    public Mono<Void> create(String guildId) {
         final var guildSettings = GuildSettings.builder().guildId(guildId).build();
-        final var guildSettingsId = guildSettingsRepository.save(guildSettings).getId();
-        try {
-            giteaUserService.createUser(guildSettingsId);
-        } catch (GiteaApiException e) {
-            throw new CorruptGiteaUserException(LogMessage.ALERT_20032, guildId, e);
-        }
-        gatewayDiscordClient
-                .getGuildById(Snowflake.of(guildId))
-                .blockOptional()
-                .ifPresentOrElse(guildRoleService::createModeratorRole, () -> {
-                    throw new EmptyOptionalException(LogMessage.ALERT_20064);
-                });
+        return guildSettingsRepository
+                .save(guildSettings)
+                .map(GuildSettings::getId)
+                .flatMap(giteaUserService::createUser)
+                .onErrorResume(
+                        GiteaApiException.class,
+                        e -> Mono.error(new CorruptGiteaUserException(LogMessage.ALERT_20032, guildId, e)))
+                .then(gatewayDiscordClient
+                        .getGuildById(Snowflake.of(guildId))
+                        .switchIfEmpty(Mono.error(new EmptyOptionalException(LogMessage.ALERT_20064)))
+                        .flatMap(guildRoleService::createModeratorRole));
     }
 }

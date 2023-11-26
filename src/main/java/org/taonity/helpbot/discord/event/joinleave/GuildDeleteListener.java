@@ -1,15 +1,18 @@
 package org.taonity.helpbot.discord.event.joinleave;
 
+import static org.taonity.helpbot.discord.mdc.ContextRegistryMdcKeyRegister.GUILD_ID_MDC_KEY;
+
 import discord4j.core.event.domain.guild.GuildDeleteEvent;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.taonity.helpbot.discord.event.DiscordEventListener;
-import org.taonity.helpbot.discord.event.MdcAwareThreadPoolExecutor;
-import org.taonity.helpbot.discord.event.Slf4jRunnable;
 import org.taonity.helpbot.discord.event.joinleave.service.GuildDataService;
+import org.taonity.helpbot.discord.mdc.OnCompleteSignalListenerBuilder;
+import reactor.core.publisher.Mono;
+import reactor.util.context.Context;
+import reactor.util.context.ContextView;
 
 @Slf4j
 @Component
@@ -18,21 +21,16 @@ public class GuildDeleteListener implements DiscordEventListener<GuildDeleteEven
 
     private final GuildDataService guildDataService;
 
-    @Getter
-    private final MdcAwareThreadPoolExecutor mdcAwareThreadPoolExecutor;
-
     @Override
-    public Slf4jRunnable<GuildDeleteEvent> createSlf4jRunnable(GuildDeleteEvent event) {
-        return new Slf4jGuildDeleteEventRunnable(event);
+    public ContextView getContextView(GuildDeleteEvent event) {
+        return Context.of(GUILD_ID_MDC_KEY, event.getGuildId().asString());
     }
 
     @Override
     @Transactional
-    public void handle(GuildDeleteEvent event) {
-        final var guildId = event.getGuildId().asString();
-
-        guildDataService.remove(guildId);
-
-        log.info("Bot left guild");
+    public Mono<Void> handle(GuildDeleteEvent event) {
+        return Mono.just(event.getGuildId().asString())
+                .flatMap(guildDataService::remove)
+                .tap(OnCompleteSignalListenerBuilder.of(() -> log.info("Bot left the guild")));
     }
 }

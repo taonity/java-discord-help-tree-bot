@@ -6,11 +6,9 @@ import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.entity.User;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
+import java.util.function.Function;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +20,8 @@ import org.taonity.helpbot.discord.event.command.EventPredicates;
 import org.taonity.helpbot.discord.event.command.positive.question.selectmenu.SelectMenuService;
 import org.taonity.helpbot.discord.logging.LogMessage;
 import org.taonity.helpbot.discord.logging.exception.main.EmptyOptionalException;
+import org.taonity.helpbot.discord.mdc.OnCompleteSignalListenerBuilder;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
@@ -34,17 +34,16 @@ public class QuestionCommand extends AbstractPositiveSlashCommand {
     private final EventPredicates eventPredicates;
 
     @Override
-    public final List<Predicate<ChatInputInteractionEvent>> getFilterPredicates() {
+    public final List<Function<ChatInputInteractionEvent, Mono<Boolean>>> getFilterPredicates() {
         return Arrays.asList(
                 eventPredicates::filterBot,
                 this::filterByCommand,
                 eventPredicates::filterIfChannelsExistInSettings,
-                e -> eventPredicates.filterByChannelRole(e, ChannelRole.HELP)
-        );
+                e -> eventPredicates.filterByChannelRole(e, ChannelRole.HELP));
     }
 
     @Override
-    public void handle(ChatInputInteractionEvent event) {
+    public Mono<Void> handle(ChatInputInteractionEvent event) {
         final var guildId = event.getInteraction()
                 .getGuildId()
                 .map(Snowflake::asString)
@@ -56,10 +55,9 @@ public class QuestionCommand extends AbstractPositiveSlashCommand {
                 .map(userId -> selectMenuService.initNewManager(userId, guildId))
                 .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20010));
 
-        event.reply(CHOOSE_LANGUAGE_MESSAGE.getMerged())
+        return event.reply(CHOOSE_LANGUAGE_MESSAGE.getMerged())
                 .withComponents(ActionRow.of(selectMenuManager.createLanguageSelectMenu()))
-                .subscribe();
-
-        log.info("Command successfully created first select menu");
+                .tap(OnCompleteSignalListenerBuilder.of(
+                        () -> log.info("Command successfully created first select menu")));
     }
 }

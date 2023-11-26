@@ -12,12 +12,14 @@ app-reference:
   address: ${APP_ADDRESS:localhost}
   url: ${app-reference.protocol}://${app-reference.address}:${server.port}
 
-postgres-url: jdbc:postgresql://${POSTGRES_ADDRESS:localhost}:${POSTGRES_PORT:49001}/${POSTGRES_DB:discord_help_bot}
+postgres-url: r2dbc:postgresql://${POSTGRES_ADDRESS:localhost}:${POSTGRES_PORT:49001}/${POSTGRES_DB:discord_help_bot}
 
 spring:
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-  datasource:
+#  jackson:
+#    property-naming-strategy: SNAKE_CASE
+#  jpa:
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  r2dbc:
     url: ${postgres-url}
     username: ${POSTGRES_APP_USER:d}
     password: ${POSTGRES_APP_PASSWORD:d}
@@ -44,4 +46,8 @@ gitea:
 
 #logging:
 #  level:
+#    org.springframework.web: DEBUG
+#    io.r2dbc.postgresql.QUERY: DEBUG # for queries
+#    io.r2dbc.postgresql.PARAM: DEBUG # for parameters
+#    org.springframework.beans: DEBUG
 #    discord.http.LoggingInterceptor: DEBUG

@@ -46,6 +46,17 @@
         </encoder>
     </appender>
 
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{HH:mm:ss.SSS} [%thread] [key=%X{guildId}] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+    <logger name="reactor1" additivity="false">
+        <appender-ref ref="stdout" />
+    </logger>
+
     <logger name="automation-tests" additivity="false">
 <!--        <appender-ref ref="FILE" />-->
         <appender-ref ref="COMPOSE" />

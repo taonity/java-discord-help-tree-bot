@@ -4,12 +4,10 @@ import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
 import discord4j.core.spec.EmbedCreateSpec;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
+import java.util.function.Function;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +23,8 @@ import org.taonity.helpbot.discord.event.command.EventPredicates;
 import org.taonity.helpbot.discord.localisation.SimpleMessage;
 import org.taonity.helpbot.discord.logging.LogMessage;
 import org.taonity.helpbot.discord.logging.exception.main.EmptyOptionalException;
+import org.taonity.helpbot.discord.mdc.OnCompleteSignalListenerBuilder;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
@@ -40,42 +40,39 @@ public class ChannelRoleCommand extends AbstractPositiveSlashCommand {
     private final EventPredicates eventPredicates;
 
     @Override
-    public final List<Predicate<ChatInputInteractionEvent>> getFilterPredicates() {
-        return Arrays.asList(
-                eventPredicates::filterBot,
-                this::filterByCommand,
-                eventPredicates::filterByModeratorRole
-        );
+    public final List<Function<ChatInputInteractionEvent, Mono<Boolean>>> getFilterPredicates() {
+        return Arrays.asList(eventPredicates::filterBot, this::filterByCommand, eventPredicates::filterByModeratorRole);
     }
 
     @Override
-    public void handle(ChatInputInteractionEvent event) {
+    public Mono<Void> handle(ChatInputInteractionEvent event) {
         final var channelType = getChannelRoleFromEvent(event);
-        EmbedCreateSpec embedCreateSpec;
+        Mono<EmbedCreateSpec> embedCreateSpecMono;
 
         if (channelType.isPresent()) {
             final var channelId = event.getInteraction().getChannelId().asString();
             final var guildId = event.getInteraction()
                     .getGuildId()
                     .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20060));
-            channelService.updateChannelById(guildId.asString(), channelType.get(), channelId);
-
-            embedCreateSpec = EmbedBuilder.buildSimpleMessage(
-                    SimpleMessage.SUCCESS_CHANNEL_UPDATE_MESSAGE.getMessage(), EmbedType.SIMPLE_MESSAGE_EMBED_TYPE);
-
-            log.info(
-                    "Command successfully defined role {} for channel {}",
-                    channelType.get().getRoleName(),
-                    event.getInteraction().getChannelId().asString());
+            embedCreateSpecMono = channelService
+                    .updateChannelById(guildId.asString(), channelType.get(), channelId)
+                    .thenReturn(EmbedBuilder.buildSimpleMessage(
+                            SimpleMessage.SUCCESS_CHANNEL_UPDATE_MESSAGE.getMessage(),
+                            EmbedType.SIMPLE_MESSAGE_EMBED_TYPE))
+                    .tap(OnCompleteSignalListenerBuilder.of(() -> log.info(
+                            "Command successfully defined role {} for channel {}",
+                            channelType.get().getRoleName(),
+                            event.getInteraction().getChannelId().asString())));
         } else {
-            embedCreateSpec = EmbedBuilder.buildSimpleMessage(
-                    SimpleMessage.FAIL_CHANNEL_UPDATE_MESSAGE.getMessage(), EmbedType.SIMPLE_MESSAGE_EMBED_TYPE);
-
-            log.info(
-                    "Command failed with empty role for channel {}",
-                    event.getInteraction().getChannelId().asString());
+            embedCreateSpecMono = Mono.just(EmbedBuilder.buildSimpleMessage(
+                            SimpleMessage.FAIL_CHANNEL_UPDATE_MESSAGE.getMessage(),
+                            EmbedType.SIMPLE_MESSAGE_EMBED_TYPE))
+                    .tap(OnCompleteSignalListenerBuilder.of(() -> log.info(
+                            "Command failed with empty role for channel {}",
+                            event.getInteraction().getChannelId().asString())));
         }
-        event.reply().withEmbeds(embedCreateSpec).withEphemeral(true).subscribe();
+        return embedCreateSpecMono.flatMap(
+                embedCreateSpec -> event.reply().withEmbeds(embedCreateSpec).withEphemeral(true));
     }
 
     private Optional<ChannelRole> getChannelRoleFromEvent(ChatInputInteractionEvent event) {

@@ -3,8 +3,8 @@ package org.taonity.helpbot.discord.event.joinleave.service;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.Guild;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +14,8 @@ import org.taonity.helpbot.discord.event.command.positive.question.selectmenu.Se
 import org.taonity.helpbot.discord.event.command.tree.TreeRootService;
 import org.taonity.helpbot.discord.logging.LogMessage;
 import org.taonity.helpbot.discord.logging.exception.main.EmptyOptionalException;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
@@ -25,44 +27,48 @@ public class GuildDataService {
     private final GuildPersistableDataService guildPersistableDataService;
 
     @Transactional
-    public void remove(String guildId) {
-        final var guildSettings = guildSettingsRepository
-                .findGuildSettingByGuildId(guildId)
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20054));
-
-        guildPersistableDataService.remove(guildSettings);
-
-        selectMenuService.removeSmManagerList(guildId);
-        treeRootService.removeRootByGuildId(guildId);
-    }
-
-    @Transactional
-    public void create(String guildId) {
-        guildPersistableDataService.create(guildId);
-
-        selectMenuService.createSmManagerList(guildId);
-        guildSettingsRepository
-                .findGuildSettingByGuildId(guildId)
-                .ifPresentOrElse(treeRootService::createNewRoot, () -> {
-                    throw new EmptyOptionalException(LogMessage.ALERT_20070);
+    public Mono<Void> remove(String guildId) {
+        return Mono.just(guildId)
+                .flatMap(guildSettingsRepository::findGuildSettingByGuildId)
+                .switchIfEmpty(Mono.error(new EmptyOptionalException(LogMessage.ALERT_20054)))
+                .flatMap(guildPersistableDataService::remove)
+                .doOnSuccess(result -> {
+                    selectMenuService.removeSmManagerList(guildId);
+                    treeRootService.removeRootByGuildId(guildId);
                 });
     }
 
-    public void removeIfLeftInDiscord() {
-        final var discordGuildIdList = gatewayDiscordClient
-                .getGuilds()
-                .cache()
-                .collectList()
-                .blockOptional()
-                .orElseThrow(() -> new EmptyOptionalException(LogMessage.ALERT_20039))
-                .stream()
+    @Transactional
+    public Mono<Void> create(String guildId) {
+        selectMenuService.createSmManagerList(guildId);
+        return Flux.zip(
+                        guildPersistableDataService.create(guildId),
+                        guildSettingsRepository
+                                .findGuildSettingByGuildId(guildId)
+                                .switchIfEmpty(Mono.error(new EmptyOptionalException(LogMessage.ALERT_20070))))
+                .flatMap(tuple -> treeRootService.createNewRoot(tuple.getT2()))
+                .then();
+    }
+
+    public Mono<Void> removeIfLeftInDiscord() {
+        return Flux.zip(getDiscordsGuildIds(), getDbGuildIds(), (discordGuildIds, dbGuildIds) -> dbGuildIds.stream()
+                        .filter(dbGuildId -> !discordGuildIds.contains(dbGuildId))
+                        .collect(Collectors.toList()))
+                .flatMapIterable(guildIdsToRemove -> guildIdsToRemove)
+                .flatMap(this::remove)
+                .then();
+    }
+
+    private Mono<List<String>> getDiscordsGuildIds() {
+        return gatewayDiscordClient.getGuilds().cache().collectList().map(guilds -> guilds.stream()
                 .map(Guild::getId)
                 .map(Snowflake::asString)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
+    }
 
-        StreamSupport.stream(guildSettingsRepository.findAll().spliterator(), true)
+    private Mono<List<String>> getDbGuildIds() {
+        return guildSettingsRepository.findAll().collectList().map(guildSettings -> guildSettings.stream()
                 .map(GuildSettings::getGuildId)
-                .filter(guildId -> !discordGuildIdList.contains(guildId))
-                .forEach(this::remove);
+                .collect(Collectors.toList()));
     }
 }

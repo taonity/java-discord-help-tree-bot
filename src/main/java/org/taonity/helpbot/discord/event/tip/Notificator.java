@@ -3,6 +3,7 @@ package org.taonity.helpbot.discord.event.tip;
 import static org.taonity.helpbot.discord.localisation.LocalizedMessage.HELP_ADVICE_GENERATOR_MESSAGE;
 
 import java.time.Instant;
+import reactor.core.publisher.Mono;
 
 public class Notificator {
     private long lastNotificationTime;
@@ -12,8 +13,8 @@ public class Notificator {
         updateTime();
     }
 
-    public boolean isTime() {
-        return lastNotificationTime + ONE_HOUR < Instant.now().getEpochSecond();
+    public Mono<Boolean> isTime() {
+        return Mono.just(lastNotificationTime + ONE_HOUR < Instant.now().getEpochSecond());
     }
 
     public String getNotificationText() {

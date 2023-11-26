@@ -9,7 +9,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
@@ -25,6 +24,7 @@ import org.taonity.helpbot.discord.logging.exception.AspectEmptyOptionalExceptio
 import org.taonity.helpbot.discord.logging.exception.LogMessageException;
 import org.taonity.helpbot.discord.logging.exception.client.ClientGuildAwareException;
 import org.taonity.helpbot.discord.logging.exception.main.MainGuildAwareException;
+import reactor.core.publisher.Mono;
 
 @Aspect
 @Component
@@ -42,26 +42,28 @@ public class LoggingAspect {
     public void logForClientGuild(ClientGuildAwareException exception) {
         final var guildId = exception.getGuildId();
 
-        getLogChannelId(exception, guildId).ifPresent(guildSettings -> logException(exception, guildId));
+        getLogChannelId(exception, guildId)
+                .switchIfEmpty(Mono.empty())
+                .flatMap(guildSettings -> logException(exception, guildId))
+                .subscribe();
     }
 
     @AfterThrowing(value = "(execution(* discord..*..*(..)))", throwing = "exception")
     public void logForMainGuild(MainGuildAwareException exception) {
         getLogChannelId(exception, mainGuildId)
-                .ifPresentOrElse(guildSettings -> logException(exception, mainGuildId), () -> {
-                    throw new AspectEmptyOptionalException(LogMessage.ALERT_20076, exception);
-                });
+                .switchIfEmpty(Mono.error(new AspectEmptyOptionalException(LogMessage.ALERT_20076, exception)))
+                .flatMap(guildSettings -> logException(exception, mainGuildId))
+                .subscribe();
     }
 
-    private Optional<String> getLogChannelId(LogMessageException exception, String guildId) {
-        final var logChannelId = guildSettingsRepository
+    private Mono<String> getLogChannelId(LogMessageException exception, String guildId) {
+        return guildSettingsRepository
                 .findGuildSettingByGuildId(guildId)
-                .map(GuildSettings::getLogChannelId)
-                .orElseThrow(() -> new AspectEmptyOptionalException(LogMessage.ALERT_20074, exception));
-        return Optional.ofNullable(logChannelId);
+                .switchIfEmpty(Mono.error(new AspectEmptyOptionalException(LogMessage.ALERT_20074, exception)))
+                .map(GuildSettings::getLogChannelId);
     }
 
-    private void logException(LogMessageException exception, String guildId) {
+    private Mono<Void> logException(LogMessageException exception, String guildId) {
         final var outputStream = new ByteArrayOutputStream();
         final var printStream = new PrintStream(outputStream);
         exception.printStackTrace(printStream);
@@ -72,12 +74,11 @@ public class LoggingAspect {
                 .addFile(LOG_ATTACHMENT_FILE_NAME, inputStream)
                 .build();
 
-        gatewayDiscordClient
+        return gatewayDiscordClient
                 .getGuildById(Snowflake.of(guildId))
-                .blockOptional()
-                .map(guild -> messageChannelService.getChannel(guild, ChannelRole.LOG))
-                .orElseThrow(() -> new AspectEmptyOptionalException(LogMessage.ALERT_20045, exception))
-                .createMessage(messageSpecs)
-                .block();
+                .switchIfEmpty(Mono.error(new AspectEmptyOptionalException(LogMessage.ALERT_20045, exception)))
+                .flatMap(guild -> messageChannelService.getChannel(guild, ChannelRole.LOG))
+                .flatMap(messageChannel -> messageChannel.createMessage(messageSpecs))
+                .then();
     }
 }

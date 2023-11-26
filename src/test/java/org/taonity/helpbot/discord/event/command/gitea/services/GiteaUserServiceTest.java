@@ -1,9 +1,6 @@
 package org.taonity.helpbot.discord.event.command.gitea.services;
 
-import static org.mockito.Mockito.when;
-
 import discord4j.core.GatewayDiscordClient;
-import java.util.Optional;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -27,7 +23,6 @@ import org.taonity.helpbot.discord.logging.exception.GiteaApiException;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @EntityScan("discord.model")
-@EnableJpaRepositories(basePackages = {"discord.repository"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
 @ContextConfiguration(
@@ -63,7 +58,7 @@ public class GiteaUserServiceTest {
                 .giteaUserId(giteaUserId)
                 .id(100)
                 .build();
-        when(guildSettingsRepository.findGuildSettingByGuildId(guildId)).thenReturn(Optional.of(guildSetting));
+        //        when(guildSettingsRepository.findGuildSettingByGuildId(guildId)).thenReturn(guildSetting);
         giteaUserService.deleteUser(guildId);
     }
 }

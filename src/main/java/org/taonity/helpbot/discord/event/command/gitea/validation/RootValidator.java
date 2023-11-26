@@ -1,14 +1,17 @@
 package org.taonity.helpbot.discord.event.command.gitea.validation;
 
+import static java.util.Objects.isNull;
+
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
-import discord4j.rest.http.client.ClientException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.taonity.helpbot.discord.event.command.tree.model.Node;
 import org.taonity.helpbot.discord.localisation.Language;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 public class RootValidator {
@@ -17,14 +20,14 @@ public class RootValidator {
     private final StringErrorMessageCollector messageCollector = new StringErrorMessageCollector();
     private final GatewayDiscordClient gateway;
 
-    public static StringErrorMessageCollector validate(Node root, GatewayDiscordClient gateway) {
+    public static Mono<StringErrorMessageCollector> validate(Node root, GatewayDiscordClient gateway) {
         return new RootValidator(root, gateway).validateRoot();
     }
 
-    public StringErrorMessageCollector validateRoot() {
-        validateLabels();
-        validateTargetIds();
-        return messageCollector;
+    private Mono<StringErrorMessageCollector> validateRoot() {
+        return validateTargetIds()
+                .then((Mono.fromRunnable(this::validateLabels)))
+                .thenReturn(messageCollector);
     }
 
     private void validateLabels() {
@@ -33,10 +36,14 @@ public class RootValidator {
         labels.stream().filter(label -> label.length() >= 100).forEach(messageCollector::addLabelTooBig);
     }
 
-    private void validateTargetIds() {
+    private Mono<Void> validateTargetIds() {
         var targetIds = new ArrayList<String>();
         collectTargetIds(root, targetIds);
-        targetIds.stream().map(this::toSnowflake).filter(Objects::nonNull).forEach(this::toUserId);
+        return Flux.fromIterable(targetIds)
+                .map(this::toSnowflake)
+                .filter(Objects::nonNull)
+                .flatMap(this::validateUserId)
+                .then();
     }
 
     private Snowflake toSnowflake(final String targetId) {
@@ -48,12 +55,14 @@ public class RootValidator {
         }
     }
 
-    private void toUserId(Snowflake targetSnowflake) {
-        try {
-            gateway.getUserById(targetSnowflake).block();
-        } catch (ClientException error) {
-            messageCollector.addWrongTarget(targetSnowflake.asString());
-        }
+    private Mono<Void> validateUserId(Snowflake targetSnowflake) {
+        return gateway.getUserById(targetSnowflake)
+                .doOnSuccess(user -> {
+                    if (isNull(user)) {
+                        messageCollector.addWrongTarget(targetSnowflake.asString());
+                    }
+                })
+                .then();
     }
 
     private static void collectTargetIds(Node node, List<String> targetIds) {

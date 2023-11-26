@@ -1,5 +1,5 @@
 Feature: Check guild data presence in Gitea and db after startup
-
+  @Run
   Scenario: Check guild data presence in Gitea and db after startup
     Then Guild id is present in DB
       | guildId             |
