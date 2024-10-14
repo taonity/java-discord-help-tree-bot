@@ -3,7 +3,7 @@ version: '2.4'
 services:
 
   make-backup:
-    image: offen/docker-volume-backup:v2.28.0
+    image: offen/docker-volume-backup:v2.43.0
 #    image: generaltao725/docker-volume-backup
     env_file:
       - ./backup.env
