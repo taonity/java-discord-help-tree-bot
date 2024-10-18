@@ -2,7 +2,7 @@ version: '2.4'
 
 services:
   gitea:
-    image: gitea/gitea:1.20
+    image: gitea/gitea:1.22
     volumes:
       - ./conf:/data/gitea/conf
       - ./shared:/shared
