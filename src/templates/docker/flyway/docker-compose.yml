@@ -2,7 +2,7 @@ version: '2.4'
 
 services:
   flyway:
-    image: flyway/flyway:9.22.2
+    image: flyway/flyway:9.22.3
     command: migrate
     environment:
       FLYWAY_PLACEHOLDER_PREFIX: "{{ "
